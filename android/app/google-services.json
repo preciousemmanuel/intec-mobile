@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "980291827167",
+    "project_id": "intec-pro",
+    "storage_bucket": "intec-pro.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:980291827167:android:ca5e3c52fc2e8651f7806a",
+        "android_client_info": {
+          "package_name": "com.example.intechpro"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "980291827167-ft1gnl3cjgmpvqua18n6uu5dgt4443tv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCY1WoUNyUxURYOO_IUgGoMa6aKVT1uWvY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "980291827167-ft1gnl3cjgmpvqua18n6uu5dgt4443tv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
