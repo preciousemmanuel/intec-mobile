@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intechpro/model/service.dart';
 import 'package:intechpro/model/sub_service.dart';
 import 'package:intechpro/providers/service_provider.dart';
+import 'package:intechpro/screens/request_service_screen.dart';
 import 'package:intechpro/widgets/service_card.dart';
 import 'package:provider/provider.dart';
 
@@ -26,6 +27,8 @@ class _SubServiceScreen extends State<SubServiceScreen> {
   void onhandleTap(SubService service) {
     print("sher@##");
     print(service.uid);
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (_) => RequestServiceScreen(subService: service)));
   }
 
   @override
@@ -74,9 +77,17 @@ class _SubServiceScreen extends State<SubServiceScreen> {
                 ),
                 context.watch<ServiceProvider>().getLoading
                     ? Center(
-                        child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                                Theme.of(context).primaryColor)),
+                        child: Column(
+                          children: [
+                            CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    Theme.of(context).primaryColor)),
+                            SizedBox(
+                              height: 20.0,
+                            ),
+                            Text("Loading $widget.service.name services...")
+                          ],
+                        ),
                       )
                     : SizedBox(
                         height: 400.0,

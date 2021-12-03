@@ -95,9 +95,17 @@ class _HomeScreen extends State<HomeScreen> {
                 ),
                 context.watch<ServiceProvider>().getLoading
                     ? Center(
-                        child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                                Theme.of(context).primaryColor)),
+                        child: Column(
+                          children: [
+                            CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    Theme.of(context).primaryColor)),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Text("Loading Services...")
+                          ],
+                        ),
                       )
                     : SizedBox(
                         height: 400.0,
