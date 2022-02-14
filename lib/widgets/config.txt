@@ -1,0 +1,9 @@
+request state
+0== cancelled
+1== not paid
+2== accepted by artisan
+3== paid by customer
+4== marked as completed by artisan
+5== confirmed by customer
+6== denied by customer
+7== money for this service paid to artisan
