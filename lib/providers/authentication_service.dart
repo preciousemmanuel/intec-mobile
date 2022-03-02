@@ -116,7 +116,7 @@ class AuthenticationService with ChangeNotifier {
         "verified": userType == 1 ? true : false
       }),headers: {"Content-Type": "application/json"})
       .then((http.Response response){
-        print("sucess");
+        print("suces#s");
 
         print(response.body);
       });
