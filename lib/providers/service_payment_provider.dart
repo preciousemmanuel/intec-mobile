@@ -74,7 +74,7 @@ class ServicePaymentProvider with ChangeNotifier {
     }
   }
 
-  Future<Map<String, dynamic>> approveArtisanPayment(request_id) async {
+  Future<Map<String, dynamic>> approveArtisanPayment(request_id,ratingText,rateCount) async {
     try {
       var user = FirebaseAuth.instance.currentUser;
       var tokenRes = await user!.getIdTokenResult();
@@ -87,6 +87,9 @@ class ServicePaymentProvider with ChangeNotifier {
           Uri.parse("${base_url}payment/request-confirm-payment"),
           body: json.encode({
             "order_id": request_id,
+            "ratingText": ratingText,
+            "rateCount": rateCount,
+
           }),
           headers: {
             "Content-Type": "application/json",

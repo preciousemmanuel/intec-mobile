@@ -190,7 +190,7 @@ class _TaskServiceScreen extends State<TaskServiceScreen> {
                 Text(
                   widget.parentService!.userType == 4
                       ? "Please choose the supplier you want to contact;"
-                      : "Please choose the task(s) you want do; ",
+                      : "Please choose type with labour charge of task (s) to do. Client to provide work materials ",
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 SizedBox(

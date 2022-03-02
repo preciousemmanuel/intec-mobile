@@ -262,7 +262,7 @@ class ArtisanRequestCard extends StatelessWidget {
                     width: 20,
                   ),
                   Text(
-                    currency.symbol + request["amount"].toString(),
+                    currency.symbol +(request["userType"]==3 && request["requestStatus"]<=3?request["amountForDistance"].toString() : request["amount"].toString()),
                     style: TextStyle(color: Color(0xff52575C)),
                   )
                 ],

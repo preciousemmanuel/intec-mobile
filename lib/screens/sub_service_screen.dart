@@ -30,14 +30,25 @@ class _SubServiceScreen extends State<SubServiceScreen> {
     print("sher@##");
     print(service.uid);
     if (service.hasTask) {
-      Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => TaskServiceScreen(service: service,parentService: widget.service)));
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (_) => TaskServiceScreen(
+              service: service, parentService: widget.service)));
     } else {
-    
-     
-    Navigator.of(context).push(MaterialPageRoute(
-        builder: (_) => RequestServiceScreen(subService: service,parentService: widget.service,)));
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (_) => RequestServiceScreen(
+                subService: service,
+                parentService: widget.service,
+              )));
     }
+  }
+
+  String showText() {
+    if (widget.service.userType == 2) {
+      return "Do you want to keep the service life of your facilities in proper condition? Our verified artisans can help.";
+    } else if (widget.service.userType == 3) {
+      return "Are you facing delays collecting waste, moving loads, or dispatching deliveries? Our truck call-up service is all you need.";
+    }
+    return "Are you loosing time finding repair materials to fix defects? Our network of suppliers can respond swiftly to your needs.";
   }
 
   @override
@@ -80,7 +91,7 @@ class _SubServiceScreen extends State<SubServiceScreen> {
                   height: 22.0,
                 ),
                 Text(
-                  widget.service.userType==4?"We connect you to material suppliers that suit your need" : "We offer ${widget.service.name} that can fit your needs; ",
+                  showText(),
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 SizedBox(
@@ -91,8 +102,9 @@ class _SubServiceScreen extends State<SubServiceScreen> {
                         child: Column(
                           children: [
                             CircularProgressIndicator(
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                    Theme.of(context).primaryColor)),
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                  Theme.of(context).primaryColor),
+                            ),
                             SizedBox(
                               height: 20.0,
                             ),
@@ -106,7 +118,7 @@ class _SubServiceScreen extends State<SubServiceScreen> {
                           alignment: Alignment.bottomCenter,
                           child: ListView.builder(
                             padding: EdgeInsets.symmetric(vertical: 10),
-                            
+
                             // gridDelegate:
                             //     SliverGridDelegateWithFixedCrossAxisCount(
                             //         crossAxisCount: 3,
@@ -130,7 +142,9 @@ class _SubServiceScreen extends State<SubServiceScreen> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 80,)
+                SizedBox(
+                  height: 80,
+                )
               ],
             ),
           ),

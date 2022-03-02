@@ -69,21 +69,21 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         PageViewModel(
             title: "Connect with artisans",
             body: "Lets help you find reliable artisan to fix your issues quickly.",
-            image: _buildImage(context,"slide_one.jpg"),
+            image: _buildImage(context,"slide_one.jpeg"),
             decoration: pageDecoration
             ),
 
             PageViewModel(
             title: "Truck Service",
             body: "Have your waste dispose swiftly? Look no further our Truck call-up service is all you need.",
-            image: _buildImage(context,"slide_two.jpg"),
+            image: _buildImage(context,"slide_two.jpeg"),
             decoration: pageDecoration
             ),
 
              PageViewModel(
             title: "Connect with Suppliers?",
             body: "We got you covered! we provide you with materials suppliers network to match your needs.",
-            image: _buildImage(context,"slide_three.jpg"),
+            image: _buildImage(context,"slide_three.jpeg"),
             decoration: pageDecoration
             )
       ],

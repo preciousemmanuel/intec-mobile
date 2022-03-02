@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:intechpro/model/user.dart';
 
 class ProfileProvider with ChangeNotifier {
-  
   CollectionReference userRef = FirebaseFirestore.instance.collection("users");
   Profile _user = Profile(
       name: "",
@@ -12,6 +11,8 @@ class ProfileProvider with ChangeNotifier {
       token: "",
       uid: "",
       location: {},
+      verified: false,
+      blocked: false,
       userType: 0,
       phone: "");
   bool _is_loading = false;
@@ -29,25 +30,20 @@ class ProfileProvider with ChangeNotifier {
     return _user;
   }
 
-bool signout(){
-   _user = Profile(
-     
-      name: "",
-      email: "",
-      token: "",
-      uid: "",
-    
-      location: {},
-      userType: 0,
-      phone: "");
-      notifyListeners();
-      return true;
-
-}
-
+  bool signout() {
+    _user = Profile(
+        name: "",
+        email: "",
+        token: "",
+        uid: "",
+        location: {},
+        userType: 0,
+        phone: "");
+    notifyListeners();
+    return true;
+  }
 
   Future<Map<String, dynamic>> fetch_user() async {
-
     try {
       var user = FirebaseAuth.instance.currentUser;
       _is_loading = true;
@@ -55,35 +51,54 @@ bool signout(){
 
       DocumentSnapshot userData = await userRef.doc(user!.uid).get();
       print(userData.data());
-print("fetucwe##");
-print(userData.get("userType"));
+      print("fetucwe##");
+      print(userData.get("userType"));
 
-
-print("##for##c");
+      print("##for##c");
       _is_loading = false;
       notifyListeners();
       if (userData.exists) {
         var tokenRes = await user.getIdTokenResult();
-        print( tokenRes.token??"");
+        print(tokenRes.token ?? "");
         // if(userData.get("")){
 
         // }
         _user = Profile(
-            name: userData.get("name"),
-            email: userData.get("email"),
-            token: tokenRes.token??"",
-            uid: userData.id,
-           location:userData.data().toString().contains("location")? userData.get("location"): {"lon":0.00,"lang":0.00},
-            userType: userData.get("userType"),
-            phone: userData.get("phone"),
-            serviceId:userData.data().toString().contains("serviceId")? userData.get("serviceId"):"",
-            hasSubscribed:userData.data().toString().contains("hasSubscribed")? userData.get("hasSubscribed"):false,
-            expired:userData.data().toString().contains("expired")? userData.get("expired"):false,
-            subServiceId:userData.data().toString().contains("subServiceId")? userData.get("subServiceId"):"",
-            address:userData.data().toString().contains("address")? userData.get("address"):"",
-            state:userData.data().toString().contains("state")? userData.get("state"):"",
-
-            );
+          name: userData.get("name"),
+          email: userData.get("email"),
+          token: tokenRes.token ?? "",
+          uid: userData.id,
+          location: userData.data().toString().contains("location")
+              ? userData.get("location")
+              : {"lon": 0.00, "lang": 0.00},
+          userType: userData.get("userType"),
+          phone: userData.get("phone"),
+          serviceId: userData.data().toString().contains("serviceId")
+              ? userData.get("serviceId")
+              : "",
+          hasSubscribed: userData.data().toString().contains("hasSubscribed")
+              ? userData.get("hasSubscribed")
+              : false,
+          verified: 
+               userData.get("verified"),
+          blocked: userData.data().toString().contains("blocked")
+              ? userData.get("blocked")
+              : false,
+          expired: userData.data().toString().contains("expired")
+              ? userData.get("expired")
+              : false,
+          subServiceId: userData.data().toString().contains("subServiceId")
+              ? userData.get("subServiceId")
+              : "",
+          address: userData.data().toString().contains("address")
+              ? userData.get("address")
+              : "",
+          state: userData.data().toString().contains("state")
+              ? userData.get("state")
+              : "",
+        );
+        
+        notifyListeners();
         return {"status": true, "user": _user};
       }
       return {"status": false, "message": "Failed to fetch user"};
@@ -94,33 +109,28 @@ print("##for##c");
     }
   }
 
-  void resetProfile(){
-     
-
-      _user=Profile(
-      name: "",
-      email: "",
-      token: "",
-      uid: "",
-      location: {},
-      serviceId:"" ,
-      subServiceId: "",
-
-      userType: 0,
-      phone: "");
-      notifyListeners();
+  void resetProfile() {
+    _user = Profile(
+        name: "",
+        email: "",
+        token: "",
+        uid: "",
+        location: {},
+        serviceId: "",
+        subServiceId: "",
+        blocked: false,
+        verified: true,
+        userType: 0,
+        phone: "");
+    notifyListeners();
   }
 
-   Future<Map<String, dynamic>> handleSubscription() async {
+  Future<Map<String, dynamic>> handleSubscription() async {
     try {
       _is_submitting = true;
       notifyListeners();
-var user = FirebaseAuth.instance.currentUser;
-      userRef.doc(user!.uid).update({
-        "expired": false,
-        "hasSubscribed":true
-      
-      });
+      var user = FirebaseAuth.instance.currentUser;
+      userRef.doc(user!.uid).update({"expired": false, "hasSubscribed": true});
 
       print("here##");
       print(_user.name);
@@ -152,16 +162,13 @@ var user = FirebaseAuth.instance.currentUser;
     }
   }
 
-
-
   Future<Map<String, dynamic>> updateprofileStatus(bool status) async {
     try {
       _is_submitting = true;
       notifyListeners();
-var user = FirebaseAuth.instance.currentUser;
+      var user = FirebaseAuth.instance.currentUser;
       userRef.doc(user!.uid).update({
         "active": status,
-      
       });
 
       print("here##");
@@ -193,19 +200,17 @@ var user = FirebaseAuth.instance.currentUser;
     }
   }
 
-
-  Future<Map<String, dynamic>> updateprofile(String name,String phone,String address) async {
+  Future<Map<String, dynamic>> updateprofile(
+      String name, String phone, String address) async {
     try {
       _is_submitting = true;
       notifyListeners();
-var user = FirebaseAuth.instance.currentUser;
+      var user = FirebaseAuth.instance.currentUser;
       user!.updateDisplayName(name);
 
-      userRef.doc(user.uid).update({
-        "name": name,
-        "phone": phone,
-        "address":address
-      });
+      userRef
+          .doc(user.uid)
+          .update({"name": name, "phone": phone, "address": address});
 
       print("here##");
       print(_user.name);
@@ -228,7 +233,7 @@ var user = FirebaseAuth.instance.currentUser;
       _user = newUser;
       _is_submitting = false;
       notifyListeners();
-      return {"status": true,"message":"Profile Updated Successfully!"};
+      return {"status": true, "message": "Profile Updated Successfully!"};
     } on FirebaseException catch (e) {
       _is_submitting = false;
       notifyListeners();
@@ -236,13 +241,12 @@ var user = FirebaseAuth.instance.currentUser;
     }
   }
 
-
   Future<Map<String, dynamic>> saveArtisanWorkCategory(
       serviceId, subServiceId) async {
     try {
       _is_submitting = true;
       notifyListeners();
-var user = FirebaseAuth.instance.currentUser;
+      var user = FirebaseAuth.instance.currentUser;
       userRef.doc(user!.uid).update({
         "serviceId": serviceId,
         "subServiceId": subServiceId,
@@ -259,7 +263,6 @@ var user = FirebaseAuth.instance.currentUser;
           uid: _user.uid,
           phone: _user.phone,
           token: _user.token,
-          
           location: _user.location);
 
       _user = newUser;

@@ -129,11 +129,11 @@ class _PaymentServiceScreenState extends State<PaymentServiceScreen> {
     scaffoldkey.currentState!.showSnackBar(snackbar);
   }
 
-  String _getReference() {
-    var platform = (Platform.isIOS) ? 'iOS' : 'Android';
-    final thisDate = DateTime.now().millisecondsSinceEpoch;
-    return 'ChargedFrom${platform}_$thisDate';
-  }
+  // String _getReference() {
+  //   var platform = (Platform.isIOS) ? 'iOS' : 'Android';
+  //   final thisDate = DateTime.now().millisecondsSinceEpoch;
+  //   return 'ChargedFrom${platform}_$thisDate';
+  // }
 
   Future<String> _createAccessCode(_getReference) async {
     // skTest -> Secret key
@@ -282,31 +282,31 @@ class _PaymentServiceScreenState extends State<PaymentServiceScreen> {
     }
   }
 
-  _handleCardPaymentInitialization(BuildContext context, amount) async {
-    final flutterwave = Flutterwave.forUIPayment(
-        amount: amount.toString(),
-        currency: FlutterwaveCurrency.NGN,
-        context: this.context,
-        publicKey: dotenv.env["FLUTTER_PUBLIC_API_KEY"] ?? "",
-        encryptionKey: dotenv.env["ENCRYPTION_KEY"] ?? "",
-        email: Provider.of<User>(context, listen: false).email ?? "",
-        fullName: Provider.of<User>(context, listen: false).displayName ?? "",
-        txRef: DateTime.now().toIso8601String(),
-        narration: "Payment for ${widget.subservice!.name} service",
-        isDebugMode: false,
-        phoneNumber:
-            Provider.of<ProfileProvider>(context, listen: false).profile.phone,
-        acceptAccountPayment: true,
-        acceptCardPayment: true,
-        acceptUSSDPayment: true);
-    final response = await flutterwave.initializeForUiPayments();
-    if (response != null) {
-      print(response);
-      _handleWalletPayment(1, amount);
-    } else {
-      ShowSnackBar(response.message ?? "", false);
-    }
-  }
+  // _handleCardPaymentInitialization(BuildContext context, amount) async {
+  //   final flutterwave = Flutterwave.forUIPayment(
+  //       amount: amount.toString(),
+  //       currency: FlutterwaveCurrency.NGN,
+  //       context: this.context,
+  //       publicKey: dotenv.env["FLUTTER_PUBLIC_API_KEY"] ?? "",
+  //       encryptionKey: dotenv.env["ENCRYPTION_KEY"] ?? "",
+  //       email: Provider.of<User>(context, listen: false).email ?? "",
+  //       fullName: Provider.of<User>(context, listen: false).displayName ?? "",
+  //       txRef: DateTime.now().toIso8601String(),
+  //       narration: "Payment for ${widget.subservice!.name} service",
+  //       isDebugMode: false,
+  //       phoneNumber:
+  //           Provider.of<ProfileProvider>(context, listen: false).profile.phone,
+  //       acceptAccountPayment: true,
+  //       acceptCardPayment: true,
+  //       acceptUSSDPayment: true);
+  //   final response = await flutterwave.initializeForUiPayments();
+  //   if (response != null) {
+  //     print(response);
+  //     _handleWalletPayment(1, amount);
+  //   } else {
+  //     ShowSnackBar(response.message ?? "", false);
+  //   }
+  // }
 
   Widget _buildSubmitButton() {
     final amount = widget.subservice!.hasTask
@@ -961,9 +961,11 @@ class _PaymentServiceScreenState extends State<PaymentServiceScreen> {
                                     Icons.plumbing_rounded,
                                     color: Theme.of(context).accentColor,
                                   ),
-                                  Text(widget.subservice!.hasTask
-                                      ? widget.task!.name
-                                      : widget.subservice!.name),
+                                  Expanded(
+                                    child: Text(widget.subservice!.hasTask
+                                        ? widget.task!.name
+                                        : widget.subservice!.name),
+                                  ),
                                 ],
                               ),
                               SizedBox(

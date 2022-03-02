@@ -17,6 +17,7 @@ import 'package:intechpro/screens/customer_requests_screen.dart';
 import 'package:intechpro/screens/forgot_password_screen.dart';
 import 'package:intechpro/screens/home_screen.dart';
 import 'package:intechpro/screens/login_screen.dart';
+import 'package:intechpro/screens/not_verified_screen.dart';
 import 'package:intechpro/screens/onboarding_screen.dart';
 import 'package:intechpro/screens/register_screen.dart';
 import 'package:intechpro/screens/registration_succes_screen.dart';

@@ -104,140 +104,140 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+//   Future<void> mainInit() async {
+//     setState(() {
+//       _isLoading = true;
+//     });
+//     print("heieo");
+//     print(_request);
+
+// // QuerySnapshot data = await  FirebaseFirestore.instance.collection("requests").where("artisans.",isEqualTo:serviceId )
+// //        .where("subServiceId",isEqualTo:subServiceId )
+// //         .where("active",isEqualTo:true )
+// //        .get();
+
+//     print(Provider.of<User>(context, listen: false).uid);
+//     _dbRef = FirebaseDatabase.instance.ref("queue");
+//     DataSnapshot event = await _dbRef
+//      //.orderByValue()
+//     //.orderByKey()
+//         .orderByChild("artisan/uid")
+        
+//         .equalTo(Provider.of<User>(context, listen: false).uid)
+//         .get();
+//     //_dbRef.child("request/${Provider.of<User>(context,listen:false).uid}");
+
+//     // _requestSubscription = _dbRef.onValue.listen((DatabaseEvent event) {
+//     // DatabaseEvent event=await _dbRef.once();
+//     print("poas##");
+//     print(event.value);
+
+//     Map<dynamic, dynamic> data = event.value as Map<dynamic, dynamic>;
+//     // List respList=values.entries.map(( key,entry){
+
+//     // }).toList();
+//     //   print("mop3#o##");
+//     //  print(data.values);
+//     setState(() {
+//       _isLoading = false;
+//       _request = [];
+//     });
+//     if (event.value != null && data.values.isNotEmpty) {
+//       print("her##");
+//       List _newArray=[];
+//       //  print(values["request"]);
+//       setState(() {
+//         // _isLoading = false;
+//         _error = null;
+        
+//         //final reversMap=LinkedHashMap.fromEntries(data.values.toList().reversed);
+//         data.values.forEach((value) {
+//           print("postdat");
+//           print(value);
+//           // print(key);
+//           _newArray.add(value);
+//         });
+//         // for (var value in event.snapshot.value) {
+//         //   _request.add(value);
+//         // }
+
+//         print("list data#");
+//         print(_newArray);
+//         for (var i = _newArray.length-1; i >=0 ; i--) {
+//           print("lko##");
+//           print(i);
+//           print(_newArray[i]);
+//           _request.add(_newArray[i]);
+//         }
+
+//         print(_request);
+
+//         // _request = event.snapshot.value;
+//       });
+//     }
+//     // }, onError: (Object o) {
+//     //   final error = o as FirebaseException;
+//     //   print(error);
+//     //   setState(() {
+//     //     _isLoading = false;
+//     //     _error = error;
+//     //   });
+//     // });
+//   }
+
   Future<void> mainInit() async {
     setState(() {
       _isLoading = true;
     });
-    print("heieo");
+    print("uiid");
     print(_request);
-
-// QuerySnapshot data = await  FirebaseFirestore.instance.collection("requests").where("artisans.",isEqualTo:serviceId )
-//        .where("subServiceId",isEqualTo:subServiceId )
-//         .where("active",isEqualTo:true )
-//        .get();
-
     print(Provider.of<User>(context, listen: false).uid);
-    _dbRef = FirebaseDatabase.instance.ref("queue");
-    DataSnapshot event = await _dbRef
-     //.orderByValue()
-    //.orderByKey()
-        .orderByChild("artisan/uid")
-        
-        .equalTo(Provider.of<User>(context, listen: false).uid)
-        .get();
+    _dbRef = FirebaseDatabase.instance
+        .ref("request/${Provider.of<User>(context, listen: false).uid}");
     //_dbRef.child("request/${Provider.of<User>(context,listen:false).uid}");
 
-    // _requestSubscription = _dbRef.onValue.listen((DatabaseEvent event) {
-    // DatabaseEvent event=await _dbRef.once();
-    print("poas##");
-    print(event.value);
+    _requestSubscription = _dbRef.onValue.listen((DatabaseEvent event) {
+      print("aboutDB#");
+      print(event.snapshot.value);
+      Map<dynamic, dynamic> values =
+          event.snapshot.value as Map<dynamic, dynamic>;
+      // List respList=values.entries.map(( key,entry){
 
-    Map<dynamic, dynamic> data = event.value as Map<dynamic, dynamic>;
-    // List respList=values.entries.map(( key,entry){
-
-    // }).toList();
-    //   print("mop3#o##");
-    //  print(data.values);
-    setState(() {
-      _isLoading = false;
-      _request = [];
-    });
-    if (event.value != null && data.values.isNotEmpty) {
-      print("her##");
-      List _newArray=[];
-      //  print(values["request"]);
+      // }).toList();
       setState(() {
-        // _isLoading = false;
-        _error = null;
-        
-        //final reversMap=LinkedHashMap.fromEntries(data.values.toList().reversed);
-        data.values.forEach((value) {
-          print("postdat");
-          print(value);
-          // print(key);
-          _newArray.add(value);
-        });
-        // for (var value in event.snapshot.value) {
-        //   _request.add(value);
-        // }
-
-        print("list data#");
-        print(_newArray);
-        for (var i = _newArray.length-1; i >=0 ; i--) {
-          print("lko##");
-          print(i);
-          print(_newArray[i]);
-          _request.add(_newArray[i]);
-        }
-
-        print(_request);
-
-        // _request = event.snapshot.value;
+        _isLoading = false;
+        _request = [];
       });
-    }
-    // }, onError: (Object o) {
-    //   final error = o as FirebaseException;
-    //   print(error);
-    //   setState(() {
-    //     _isLoading = false;
-    //     _error = error;
-    //   });
-    // });
+      if (values!= null && values.isNotEmpty) {
+        print("her##");
+        print(values["request"]);
+        setState(() {
+          _isLoading = false;
+          _error = null;
+          values.forEach((key, value) {
+            print("postdat");
+            print(value);
+            print(key);
+            _request.add(value);
+          });
+          // for (var value in event.snapshot.value) {
+          //   _request.add(value);
+          // }
+          print("list data#");
+          print(_request);
+
+          // _request = event.snapshot.value;
+        });
+      }
+    }, onError: (Object o) {
+      final error = o as FirebaseException;
+      print(error);
+      setState(() {
+        _isLoading = false;
+        _error = error;
+      });
+    });
   }
-
-  // Future<void> mainInit() async {
-  //   setState(() {
-  //     _isLoading = true;
-  //   });
-  //   print("uiid");
-  //   print(_request);
-  //   print(Provider.of<User>(context, listen: false).uid);
-  //   _dbRef = FirebaseDatabase.instance
-  //       .ref("request/${Provider.of<User>(context, listen: false).uid}");
-  //   //_dbRef.child("request/${Provider.of<User>(context,listen:false).uid}");
-
-  //   _requestSubscription = _dbRef.onValue.listen((DatabaseEvent event) {
-  //     print("aboutDB#");
-  //     print(event.snapshot.value);
-  //     Map<dynamic, dynamic> values =
-  //         event.snapshot.value as Map<dynamic, dynamic>;
-  //     // List respList=values.entries.map(( key,entry){
-
-  //     // }).toList();
-  //     setState(() {
-  //       _isLoading = false;
-  //       _request = [];
-  //     });
-  //     if (values.isNotEmpty) {
-  //       print("her##");
-  //       print(values["request"]);
-  //       setState(() {
-  //         _isLoading = false;
-  //         _error = null;
-  //         values.forEach((key, value) {
-  //           print("postdat");
-  //           print(value);
-  //           print(key);
-  //           _request.add(value);
-  //         });
-  //         // for (var value in event.snapshot.value) {
-  //         //   _request.add(value);
-  //         // }
-  //         print("list data#");
-  //         print(_request);
-
-  //         // _request = event.snapshot.value;
-  //       });
-  //     }
-  //   }, onError: (Object o) {
-  //     final error = o as FirebaseException;
-  //     print(error);
-  //     setState(() {
-  //       _isLoading = false;
-  //       _error = error;
-  //     });
-  //   });
-  // }
 
   @override
   void dispose() {
@@ -426,15 +426,16 @@ class _HomeScreenState extends State<HomeScreen> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Text(
-                                          _newRequest["service_name"],
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold),
+                                        Expanded(
+                                          child: Text(
+                                            _newRequest["service_name"],
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold),
+                                          ),
                                         ),
                                         Text(
                                             currency.symbol +
-                                                _newRequest["amount"]
-                                                    .toString(),
+                                                (_newRequest["userType"]==3 && _newRequest["requestStatus"]==1?_newRequest["amountForDistance"].toString() : _newRequest["amount"].toString()),
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold))
                                       ],

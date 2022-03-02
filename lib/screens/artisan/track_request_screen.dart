@@ -319,7 +319,7 @@ class _TrackRequestScreenState extends State<TrackRequestScreen> {
                                                               title: Text(
                                                                   "Message"),
                                                               content: Text(
-                                                                    _request["paymentMode"]<3?"Pay will be transfered to your wallet soon.":"Client will pay you the required fee."),
+                                                                    _request["paymentMode"]<3?"Pay will be transfered to your wallet soon as customer confirms.":"Client will pay you the required fee."),
                                                               actions: <Widget>[
                                                                 TextButton(
                                                                   onPressed:
@@ -521,7 +521,7 @@ class _TrackRequestScreenState extends State<TrackRequestScreen> {
                           _buildClientInfo("Service", _request["service_name"]),
                           Text(" | "),
                           _buildClientInfo("Amount",
-                              currency.symbol + _request["userType"]==3 && _request["requestStatus"]==1?_request["amountForDistance"].toString() : _request["amount"].toString()),
+                              currency.symbol + (_request["userType"]==3 && _request["requestStatus"]<=3?_request["amountForDistance"].toString() : _request["amount"].toString())),
                         ],
                       ),
                     ),
@@ -534,7 +534,7 @@ class _TrackRequestScreenState extends State<TrackRequestScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          PaymentMethodSection(paymentMethod: _request["paymentMethod"]),
+                          PaymentMethodSection(paymentMethod: _request["paymentMode"]),
                           Text(" | "),
                           _request["userType"]==3? _buildClientInfo("No. of Trips", _request["selected_trip"].toString()):Container()
                          

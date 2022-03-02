@@ -51,9 +51,9 @@ class _LoginScreenState extends State<LoginScreen> {
     });
     if (data["status"]) {
       print("success");
-       Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(builder: (_) => HomeScreen()),
-                      );
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => HomeScreen()),
+      );
     } else {
       // ignore: deprecated_member_use
       ShowSnackBar(data["message"], false);
@@ -67,7 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
         ? CircularProgressIndicator(
             valueColor:
                 AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
-                )
+          )
         : Container(
             height: 50.0,
             width: double.infinity,
@@ -125,7 +125,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: 50.0,
                   ),
                   TextFormField(
-                    controller: _emailController,
+                      controller: _emailController,
                       validator: (value) {
                         if (value == "") {
                           return "Please Enter Email";
@@ -140,7 +140,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             color: Color(0xff52575C),
                           ),
                           focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color:Theme.of(context).accentColor)),
+                              borderSide: BorderSide(
+                                  color: Theme.of(context).accentColor)),
                           enabledBorder: OutlineInputBorder(
                               borderSide:
                                   BorderSide(color: Color(0xff52575C)))),
@@ -175,14 +176,13 @@ class _LoginScreenState extends State<LoginScreen> {
                         labelStyle: TextStyle(color: Color(0xff52575C)),
                         prefixIcon: Icon(
                           Icons.lock_outline,
-                          color:Color(0xff52575C),
+                          color: Color(0xff52575C),
                         ),
                         focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Theme.of(context).accentColor)),
+                            borderSide: BorderSide(
+                                color: Theme.of(context).accentColor)),
                         enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: Color(0xff52575C)))),
-                 
-                 
                   ),
                   SizedBox(
                     height: 40.0,
@@ -195,7 +195,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      TextButton( child:Text("Forgot Password?"),onPressed: ()=>Navigator.pushNamed(context, "/forgot_password"),),
+                      TextButton(
+                        child: Text("Forgot Password?"),
+                        onPressed: () =>
+                            Navigator.pushNamed(context, "/forgot_password"),
+                      ),
                       GestureDetector(
                           onTap: () =>
                               Navigator.pushNamed(context, "/register"),

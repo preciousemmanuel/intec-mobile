@@ -14,6 +14,9 @@ class Profile {
   bool expired;
   bool hasSubscribed;
   bool active;
+  bool blocked;
+  bool verified;
+
 
   Profile(
       {required this.name,
@@ -30,7 +33,9 @@ class Profile {
       this.active=true,
       this.expired=false,
       this.hasSubscribed=false,
-      this.state
+      this.state,
+      this.blocked=false,
+      this.verified=false
 
       
       });

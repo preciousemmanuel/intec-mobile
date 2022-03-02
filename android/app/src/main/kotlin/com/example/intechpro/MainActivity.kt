@@ -1,4 +1,4 @@
-package com.example.intechpro
+package com.intechpro
 
 import io.flutter.embedding.android.FlutterActivity
 

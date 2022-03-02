@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intechpro/model/wallet.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'dart:convert';
 import 'dart:io';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -161,8 +160,8 @@ Future<Map<String,dynamic>> initiatePaystackTransfer(amount,recipient,reason)asy
 Future<Map<String,dynamic>> withdrawFromWallet(double amount,String account_bank,account_number,String name)async{
 amount=amount.toDouble();
 
-if (amount<1000) {
-  return {"status":false,"message":"Withdrawable wallet amount must be at least 1000 NGN. "};
+if (amount<100) {
+  return {"status":false,"message":"Withdrawable wallet amount must be at least 100 NGN. "};
 }
 try {
   var user =  FirebaseAuth.instance.currentUser;
@@ -198,11 +197,7 @@ http.Response response = await http.post(Uri.parse("https://api.paystack.co/tran
   "name":name,
   "bank_code": account_bank,
     "account_number": account_number,
-    
-    
     "currency": "NGN",
-   
-    
 }),headers:{
     "Content-Type": "application/json",
     "Authorization":"Bearer ${dotenv.env["PAYSTACK_SECRET_API_KEY"]}"
@@ -244,18 +239,10 @@ double totalAmount=wallet-amount;
     } else {
     return {"status":false,"message":transResp["message"]};
     }
- 
-    
 
   } else {
     return {"status":false,"message":"Cannot process payment now"};
-
   }
-
-
-
-
-
 
 } catch (e) {
   print("serverErro#");
