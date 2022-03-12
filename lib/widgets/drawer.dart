@@ -4,6 +4,8 @@ import 'package:intechpro/providers/profile_provider.dart';
 import 'package:intechpro/screens/home_screen.dart';
 import 'package:intechpro/screens/update_profile_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
+import '../../config.dart';
 
 class AppDrawer extends StatelessWidget {
   String displayName;
@@ -76,40 +78,52 @@ class AppDrawer extends StatelessWidget {
         children: [
           Column(
             children: [
-          _createHeader(context),
-          _createDrawerItem(
-            icon: Icons.home,
-            text: "Home",
-            onTap: () => Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(
-                    builder: (BuildContext context) => HomeScreen()),
-                (Route<dynamic> route) => false),
-          ),
-          Divider(),
-          _createDrawerItem(
-            icon: Icons.request_quote,
-            text: "My Requests",
-            onTap: () => Navigator.pushNamed(context, "/customer_requests"),
-          ),
-          Divider(),
-          _createDrawerItem(
-              icon: Icons.money_outlined,
-              text: "Wallet",
-              onTap: () => Navigator.pushNamed(context, "/wallet")),
-          Divider(),
-          _createDrawerItem(icon: Icons.person, text: "Profile",onTap: ()=>Navigator.of(context).push(
-                              MaterialPageRoute(
-                                  builder: (_) => UpdateProfileScreen()),
-                            )),
-          Divider(),
-          _createDrawerItem(
-              icon: Icons.logout,
-              text: "Log out",
-              onTap: () async {
-                await FirebaseAuth.instance.signOut();
-                Provider.of<ProfileProvider>(context, listen: false).signout();
-                Navigator.pushNamedAndRemoveUntil(context, "/login", (Route<dynamic> route) => false);
-              }),
+              _createHeader(context),
+              _createDrawerItem(
+                icon: Icons.home,
+                text: "Home",
+                onTap: () => Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(
+                        builder: (BuildContext context) => HomeScreen()),
+                    (Route<dynamic> route) => false),
+              ),
+              Divider(),
+              _createDrawerItem(
+                icon: Icons.request_quote,
+                text: "My Requests",
+                onTap: () => Navigator.pushNamed(context, "/customer_requests"),
+              ),
+              Divider(),
+              _createDrawerItem(
+                  icon: Icons.money_outlined,
+                  text: "Wallet",
+                  onTap: () => Navigator.pushNamed(context, "/wallet")),
+              Divider(),
+              _createDrawerItem(
+                  icon: Icons.person,
+                  text: "Profile",
+                  onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (_) => UpdateProfileScreen()),
+                      )),
+              Divider(),
+              _createDrawerItem(
+                  icon: Icons.call,
+                  text: "Any Issues? Contact us",
+                  onTap: () {
+                    launch("tel://${contact_support}");
+                  }),
+              Divider(),
+              _createDrawerItem(
+                  icon: Icons.logout,
+                  text: "Log out",
+                  onTap: () async {
+                    await FirebaseAuth.instance.signOut();
+                    Provider.of<ProfileProvider>(context, listen: false)
+                        .signout();
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, "/login", (Route<dynamic> route) => false);
+                  }),
             ],
           ),
           SizedBox(

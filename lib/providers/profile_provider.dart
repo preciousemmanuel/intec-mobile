@@ -43,6 +43,33 @@ class ProfileProvider with ChangeNotifier {
     return true;
   }
 
+
+   Future<Map<String, dynamic>> fetch_subcription_amount() async {
+    try {
+      
+      _is_loading = true;
+      notifyListeners();
+      CollectionReference subRef = FirebaseFirestore.instance.collection("subcription");
+
+      DocumentSnapshot subData = await subRef.doc("qOoagbgE66qT8v4oJ2I8").get();
+      print(subData.get("amount"));
+      print("fetucwe##");
+      
+
+      print("##for##c");
+      _is_loading = false;
+      notifyListeners();
+       return {"status": true,"data":subData.get("amount")};
+   
+    } on FirebaseException catch (e) {
+      print("ëee##");
+      print(e.message);
+      _is_loading = false;
+      notifyListeners();
+      return {"status": false, "message": "Failed to fetch user"};
+    }
+  }
+
   Future<Map<String, dynamic>> fetch_user() async {
     try {
       var user = FirebaseAuth.instance.currentUser;

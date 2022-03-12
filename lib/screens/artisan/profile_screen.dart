@@ -10,6 +10,8 @@ import 'package:intechpro/providers/customer_wallet_provider.dart';
 import 'package:intechpro/providers/profile_provider.dart';
 import 'package:intechpro/screens/update_profile_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
+import '../../config.dart';
 import 'package:intechpro/model/currency.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -123,8 +125,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               Divider(),
               ListTile(
+                onTap: (){
+                  launch("tel://${contact_support}");
+                },
                 leading: Icon(Icons.info,color: Theme.of(context).accentColor),
-                title: Text("About Us"),
+                title: Text("Issues? Contact Us"),
               ),
               Divider(),
               ListTile(

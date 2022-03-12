@@ -598,8 +598,11 @@ class _RequestStatusScreenState extends State<RequestStatusScreen> {
                                                               return AlertDialog(
                                                                 title: Text(
                                                                     "Message"),
-                                                                content: Text(
-                                                                    _request["paymentMode"]<3?"You have successfully approved the payment request.":"Rating sent Successfull! Pay the cash for the service done."),
+                                                                content: Text(_request[
+                                                                            "paymentMode"] <
+                                                                        3
+                                                                    ? "You have successfully approved the payment request."
+                                                                    : "Rating sent Successfull! Pay the cash for the service done."),
                                                                 actions: <
                                                                     Widget>[
                                                                   TextButton(
@@ -747,12 +750,14 @@ class _RequestStatusScreenState extends State<RequestStatusScreen> {
                                                 .isSubmitting
                                             ? Align(
                                                 alignment: Alignment.center,
-                                                child: CircularProgressIndicator(
-                                                    valueColor:
-                                                        AlwaysStoppedAnimation<
-                                                                Color>(
-                                                            Theme.of(context)
-                                                                .primaryColor)),
+                                                child:
+                                                    CircularProgressIndicator(
+                                                  valueColor:
+                                                      AlwaysStoppedAnimation<
+                                                              Color>(
+                                                          Theme.of(context)
+                                                              .primaryColor),
+                                                ),
                                               )
                                             : Container(
                                                 height: 40.0,
