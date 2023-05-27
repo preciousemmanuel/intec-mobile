@@ -7,6 +7,7 @@ import 'package:intechpro/model/sub_service.dart';
 import 'package:intechpro/model/task.dart';
 import 'package:intechpro/providers/service_provider.dart';
 import 'package:intechpro/screens/request_service_screen.dart';
+import 'package:intechpro/screens/supplier_products.dart';
 import 'package:intechpro/widgets/service_card.dart';
 import 'package:intechpro/widgets/service_other_card.dart';
 import 'package:intechpro/widgets/service_other_card_home.dart';
@@ -38,11 +39,13 @@ class _TaskServiceScreen extends State<TaskServiceScreen> {
     });
   }
 
-  void onhandleTap(Task task,index) {
+  void onhandleTap(Task task, index) {
     print("sher@##");
     if (widget.parentService!.userType == 4) {
       //supplier just take them to call supplier
-      launch("tel://${task.phone}");
+      // launch("tel://${task.phone}");
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (_) => SupplierProductScreen(service: task)));
     } else {
       print(task.uid);
       if (task.cost == 0) {
@@ -51,11 +54,11 @@ class _TaskServiceScreen extends State<TaskServiceScreen> {
             builder: (context) {
               return AlertDialog(
                 title: Text("Could not find task?"),
-                content: Text("Request Assessment with Repairs and pay " +
-                    widget.service.name +
-                    " daily rate of " +
-                    currency.symbol +
-                    widget.service.cost.toString()),
+                content: Text(
+                    "Request Assessment with Repairs and pay an all-inclusive cost of " +
+                        currency.symbol +
+                        widget.service.cost.toString() +
+                        " comprising 75% of ${widget.service.cost.toString()} as artisan's daily work rate and 25% of ${widget.service.cost.toString()} as  non-refundable fee for job assessment done or exigencies for cancelled/rebooked appointments."),
                 actions: <Widget>[
                   TextButton(
                       onPressed: () {
@@ -83,7 +86,7 @@ class _TaskServiceScreen extends State<TaskServiceScreen> {
               );
             });
       } else {
-         context.read<ServiceProvider>().selectedTask(index);
+        context.read<ServiceProvider>().selectedTask(index);
         // Navigator.of(context).push(MaterialPageRoute(
         //     builder: (_) => RequestServiceScreen(
         //           subService: widget.service,
@@ -93,8 +96,6 @@ class _TaskServiceScreen extends State<TaskServiceScreen> {
       }
     }
   }
-
- 
 
   @override
   Widget build(BuildContext context) {
@@ -112,53 +113,82 @@ class _TaskServiceScreen extends State<TaskServiceScreen> {
         ),
         backgroundColor: Colors.white,
         title: Text(
-          widget.service.name+"(${context.watch<ServiceProvider>().getSelectedTasks.length})",
+          widget.service.name +
+              "(${context.watch<ServiceProvider>().getSelectedTasks.length})",
           style: TextStyle(color: Colors.black),
         ),
         actions: [
-          context.watch<ServiceProvider>().getSelectedTasks.length>0?
-          TextButton(onPressed: (){
+          context.watch<ServiceProvider>().getSelectedTasks.length > 0
+              ? TextButton(
+                  onPressed: () {
+                    String taskname = "";
+                    int cost = 0;
+                    for (var i = 0;
+                        i <
+                            Provider.of<ServiceProvider>(context, listen: false)
+                                .getSelectedTasks
+                                .length;
+                        i++) {
+                      Task e =
+                          Provider.of<ServiceProvider>(context, listen: false)
+                              .getSelectedTasks[i];
+                      print("hko##");
+                      print(e.cost);
+                      print(e.name);
+                      taskname +=
+                          e.name + " x " + e.numberSelected.toString() + "; ";
+                      cost += e.cost * e.numberSelected!.toInt();
+                    }
 
-            
-            String taskname="";
-            int cost =0;
-            for (var i = 0; i < Provider.of<ServiceProvider>(context, listen: false).getSelectedTasks.length; i++) {
-              Task e=Provider.of<ServiceProvider>(context, listen: false).getSelectedTasks[i];
-              print("hko##");
-              print(e.cost);
-              print(e.name);
-              taskname+=e.name+" x "+e.numberSelected.toString()+"; ";
-              cost+=e.cost * e.numberSelected!.toInt();
-            }
+                    Task task = new Task(
+                        name: taskname,
+                        cost: cost,
+                        uid: "",
+                        visible: true,
+                        subServiceId: widget.service.uid,
+                        serviceId: widget.parentService!.uid);
 
-            Task task=new Task(name: taskname,cost: cost,uid: "",visible: true,subServiceId:widget.service.uid,serviceId:widget.parentService!.uid  );
-           
+                    print("doiet#");
+                    print(taskname);
+                    print(cost);
 
-            print("doiet#");
-            print(taskname);
-            print(cost);
-
-             Navigator.of(context).push(MaterialPageRoute(
-            builder: (_) => RequestServiceScreen(
-                  subService: widget.service,
-                  task: task,
-                  parentService: widget.parentService,
-                )));
-          }, child: Text("Next",style: TextStyle(color: Theme.of(context).primaryColor),)):Container(),
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (_) => RequestServiceScreen(
+                              subService: widget.service,
+                              task: task,
+                              parentService: widget.parentService,
+                            )));
+                  },
+                  child: Text(
+                    "Next",
+                    style: TextStyle(color: Theme.of(context).primaryColor),
+                  ))
+              : Container(),
           widget.parentService!.userType == 4
               ? IconButton(
                   onPressed: () {
                     showModalBottomSheet(
                         context: context,
                         builder: (context) {
-                          return Container(child: Padding(padding: EdgeInsets.all(20),child:Column(
-                            children: [
-                              SizedBox(height: 10,),
-                              Text("Here is a Price guide for ${widget.service.name}",style:TextStyle(fontWeight: FontWeight.bold)),
-                              Divider(),
-                              Expanded(child: Text(widget.service.price_guide??"No Price Guide Yet!"))
-                            ],
-                          ) ,));
+                          return Container(
+                              child: Padding(
+                            padding: EdgeInsets.all(20),
+                            child: Column(
+                              children: [
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Text(
+                                    "Here is a Price guide for ${widget.service.name}",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold)),
+                                Divider(),
+                                Expanded(
+                                    child: Text(widget.service.price_guide ??
+                                        "No Price Guide Yet!"))
+                              ],
+                            ),
+                          ));
                         });
                   },
                   icon: Icon(
@@ -229,30 +259,39 @@ class _TaskServiceScreen extends State<TaskServiceScreen> {
                               Task task = context
                                   .watch<ServiceProvider>()
                                   .getTasks[index];
-                              return  widget.parentService!.userType == 4?ServiceOtherCard(
-                                isSelected:context
-                                  .watch<ServiceProvider>()
-                                  .getTasks[index].isSelected ,
-                                  type: "subservice",
-                                 // onLongPress:()=> onhandleLongTap(index),
-                                  onTap: () => onhandleTap(task,index),
-                                  service: task) : ServiceOtherCardHome(
-                                    indexCount: index,
-                                    numberTask:context
-                                  .watch<ServiceProvider>()
-                                  .getTasks[index].numberSelected??1,
-                                isSelected:context
-                                  .watch<ServiceProvider>()
-                                  .getTasks[index].isSelected ,
-                                  type: "subservice",
-                                 // onLongPress:()=> onhandleLongTap(index),
-                                  onTap: () => onhandleTap(task,index),
-                                  service: task);
+                              return widget.parentService!.userType == 4
+                                  ? ServiceOtherCard(
+                                      isSelected: context
+                                          .watch<ServiceProvider>()
+                                          .getTasks[index]
+                                          .isSelected,
+                                      type: "subservice",
+                                      // onLongPress:()=> onhandleLongTap(index),
+                                      onTap: () => onhandleTap(task, index),
+                                      service: task)
+                                  : ServiceOtherCardHome(
+                                      indexCount: index,
+                                      numberTask: context
+                                              .watch<ServiceProvider>()
+                                              .getTasks[index]
+                                              .numberSelected ??
+                                          1,
+                                      isSelected: context
+                                          .watch<ServiceProvider>()
+                                          .getTasks[index]
+                                          .isSelected,
+                                      type: "subservice",
+                                      // onLongPress:()=> onhandleLongTap(index),
+                                      onTap: () => onhandleTap(task, index),
+                                      service: task);
                             },
                             // crossAxisCount: 3,
                           ),
                         ),
-                      ), SizedBox(height: 80,)
+                      ),
+                SizedBox(
+                  height: 80,
+                )
               ],
             ),
           ),

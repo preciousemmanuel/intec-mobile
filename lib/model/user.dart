@@ -11,6 +11,8 @@ class Profile {
   bool? busy;
   String address;
   String? state;
+  String? imageUrl;
+
   bool expired;
   bool hasSubscribed;
   bool active;
@@ -29,6 +31,7 @@ class Profile {
       this.serviceId = "",
       this.subServiceId = "",
       this.address = "",
+      this.imageUrl="",
       this.busy,
       this.active=true,
       this.expired=false,

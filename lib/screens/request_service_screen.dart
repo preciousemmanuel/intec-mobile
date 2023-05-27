@@ -209,8 +209,15 @@ class _RequestServiceScreenState extends State<RequestServiceScreen> {
     print(coord);
     var result = await googGeocoding.geocoding.getReverse(coord);
     print("opi##");
-    print(result!.results![0].formattedAddress);
-    return "${result.results![0].formattedAddress}";
+    print(result!.results);
+    
+    if (result.results!.length>0) {
+      print(result.results![0].formattedAddress);
+      return "${result.results![0].formattedAddress}";
+    }
+    return "";
+    
+    
     //return "${address.streetAddress}, ${address.city}, ${address.countryName}, ";
   }
 
@@ -333,7 +340,7 @@ var amount=widget.subService.hasTask
       content: Text(title),
       backgroundColor: status ? Colors.green : Colors.red,
     );
-    scaffoldkey.currentState!.showSnackBar(snackbar);
+    ScaffoldMessenger.of(context).showSnackBar(snackbar);
   }
 
   handleShowSearchScreen(bool ispickuptype) async {

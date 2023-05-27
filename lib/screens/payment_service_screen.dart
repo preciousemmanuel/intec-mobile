@@ -1,16 +1,16 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:flutterwave/flutterwave.dart';
-import 'package:intechpro/config.dart';
+// import 'package:flutterwave/flutterwave.dart';
 import 'dart:async';
 import 'package:intechpro/model/currency.dart';
 import 'package:intechpro/model/service.dart';
 import 'package:intechpro/model/sub_service.dart';
 import 'package:intechpro/model/task.dart';
 import 'package:intechpro/providers/customer_wallet_provider.dart';
-import 'package:intechpro/providers/profile_provider.dart';
+
 import 'package:intechpro/providers/service_payment_provider.dart';
+import 'package:intechpro/providers/settings_provider.dart';
 import 'package:intechpro/screens/home_screen.dart';
 import 'package:intechpro/screens/request_status_screen.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -18,8 +18,8 @@ import 'package:intechpro/widgets/artisan_detail_section.dart';
 import 'package:intechpro/widgets/pay_stack.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:sweetalert/sweetalert.dart';
-import 'dart:io';
+// import 'package:sweetalert/sweetalert.dart';
+
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_paystack/flutter_paystack.dart';
@@ -72,6 +72,7 @@ class _PaymentServiceScreenState extends State<PaymentServiceScreen> {
   void initState() {
     super.initState();
     init();
+    getCompanyInterest();
     plugin.initialize(publicKey: dotenv.env["PAYSTACK_PUBLIC_API_KEY"] ?? "");
     _trip_cost = widget.subservice!.hasTask
         ? widget.task!.cost == 0
@@ -82,6 +83,12 @@ class _PaymentServiceScreenState extends State<PaymentServiceScreen> {
     for (var i = 1; i <= 100; i++) {
       _trips.add(i);
     }
+  }
+
+  void getCompanyInterest() async {
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+      Provider.of<SettingProvider>(context, listen: false).fetch_setting();
+    });
   }
 
   Future<void> init() async {
@@ -126,7 +133,8 @@ class _PaymentServiceScreenState extends State<PaymentServiceScreen> {
       content: Text(title),
       backgroundColor: status ? Colors.green : Colors.red,
     );
-    scaffoldkey.currentState!.showSnackBar(snackbar);
+    ScaffoldMessenger.of(context).showSnackBar(snackbar);
+    
   }
 
   // String _getReference() {
@@ -319,27 +327,37 @@ class _PaymentServiceScreenState extends State<PaymentServiceScreen> {
         ? Align(
             alignment: Alignment.center,
             child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(
-                    Theme.of(context).primaryColor)),
+              valueColor:
+                  AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
+            ),
           )
         : Container(
             height: 50.0,
             width: double.infinity,
             child: ElevatedButton(
               onPressed: () {
-                setState(() {
-                  _isProcessingPayment = true;
-                });
+                // setState(() {
+                //   _isProcessingPayment = true;
+                // });
                 if (_paymentMethodType == 1) {
                   //handle card payment
-
+                  setState(() {
+                    _isProcessingPayment = true;
+                  });
                   chargeCard(context, _trip_cost, 1, 0);
                 } else if (_paymentMethodType == 2) {
                   //handle wallet payment
+                  setState(() {
+                    _isProcessingPayment = true;
+                  });
                   _handleWalletPayment(2, _trip_cost);
                 } else if (_paymentMethodType == 3) {
                   //pay with cash
-                  var amountToPay = 20 / 100 * _trip_cost;
+                  int company_percent =
+                      Provider.of<SettingProvider>(context, listen: false)
+                          .setting
+                          .company_interest;
+                  var amountToPay = company_percent / 100 * _trip_cost;
                   var amountCash = _trip_cost - amountToPay;
 
                   showDialog(
@@ -365,8 +383,90 @@ class _PaymentServiceScreenState extends State<PaymentServiceScreen> {
                             TextButton(
                               onPressed: () {
                                 Navigator.pop(contextx);
-                                chargeCard(context, amountToPay.toInt(), 3,
-                                    amountCash.toInt());
+                                showModalBottomSheet(
+                                    context: context,
+                                    builder: (context) {
+                                      return Container(
+                                        child: Padding(
+                                          padding: EdgeInsets.all(20),
+                                          child: Column(
+                                            children: [
+                                              SizedBox(
+                                                height: 10,
+                                              ),
+                                              Text(
+                                                "Choose Payment Method",
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              Divider(),
+                                              SizedBox(
+                                                height: 20,
+                                              ),
+                                              ListTile(
+                                                onTap: 
+                                                        _isProcessingPayment
+                                                    ? () {}
+                                                    : () {
+                                                      setState(() {
+                                                          _isProcessingPayment =
+                                                              true;
+                                                        });
+                                                        chargeCard(
+                                                            context,
+                                                            amountToPay.toInt(),
+                                                            3,
+                                                            amountCash.toInt());
+                                                      },
+                                                title: Text(
+                                                  context
+                                                              .watch<
+                                                                  ServicePaymentProvider>()
+                                                              .isSubmitting ||
+                                                          _isProcessingPayment
+                                                      ? "Please wait"
+                                                      : "Pay with card",
+                                                  style: TextStyle(
+                                                      color: Theme.of(context)
+                                                          .primaryColor),
+                                                ),
+                                              ),
+                                              Divider(),
+                                              ListTile(
+                                                onTap: context
+                                                            .watch<
+                                                                ServicePaymentProvider>()
+                                                            .isSubmitting ||
+                                                        _isProcessingPayment
+                                                    ? () {}
+                                                    : () {
+                                                        // setState(() {
+                                                        //   _isProcessingPayment =
+                                                        //       true;
+                                                        // });
+                                                        
+                                                        _handleWalletPayment(
+                                                            3, amountToPay);
+                                                      },
+                                                title: Text(
+                                                  context
+                                                              .watch<
+                                                                  ServicePaymentProvider>()
+                                                              .isSubmitting ||
+                                                          _isProcessingPayment
+                                                      ? "Please Wait... Processing wallet payment."
+                                                      : "Pay with wallet",
+                                                  style: TextStyle(
+                                                      color: Theme.of(context)
+                                                          .primaryColor),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    });
                               },
                               child: Text(
                                 'Continue',
@@ -415,12 +515,13 @@ class _PaymentServiceScreenState extends State<PaymentServiceScreen> {
   }
 
   Widget _buildCancelButton() {
-    return Column(
-      children:[
-        SizedBox(height: 60,),
-       Container(
+    return Column(children: [
+      SizedBox(
+        height: 60,
+      ),
+      Container(
         height: 45.0,
-        width: MediaQuery.of(context).size.width/2,
+        width: MediaQuery.of(context).size.width / 2,
         // decoration: BoxDecoration(
         //   border: Border.all(color: Theme.of(context).primaryColor,width: 1),
         //   borderRadius: BorderRadius.circular(10)
@@ -431,8 +532,8 @@ class _PaymentServiceScreenState extends State<PaymentServiceScreen> {
             showModalBottomSheet(
                 context: context,
                 builder: (context) {
-                  return StatefulBuilder(
-                      builder: (BuildContext context, StateSetter setSheetState) {
+                  return StatefulBuilder(builder:
+                      (BuildContext context, StateSetter setSheetState) {
                     return Padding(
                       padding: EdgeInsets.symmetric(horizontal: 10),
                       child: ListView(
@@ -452,12 +553,12 @@ class _PaymentServiceScreenState extends State<PaymentServiceScreen> {
                               "1",
                               setSheetState),
                           Divider(),
-                          _buildCancelTile("I dont want to continue request", "2",
-                              setSheetState),
+                          _buildCancelTile("I dont want to continue request",
+                              "2", setSheetState),
                           Divider(),
                           _buildCancelTile(
                               "Request was a mistake", "3", setSheetState),
-    
+
                           Divider(),
                           // CancelTile(title: "", selected: ""),
                           context.watch<ServicePaymentProvider>().isSubmitting
@@ -477,11 +578,12 @@ class _PaymentServiceScreenState extends State<PaymentServiceScreen> {
                                   child: ElevatedButton(
                                     onPressed: () {
                                       if (_selectedCancelOption != "") {
-                                        
                                         context
                                             .read<ServicePaymentProvider>()
-                                            .cancelRequest(_request["order_id"],
-                                                _selectedCancelOption, "customer")
+                                            .cancelRequest(
+                                                _request["order_id"],
+                                                _selectedCancelOption,
+                                                "customer")
                                             .then((value) {
                                           if (value["status"]) {
                                             showDialog(
@@ -489,20 +591,21 @@ class _PaymentServiceScreenState extends State<PaymentServiceScreen> {
                                                 builder: (context) {
                                                   return AlertDialog(
                                                     title: Text("Message"),
-                                                    content: Text("Request Cancelled successfully"),
+                                                    content: Text(
+                                                        "Request Cancelled successfully"),
                                                     actions: <Widget>[
                                                       TextButton(
                                                         onPressed: () {
-                                                          Navigator.pop(context);
-                                                          Navigator.of(context)
-                                                              .pushAndRemoveUntil(
-                                                                  MaterialPageRoute(
-                                                                      builder: (BuildContext
-                                                                              context) =>
-                                                                          HomeScreen()),
-                                                                  (Route<dynamic>
-                                                                          route) =>
-                                                                      false);
+                                                          Navigator.pop(
+                                                              context);
+                                                          Navigator.of(context).pushAndRemoveUntil(
+                                                              MaterialPageRoute(
+                                                                  builder: (BuildContext
+                                                                          context) =>
+                                                                      HomeScreen()),
+                                                              (Route<dynamic>
+                                                                      route) =>
+                                                                  false);
                                                         },
                                                         child: Text(
                                                           'OK',
@@ -526,7 +629,8 @@ class _PaymentServiceScreenState extends State<PaymentServiceScreen> {
                                                     actions: <Widget>[
                                                       TextButton(
                                                         onPressed: () {
-                                                          Navigator.pop(context);
+                                                          Navigator.pop(
+                                                              context);
                                                         },
                                                         child: Text(
                                                           'OK',
@@ -550,7 +654,8 @@ class _PaymentServiceScreenState extends State<PaymentServiceScreen> {
                                     style: ElevatedButton.styleFrom(
                                         shape: StadiumBorder(),
                                         side: BorderSide(
-                                            color: Theme.of(context).accentColor),
+                                            color:
+                                                Theme.of(context).accentColor),
                                         padding: EdgeInsets.symmetric(
                                             horizontal: 15, vertical: 5),
                                         primary: Theme.of(context).accentColor),
@@ -562,9 +667,7 @@ class _PaymentServiceScreenState extends State<PaymentServiceScreen> {
                   });
                 });
           },
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
+          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             Icon(
               Icons.more_sharp,
               color: Theme.of(context).accentColor,
@@ -584,29 +687,38 @@ class _PaymentServiceScreenState extends State<PaymentServiceScreen> {
               primary: Colors.white),
         ),
       ),
-   
-       ] );
+    ]);
   }
 
-  Widget _buildExpiredSection(){
-    return Column(
-      children:[
-        Text("Request is expired . Please reinitiate a new request",style: TextStyle(color: Colors.red),),
-        SizedBox(height: 20,),
-        TextButton(onPressed: ()=>Navigator.of(context).pop(), child: Text("Go Back"))
-      ]
-    );
+  Widget _buildExpiredSection() {
+    return Column(children: [
+      Text(
+        "Request is expired . Please reinitiate a new request",
+        style: TextStyle(color: Colors.red),
+      ),
+      SizedBox(
+        height: 20,
+      ),
+      TextButton(
+          onPressed: () => Navigator.of(context).pop(), child: Text("Go Back"))
+    ]);
   }
 
-  Widget _buildExpirationInfo(){
-    return Row(
-      children: [
-        Icon(Icons.info_sharp,color: Colors.red,),
-        SizedBox(width: 10,),
-       Expanded(child: const Text("Unprocessed Payment cancels after 20mins.",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.red),))
-      ]
-    );
-      
+  Widget _buildExpirationInfo() {
+    return Row(children: [
+      Icon(
+        Icons.info_sharp,
+        color: Colors.red,
+      ),
+      SizedBox(
+        width: 10,
+      ),
+      Expanded(
+          child: const Text(
+        "Unprocessed Payment cancels after 20mins.",
+        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red),
+      ))
+    ]);
   }
 
   Widget _buildShowPaymentSection() {
@@ -672,12 +784,10 @@ class _PaymentServiceScreenState extends State<PaymentServiceScreen> {
         SizedBox(
           height: 30,
         ),
-
         _buildExpirationInfo(),
-         SizedBox(
+        SizedBox(
           height: 20,
         ),
-
         Container(
             height: 450.0,
             width: double.infinity,
@@ -978,29 +1088,34 @@ class _PaymentServiceScreenState extends State<PaymentServiceScreen> {
                     SizedBox(
                       height: 15,
                     ),
-
-                  _request["requestStatus"] == 1?   Container(
- padding: EdgeInsets.symmetric(horizontal: 20,vertical: 20),
-                width: double.infinity,
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(18),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 5,
-                        blurRadius: 7,
-                        offset: const Offset(0, 3),
-                      )
-                    ]),
-                    child: Row(
-                      children: [
-                        Text("Service Cost:",style: TextStyle(fontWeight: FontWeight.bold),),
-                        Text(currency.symbol+_trip_cost.toString())
-                      ],
-                    ),
-                    ):Container(),
-                     SizedBox(
+                    _request["requestStatus"] == 1
+                        ? Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 20),
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(18),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.5),
+                                    spreadRadius: 5,
+                                    blurRadius: 7,
+                                    offset: const Offset(0, 3),
+                                  )
+                                ]),
+                            child: Row(
+                              children: [
+                                Text(
+                                  "Service Cost:",
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                Text(currency.symbol + _trip_cost.toString())
+                              ],
+                            ),
+                          )
+                        : Container(),
+                    SizedBox(
                       height: 20,
                     ),
                     _request["requestStatus"] == 1
@@ -1042,13 +1157,13 @@ class _PaymentServiceScreenState extends State<PaymentServiceScreen> {
                     _request["requestStatus"] == 1
                         ? _buildCancelButton()
                         : Container(),
-
-                        _request["requestStatus"]==2?_buildShowPaymentSection():Container(),
-
-                        _request["requestStatus"]==0?_buildExpiredSection():Container()
-
-
-
+                    _request["requestStatus"] == 2
+                        ? _buildShowPaymentSection()
+                        // Container()
+                        : Container(),
+                    _request["requestStatus"] == 0
+                        ? _buildExpiredSection()
+                        : Container()
                   ]),
           ),
         ),

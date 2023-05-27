@@ -3,9 +3,9 @@ import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterwave/core/flutterwave.dart';
-import 'package:flutterwave/flutterwave.dart';
-import 'package:flutterwave/models/responses/charge_response.dart';
+// import 'package:flutterwave/core/flutterwave.dart';
+// import 'package:flutterwave/flutterwave.dart';
+// import 'package:flutterwave/models/responses/charge_response.dart';
 import 'package:intechpro/config.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intechpro/providers/customer_wallet_provider.dart';
@@ -28,7 +28,8 @@ class WalletScreen extends StatefulWidget {
 class _WalletScreenState extends State<WalletScreen> {
   TextEditingController _amountTextController = new TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final String _currency = FlutterwaveCurrency.NGN;
+  // final String _currency = FlutterwaveCurrency.NGN;
+  final String _currency = "";
   final GlobalKey<ScaffoldState> scaffoldkey = new GlobalKey();
   final plugin = PaystackPlugin();
   bool _isProcessingPayment=false;
@@ -54,7 +55,7 @@ class _WalletScreenState extends State<WalletScreen> {
       content: Text(title),
       backgroundColor: status ? Colors.green : Colors.red,
     );
-    scaffoldkey.currentState!.showSnackBar(snackbar);
+    ScaffoldMessenger.of(context).showSnackBar(snackbar);
   }
 
   void _handleFundSubmit(BuildContext context) async {
@@ -147,54 +148,54 @@ print(response.message);
     }
   }
 
-  _handleCardPaymentInitialization(BuildContext context) async {
-    final flutterwave = Flutterwave.forUIPayment(
-        amount: _amountTextController.text,
-        currency: _currency,
-        context: this.context,
-        publicKey: dotenv.env["FLUTTER_PUBLIC_API_KEY"]??"",
-        encryptionKey: dotenv.env["ENCRYPTION_KEY"]??"",
-        email: Provider.of<User>(context, listen: false).email??"",
-        fullName: Provider.of<User>(context, listen: false).displayName??"",
-        txRef: DateTime.now().toIso8601String(),
-        narration: "Payment for IntecPro Wallet",
-        isDebugMode: true,
-        phoneNumber: Provider.of<ProfileProvider>(context, listen: false).profile.phone,
-        acceptAccountPayment: true,
-        acceptCardPayment: true,
-        acceptUSSDPayment: true);
-    try {
-      final ChargeResponse response =
-          await flutterwave.initializeForUiPayments();
-      if (response == null) {
-        //user didnt complete transaction
-        ShowSnackBar(response.message??"", false);
-        print(response);
-      } else {
-        final isSuccessful = checkPaymentIsSuccessful(response);
-        if (isSuccessful) {
-          // provide value to customer
-          //successs call wallet provider
-          _handleWalletUpdate(context);
-        } else {
-          // check message
-          print(response.message);
+  // _handleCardPaymentInitialization(BuildContext context) async {
+  //   final flutterwave = Flutterwave.forUIPayment(
+  //       amount: _amountTextController.text,
+  //       currency: _currency,
+  //       context: this.context,
+  //       publicKey: dotenv.env["FLUTTER_PUBLIC_API_KEY"]??"",
+  //       encryptionKey: dotenv.env["ENCRYPTION_KEY"]??"",
+  //       email: Provider.of<User>(context, listen: false).email??"",
+  //       fullName: Provider.of<User>(context, listen: false).displayName??"",
+  //       txRef: DateTime.now().toIso8601String(),
+  //       narration: "Payment for IntecPro Wallet",
+  //       isDebugMode: true,
+  //       phoneNumber: Provider.of<ProfileProvider>(context, listen: false).profile.phone,
+  //       acceptAccountPayment: true,
+  //       acceptCardPayment: true,
+  //       acceptUSSDPayment: true);
+  //   try {
+  //     final ChargeResponse response =
+  //         await flutterwave.initializeForUiPayments();
+  //     if (response == null) {
+  //       //user didnt complete transaction
+  //       ShowSnackBar(response.message??"", false);
+  //       print(response);
+  //     } else {
+  //       final isSuccessful = checkPaymentIsSuccessful(response);
+  //       if (isSuccessful) {
+  //         // provide value to customer
+  //         //successs call wallet provider
+  //         _handleWalletUpdate(context);
+  //       } else {
+  //         // check message
+  //         print(response.message);
 
-          // check status
-          print(response.status);
+  //         // check status
+  //         print(response.status);
 
-          // check processor error
-          print(response.data!.processorResponse);
-          ShowSnackBar(response.message??"", false);
-        }
-      }
-    } catch (e) {}
-  }
+  //         // check processor error
+  //         print(response.data!.processorResponse);
+  //         ShowSnackBar(response.message??"", false);
+  //       }
+  //     }
+  //   } catch (e) {}
+  // }
 
-  bool checkPaymentIsSuccessful(final ChargeResponse response) {
-    return response.data!.status == FlutterwaveConstants.SUCCESSFUL &&
-        response.data!.currency == _currency;
-  }
+  // bool checkPaymentIsSuccessful(final ChargeResponse response) {
+  //   return response.data!.status == FlutterwaveConstants.SUCCESSFUL &&
+  //       response.data!.currency == _currency;
+  // }
 
   Widget _buildSubmitButton(BuildContext context) {
     return _isProcessingPayment

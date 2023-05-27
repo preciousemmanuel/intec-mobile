@@ -3,6 +3,7 @@ import 'package:intechpro/providers/profile_provider.dart';
 import 'package:intechpro/screens/complete_artisan_profile_screen.dart';
 import 'package:intechpro/screens/home_screen.dart';
 import 'package:intechpro/model/currency.dart';
+import 'package:intechpro/screens/image_upload_screen.dart';
 import 'package:provider/provider.dart';
 
 class RegistrationSuccessScreen extends StatefulWidget {
@@ -99,6 +100,9 @@ class _RegistrationSuccessScreenState extends State<RegistrationSuccessScreen> {
                               );
                             } else {
                               //artisans
+
+                              
+
                               Navigator.of(context).pushReplacement(
                                 MaterialPageRoute(
                                     builder: (_) => CompleteProfileScreen(

@@ -219,12 +219,19 @@ class _RequestStatusScreenState extends State<RequestStatusScreen> {
           ),
           Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: TrackStatus(
+              child:_request["requestStatus"] >2 && (_request["hasArrived"] == null || !_request["hasArrived"])? TrackStatus(
                 title: _request["artisan"]["userType"] == 2
                     ? 'Artisan on the way to the location'
                     : _request["artisan"]["userType"] == 3
                         ? "Truck Driver On the way"
                         : "Supplier On the way",
+                status: true,
+              ):TrackStatus(
+                title: _request["artisan"]["userType"] == 2
+                    ? 'Artisan has arrived at '+_request["time_artisan_arrived"]
+                    : _request["artisan"]["userType"] == 3
+                        ? "Truck Driver On the way "+_request["time_artisan_arrived"]
+                        : "Supplier On the way "+_request["time_artisan_arrived"],
                 status: true,
               )),
           SizedBox(
@@ -260,16 +267,23 @@ class _RequestStatusScreenState extends State<RequestStatusScreen> {
             child: Row(
               children: [
                 Container(
-                  width: 60,
-                  height: 60,
+                  width: 70,
+                  height: 70,
                   decoration:
                       BoxDecoration(borderRadius: BorderRadius.circular(50)),
-                  child: Image.asset(
-                    "assets/images/user.png",
-                    width: 60,
-                    height: 60,
-                    fit: BoxFit.cover,
-                  ),
+                  child: !_request["artisan"].containsKey("imageurl") ?  Image.asset(
+                          "assets/images/user.png",
+                          width: 60,
+                          height: 60,
+                        ):
+                        CircleAvatar(
+                          backgroundImage: AssetImage("assets/images/user.png"),
+                          radius: 70,
+                          
+                          child: CircleAvatar(
+                            radius: 70,
+                            backgroundImage: NetworkImage(_request["artisan"]["imageurl"]),),
+                        ),
                 ),
                 SizedBox(
                   width: 10,
@@ -906,6 +920,15 @@ class _RequestStatusScreenState extends State<RequestStatusScreen> {
         ]));
   }
 
+  _buildTimeArrived(){
+    return Column(
+      children: [
+        Divider(),
+        Text("Artisan arrive work location")
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -1031,6 +1054,7 @@ class _RequestStatusScreenState extends State<RequestStatusScreen> {
                         ),
                       ),
                     ),
+                    // _buildTimeArrived(),
                     _buildArtisanView(),
                     Divider(),
                     Padding(

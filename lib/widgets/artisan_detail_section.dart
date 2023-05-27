@@ -31,16 +31,23 @@ class ArtisanDetailSection extends StatelessWidget {
             child: Row(
               children: [
                 Container(
-                  width: 60,
-                  height: 60,
+                  width: 80,
+                  height: 80,
                   decoration:
                       BoxDecoration(borderRadius: BorderRadius.circular(50)),
-                  child: Image.asset(
-                    "assets/images/user.png",
-                    width: 60,
-                    height: 60,
-                    fit: BoxFit.cover,
-                  ),
+                  child: !request?["artisan"].containsKey("imageurl") ?  Image.asset(
+                          "assets/images/user.png",
+                          width: 60,
+                          height: 60,
+                        ):
+                        CircleAvatar(
+                          backgroundImage: AssetImage("assets/images/user.png"),
+                          radius: 80,
+                          
+                          child: CircleAvatar(
+                            radius: 80,
+                            backgroundImage: NetworkImage(request?["artisan"]["imageurl"]),),
+                        ),
                 ),
                 SizedBox(
                   width: 10,

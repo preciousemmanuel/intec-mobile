@@ -23,16 +23,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool _obscureText = true;
   bool _isSignup = false;
   int _userType = 1;
-  List _listIdentification=["Select type of Identification","National Identification","International Passport","Drivers Licence","Voters Card"];
+  List _listIdentification = [
+    "Select type of Identification",
+    "National Identification",
+    "International Passport",
+    "Drivers Licence",
+    "Voters Card"
+  ];
   bool isCheckTerms = false;
   String _state = states[0];
-  String _identification="";
+  String _identification = "";
   String _address = "";
   TextEditingController _emailController = new TextEditingController();
   TextEditingController _nameController = new TextEditingController();
   TextEditingController _phoneNumberController = new TextEditingController();
   TextEditingController _addressController = new TextEditingController();
-  TextEditingController _identificationNumberController = new TextEditingController();
+  TextEditingController _identificationNumberController =
+      new TextEditingController();
 
   TextEditingController _passwordController = new TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -47,13 +54,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
       content: Text(title),
       backgroundColor: status ? Colors.green : Colors.red,
     );
-    scaffoldkey.currentState!.showSnackBar(snackbar);
+    ScaffoldMessenger.of(context).showSnackBar(snackbar);
   }
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
-    _identification=_listIdentification[0];
+    _identification = _listIdentification[0];
   }
 
   void _handleSubmit() async {
@@ -81,9 +88,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             _addressController.text,
             _state,
             _identification,
-            _identificationNumberController.text
-            
-            );
+            _identificationNumberController.text);
     setState(() {
       _isSignup = false;
     });
@@ -116,13 +121,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return Column(
       children: [
         // SizedBox(height: 20,),
-        
+
         SizedBox(
           width: MediaQuery.of(context).size.width,
           //padding: EdgeInsets.symmetric(horizontal: 20),
           child: DropdownButton(
-            
-            value: _identification,
+              value: _identification,
               hint: Text("Choose Identification Type"),
               items: _listIdentification.map((identity) {
                 return DropdownMenuItem(
@@ -134,7 +138,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 setState(() {
                   _identification = val.toString();
                 });
-                
               }),
         ),
 
@@ -150,7 +153,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
             }
           },
           decoration: InputDecoration(
-              labelText: _identificationNumberController.text==_listIdentification[0]?"Enter Identification Number":"Enter "+_identification+" Number",
+              labelText:
+                  _identificationNumberController.text == _listIdentification[0]
+                      ? "Enter Identification Number"
+                      : "Enter " + _identification + " Number",
               // filled: true,
               labelStyle: TextStyle(color: Color(0xff52575C)),
               prefixIcon: Icon(
@@ -166,7 +172,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
         SizedBox(
           height: 40,
         ),
-
       ],
     );
   }
@@ -268,7 +273,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             color: Color(0xff52575C),
                           ),
                           focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color:Theme.of(context).accentColor)),
+                              borderSide: BorderSide(
+                                  color: Theme.of(context).accentColor)),
                           enabledBorder: OutlineInputBorder(
                               borderSide:
                                   BorderSide(color: Color(0xff52575C)))),
@@ -292,7 +298,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             color: Color(0xff52575C),
                           ),
                           focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Theme.of(context).accentColor)),
+                              borderSide: BorderSide(
+                                  color: Theme.of(context).accentColor)),
                           enabledBorder: OutlineInputBorder(
                               borderSide:
                                   BorderSide(color: Color(0xff52575C)))),
@@ -314,13 +321,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           labelStyle: TextStyle(color: Color(0xff52575C)),
                           prefixIcon: Icon(
                             Icons.phone,
-                            color:Color(0xff52575C),
+                            color: Color(0xff52575C),
                           ),
                           focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Theme.of(context).accentColor)),
+                              borderSide: BorderSide(
+                                  color: Theme.of(context).accentColor)),
                           enabledBorder: OutlineInputBorder(
                               borderSide:
-                                  BorderSide(color:Color(0xff52575C)))),
+                                  BorderSide(color: Color(0xff52575C)))),
                     ),
 
                     SizedBox(
@@ -375,52 +383,52 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
 
                     SizedBox(
-          width: MediaQuery.of(context).size.width,
-          //padding: EdgeInsets.symmetric(horizontal: 20),
-          child: DropdownButton(
-            
-            value: _state,
-              hint: Text("Choose your state of residence"),
-              items: states.map((state) {
-                return DropdownMenuItem(
-                  child: Text(state),
-                  value: state,
-                );
-              }).toList(),
-              onChanged: (val) {
-                setState(() {
-                  _state = val.toString();
-                });
-                
-              }),
-        ),
-        SizedBox(
-          height: 40,
-        ),
-        TextFormField(
-          //  keyboardType: TextInputType.phone,
-          controller: _addressController,
-          validator: (value) {
-            if (value == "") {
-              return "Please Enter Full address";
-            }
-          },
-          decoration: InputDecoration(
-              labelText: "Address",
-              // filled: true,
-              labelStyle: TextStyle(color: Color(0xff52575C)),
-              prefixIcon: Icon(
-                Icons.place_outlined,
-                color: Color(0xff52575C),
-              ),
-              focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Theme.of(context).accentColor)),
-              enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Color(0xff52575C)))),
-        ),
-        SizedBox(
-          height: 40,
-        ),
+                      width: MediaQuery.of(context).size.width,
+                      //padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: DropdownButton(
+                          value: _state,
+                          hint: Text("Choose your state of residence"),
+                          items: states.map((state) {
+                            return DropdownMenuItem(
+                              child: Text(state),
+                              value: state,
+                            );
+                          }).toList(),
+                          onChanged: (val) {
+                            setState(() {
+                              _state = val.toString();
+                            });
+                          }),
+                    ),
+                    SizedBox(
+                      height: 40,
+                    ),
+                    TextFormField(
+                      //  keyboardType: TextInputType.phone,
+                      controller: _addressController,
+                      validator: (value) {
+                        if (value == "") {
+                          return "Please Enter Full address";
+                        }
+                      },
+                      decoration: InputDecoration(
+                          labelText: "Address",
+                          // filled: true,
+                          labelStyle: TextStyle(color: Color(0xff52575C)),
+                          prefixIcon: Icon(
+                            Icons.place_outlined,
+                            color: Color(0xff52575C),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Theme.of(context).accentColor)),
+                          enabledBorder: OutlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Color(0xff52575C)))),
+                    ),
+                    SizedBox(
+                      height: 40,
+                    ),
                     _userType == 1 ? Container() : _buildMoreFields(),
                     SizedBox(
                       height: 10,
@@ -453,7 +461,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             color: Color(0xff52575C),
                           ),
                           focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color:Theme.of(context).accentColor)),
+                              borderSide: BorderSide(
+                                  color: Theme.of(context).accentColor)),
                           enabledBorder: OutlineInputBorder(
                               borderSide:
                                   BorderSide(color: Color(0xff52575C)))),
@@ -471,11 +480,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         });
                       },
                       title: TextButton(
-                        
                         child: Text(
                             "By checking this you agree to our terms and condition"),
                         onPressed: () {
-                          launch("https://intecglobal.com.ng/wp-content/uploads/2022/02/IntecPRO-Terms-of-Service-2.pdf");
+                          launch(
+                              "https://intecglobal.com.ng/wp-content/uploads/2022/02/IntecPRO-Terms-of-Service-2.pdf");
                         },
                       ),
                     ),

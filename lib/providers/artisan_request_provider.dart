@@ -13,6 +13,7 @@ class ArtisanRequestProvider with ChangeNotifier {
 
   bool _is_loading = false;
   bool _is_submitting = false;
+  bool _is_submitting_arrived = false;
 
   bool get loading {
     return _is_loading;
@@ -20,6 +21,50 @@ class ArtisanRequestProvider with ChangeNotifier {
 
   bool get getSubmitting {
     return _is_submitting;
+  }
+bool get getSubmittingArrived {
+    return _is_submitting_arrived;
+  }
+  
+  Future<Map<String, dynamic>> artisanIveArrived(order_id) async {
+    try {
+      _is_submitting_arrived = true;
+      notifyListeners();
+
+      var tokenRes = await _user!.getIdTokenResult();
+
+      print("##for##c");
+      _is_submitting_arrived = false;
+
+      print(tokenRes.token ?? "");
+      final http.Response response = await http.post(
+          Uri.parse("${base_url}payment/artisan-arrived"),
+          body: json.encode({
+            "order_id": order_id,
+
+            // "location":location
+          }),
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer ${tokenRes.token}"
+          });
+          Map<String,dynamic> respData=json.decode(response.body);
+           _is_submitting_arrived = false;
+      notifyListeners();
+          print("sucess#");
+          print(respData);
+          if (respData["success"]) {
+            return {"status": true, "message": "Marked as arrived"};
+          } else {
+            return {"status": false, "message": respData["message"]};
+          }
+      
+    } on FirebaseException catch (e) {
+      _is_submitting_arrived = false;
+      notifyListeners();
+      print(e.message);
+      return {"status": false, "message": e.message};
+    }
   }
 
   Future<Map<String, dynamic>> acceptRequest(order_id) async {

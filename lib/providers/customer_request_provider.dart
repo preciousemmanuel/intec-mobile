@@ -27,10 +27,10 @@ class CustomerRequestProvider with ChangeNotifier {
     try {
       _isLoading = true;
       notifyListeners();
-
+ var _userr =  FirebaseAuth.instance.currentUser;
       print("provider######");
        QuerySnapshot data = await
-          FirebaseFirestore.instance.collection("requests/${_user!.uid}/sub").orderBy("created_at",descending: true).get();
+          FirebaseFirestore.instance.collection("requests/${_userr!.uid}/sub").orderBy("created_at",descending: true).get();
 
   // QuerySnapshot data = await requestRef.get();
       print("subS##^%%%");

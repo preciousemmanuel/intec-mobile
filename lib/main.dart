@@ -11,11 +11,13 @@ import 'package:intechpro/providers/service_payment_provider.dart';
 import 'package:intechpro/providers/service_provider.dart';
 import 'package:intechpro/providers/settings_provider.dart';
 import 'package:intechpro/providers/user_location_provider.dart';
+import 'package:intechpro/screens/artisan/product_screen.dart';
 import 'package:intechpro/screens/artisan/subscription_screen.dart';
 import 'package:intechpro/screens/complete_artisan_profile_screen.dart';
 import 'package:intechpro/screens/customer_requests_screen.dart';
 import 'package:intechpro/screens/forgot_password_screen.dart';
 import 'package:intechpro/screens/home_screen.dart';
+import 'package:intechpro/screens/image_upload_screen.dart';
 import 'package:intechpro/screens/login_screen.dart';
 import 'package:intechpro/screens/not_verified_screen.dart';
 import 'package:intechpro/screens/onboarding_screen.dart';
@@ -89,7 +91,9 @@ class MyApp extends StatelessWidget {
               //  '/complete_profile': (BuildContext context) => CompleteProfileScreen(
               //   key: key,
               // ),
-              
+             '/product_create': (BuildContext context) => ProductScreen(
+                key: key,
+              ), 
           '/register': (BuildContext context) => RegisterScreen(
                 key: key,
               ),

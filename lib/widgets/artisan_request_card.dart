@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:intechpro/model/currency.dart';
+import 'package:intechpro/providers/artisan_request_provider.dart';
 import 'package:intechpro/screens/artisan/track_request_screen.dart';
 import 'package:intechpro/widgets/address_detail.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:provider/provider.dart';
 
 class ArtisanRequestCard extends StatelessWidget {
   final request;
   final Function? onAcceptRequest;
-  const ArtisanRequestCard({Key? key, this.request, this.onAcceptRequest})
+  final Function? onClickIReach;
+  const ArtisanRequestCard({Key? key, this.request, this.onAcceptRequest,this.onClickIReach})
       : super(key: key);
 
   Widget _buildCallButton(context) {
@@ -27,6 +30,33 @@ class ArtisanRequestCard extends StatelessWidget {
             "Call Client",
             style: TextStyle(
                 color: Theme.of(context).accentColor,
+                fontWeight: FontWeight.bold),
+          ),
+        ]),
+      );
+    }
+
+    return Container();
+  }
+
+
+  
+  Widget _buildArrivedButton(context) {
+    if (request["requestStatus"] >2 && (request["hasArrived"] == null || !request["hasArrived"]) ){
+      return TextButton(
+        onPressed: () {
+         Provider.of<ArtisanRequestProvider>(context, listen: false).getSubmittingArrived?(){}:  onClickIReach!();
+        },
+        child: Row(children: [
+          Icon(
+            Icons.place_outlined,
+            color: Colors.blueGrey,
+            size: 20,
+          ),
+          Text(
+             Provider.of<ArtisanRequestProvider>(context, listen: false).getSubmittingArrived?"Please Wait...": "Have you arrived?",
+            style: TextStyle(
+                color: Colors.blueGrey,
                 fontWeight: FontWeight.bold),
           ),
         ]),
@@ -279,12 +309,23 @@ class ArtisanRequestCard extends StatelessWidget {
           ),
           Spacer(),
           Divider(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _buildAcceptViewButton(context),
-              _buildCallButton(context)
-            ],
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+            
+              
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _buildAcceptViewButton(context),
+                Row(
+                  children: [
+                    _buildArrivedButton(context),
+                     _buildCallButton(context)
+                  ],
+                )
+               
+              ],
+            ),
           )
         ],
       ),
