@@ -30,14 +30,14 @@ dependencies:
   flutter:
     sdk: flutter
     
-  introduction_screen: ^2.1.0
+  introduction_screen: ^3.1.8
   
   provider: ^6.0.1
-  firebase_auth: ^3.3.4
-  cloud_firestore: ^3.1.5
-  flutterwave: 
+  firebase_auth: ^4.6.1
+  cloud_firestore: ^4.7.1
+  # flutterwave: 
   cupertino_icons: ^1.0.4
-  sweetalert:
+  # sweetalert:
   google_places_flutter:
   uuid:
   google_maps_flutter:
@@ -45,18 +45,19 @@ dependencies:
   geocode: 
   location: 
   dart_geohash:
- 
-  firebase_database: ^9.0.4
+  firebase_core_platform_interface: 4.5.1
+  
+  firebase_database: ^10.2.1
   custom_switch: ^0.0.1
-  firebase_messaging: ^11.2.4
-  firebase_core: ^1.10.6
+  firebase_messaging: ^14.6.1
+  firebase_core: ^2.13.0
   google_geocoding: ^0.2.0
   flutter_dotenv: ^5.0.2
   url_launcher: ^6.0.17
   flutter_polyline_points: ^1.0.0
   flutter_paystack:
   async: ^2.5.0
-  webview_flutter: ^2.8.0
+  webview_flutter: ^4.2.1
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -69,7 +70,8 @@ dev_dependencies:
     sdk: flutter
     
 dependency_overrides:
-  intl: ^0.17.0-nullsafety.2
+  firebase_core_platform_interface: 4.5.1
+  #intl: ^0.17.0-nullsafety.2
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your

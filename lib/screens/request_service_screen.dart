@@ -333,7 +333,7 @@ var amount=widget.subService.hasTask
       content: Text(title),
       backgroundColor: status ? Colors.green : Colors.red,
     );
-    scaffoldkey.currentState!.showSnackBar(snackbar);
+    ScaffoldMessenger.of(context).showSnackBar(snackbar);
   }
 
   handleShowSearchScreen(bool ispickuptype) async {

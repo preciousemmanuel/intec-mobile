@@ -62,7 +62,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
       content: Text(title),
       backgroundColor: status ? Colors.green : Colors.red,
     );
-    scaffoldkey.currentState!.showSnackBar(snackbar);
+    ScaffoldMessenger.of(context).showSnackBar(snackbar);
   }
 
   void handleCompleteProfile() async {

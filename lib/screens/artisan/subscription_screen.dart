@@ -41,7 +41,8 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
       content: Text(title),
       backgroundColor: status ? Colors.green : Colors.red,
     );
-    scaffoldkey.currentState!.showSnackBar(snackbar);
+    // scaffoldkey.currentState!.showSnackBar(snackbar);
+    ScaffoldMessenger.of(context).showSnackBar(snackbar);
   }
 
 

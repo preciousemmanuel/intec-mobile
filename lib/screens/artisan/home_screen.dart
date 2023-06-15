@@ -251,7 +251,7 @@ class _HomeScreenState extends State<HomeScreen> {
       content: Text(title),
       backgroundColor: status ? Colors.green : Colors.red,
     );
-    scaffoldkey.currentState!.showSnackBar(snackbar);
+    ScaffoldMessenger.of(context).showSnackBar(snackbar);
   }
 
   void _handleAcceptRequest(order_id) async {
