@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.0+1
+version: 1.0.1+2
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
@@ -45,12 +45,12 @@ dependencies:
   geocode: 
   location: 
   dart_geohash:
-  firebase_core_platform_interface: 4.5.1
+  #firebase_core_platform_interface: 4.5.1
   
-  firebase_database: ^10.2.1
-  custom_switch: ^0.0.1
-  firebase_messaging: ^14.6.1
-  firebase_core: ^2.13.0
+  #firebase_database: ^10.2.1
+  # custom_switch: ^0.0.1
+  #firebase_messaging: ^14.6.1
+  #firebase_core: ^2.13.0
   google_geocoding: ^0.2.0
   flutter_dotenv: ^5.0.2
   url_launcher: ^6.0.17
@@ -58,6 +58,14 @@ dependencies:
   flutter_paystack:
   async: ^2.5.0
   webview_flutter: ^4.2.1
+  flutter_switch: ^0.3.2
+  shared_preferences: ^2.1.2
+  flutter_local_notifications: ^14.1.1
+  path_provider: ^2.0.15
+  path_provider_ios: ^2.0.11
+  firebase_core: ^2.14.0
+  firebase_database: ^10.2.3
+  firebase_messaging: ^14.6.4
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -70,7 +78,7 @@ dev_dependencies:
     sdk: flutter
     
 dependency_overrides:
-  firebase_core_platform_interface: 4.5.1
+  #firebase_core_platform_interface: 4.5.2
   #intl: ^0.17.0-nullsafety.2
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

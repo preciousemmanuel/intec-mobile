@@ -10,6 +10,8 @@ import 'package:intechpro/config.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intechpro/providers/customer_wallet_provider.dart';
 import 'package:intechpro/providers/profile_provider.dart';
+import 'package:intechpro/screens/fund_wallet_bottomsheet.dart';
+import 'package:intechpro/screens/webview_payment.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
@@ -57,16 +59,6 @@ class _WalletScreenState extends State<WalletScreen> {
    ScaffoldMessenger.of(context).showSnackBar(snackbar);
   }
 
-  void _handleFundSubmit(BuildContext context) async {
-    if (!_formKey.currentState!.validate()) {
-      return;
-    }
-    _formKey.currentState!.save();
-    setState(() {
-        _isProcessingPayment=true;
-      });
-    chargeCard(context);
-  }
 
   _handleWalletUpdate(BuildContext context) async {
     Map<String, dynamic> result = await context
@@ -196,28 +188,7 @@ print(response.message);
   //       response.data!.currency == _currency;
   // }
 
-  Widget _buildSubmitButton(BuildContext context) {
-    return _isProcessingPayment
-        ? Align(
-            alignment: Alignment.center,
-            child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(
-                    Theme.of(context).primaryColor)),
-          )
-        : Container(
-            height: 50.0,
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () {
-                _handleFundSubmit(context);
-              },
-              child: Text("Continue"),
-              style: ElevatedButton.styleFrom(
-                  primary: Theme.of(context).accentColor),
-            ),
-          );
-  }
-
+ 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -342,66 +313,8 @@ print(response.message);
                             showModalBottomSheet( 
                                 context: context,
                                 builder: (context) {
-                                  return Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 20),
-                                    child: Form(
-                                      key: _formKey,
-                                      child: Column(
-                                        children: [
-                                          SizedBox(
-                                            height: 30,
-                                          ),
-                                          Text(
-                                            "Fund Your wallet",
-                                            style: TextStyle(
-                                                color: Theme.of(context)
-                                                    .accentColor,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          SizedBox(
-                                            height: 40,
-                                          ),
-                                          TextFormField(
-                                            keyboardType: TextInputType.number,
-                                            controller: _amountTextController,
-                                            validator: (value) {
-                                              if (value == "") {
-                                                return "Please Enter Amount ";
-                                              }
-                                              if (value == 0 || value == "0") {
-                                                return "Please enter valid amount";
-                                              }
-                                            },
-                                            decoration: InputDecoration(
-                                                labelText:
-                                                    "Enter amount to Fund",
-                                                // filled: true,
-                                                labelStyle: TextStyle(
-                                                    color: Color(0xffA0A4A8)),
-                                                prefixIcon: Icon(
-                                                  Icons.money_sharp,
-                                                  color: Color(0xffCACCCF),
-                                                ),
-                                                focusedBorder:
-                                                    OutlineInputBorder(
-                                                        borderSide: BorderSide(
-                                                            color: Color(
-                                                                0xff52575C))),
-                                                enabledBorder:
-                                                    OutlineInputBorder(
-                                                        borderSide: BorderSide(
-                                                            color: Color(
-                                                                0xffCACCCF)))),
-                                          ),
-                                          SizedBox(
-                                            height: 40,
-                                          ),
-                                          _buildSubmitButton(context)
-                                        ],
-                                      ),
-                                    ),
-                                  );
+                                  return FundWalletBottomSheet();
+                                
                                 });
                           },
                           child: Row(

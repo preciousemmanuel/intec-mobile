@@ -48,62 +48,64 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         pageColor: Color(0xff5779b9),
         imagePadding: EdgeInsets.zero);
 
-    return IntroductionScreen(
-      key: introKey,
-      
-       globalFooter: SizedBox(
-        width: double.infinity,
-        height: 60,
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            primary: Theme.of(context).accentColor
+    return SafeArea(
+      child: IntroductionScreen(
+        key: introKey,
+        
+         globalFooter: SizedBox(
+          width: double.infinity,
+          height: 60,
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              primary: Theme.of(context).accentColor
+            ),
+            child: const Text(
+              'Let\s go right away!',
+              style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+            ),
+            onPressed: () => _onIntroEnd(context),
           ),
-          child: const Text(
-            'Let\s go right away!',
-            style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
-          ),
-          onPressed: () => _onIntroEnd(context),
         ),
-      ),
-      pages: [
-        PageViewModel(
-            title: "Connect with artisans",
-            body: "Lets help you find reliable artisan to fix your issues quickly.",
-            image: _buildImage(context,"slide_one.jpg"),
-            decoration: pageDecoration
-            ),
-
-            PageViewModel(
-            title: "Truck Service",
-            body: "Have your waste dispose swiftly? Look no further our Truck call-up service is all you need.",
-            image: _buildImage(context,"slide_two.jpg"),
-            decoration: pageDecoration
-            ),
-
-             PageViewModel(
-            title: "Connect with Suppliers?",
-            body: "We got you covered! we provide you with materials suppliers network to match your needs.",
-            image: _buildImage(context,"slide_three.jpg"),
-            decoration: pageDecoration
-            )
-      ],
-      onDone: ()=> _onIntroEnd(context),
-      showSkipButton: true,
-            // skipFlex: 0,
-            // nextFlex: 0,
-            skip: const Text('Skip', style: TextStyle( fontFamily: "QuickSand",color: Colors.white)),
-            next: const Icon(Icons.arrow_forward,color: Colors.white,),
-            done: const Text('Done', style: TextStyle(fontWeight: FontWeight.w600,  fontFamily: "QuickSand",color: Colors.white)),
-            dotsDecorator: const DotsDecorator(
-              size: Size(10.0, 10.0),
-              color: Color(0xFFBDBDBD),
-              activeSize: Size(22.0, 10.0),
-              activeColor: Color(0xfff56526),
-              activeShape: RoundedRectangleBorder(
-                
-                borderRadius: BorderRadius.all(Radius.circular(25.0)),
+        pages: [
+          PageViewModel(
+              title: "Connect with artisans",
+              body: "Lets help you find reliable artisan to fix your issues quickly.",
+              image: _buildImage(context,"slide_one.jpg"),
+              decoration: pageDecoration
               ),
-            ),
+    
+              PageViewModel(
+              title: "Truck Service",
+              body: "Have your waste dispose swiftly? Look no further our Truck call-up service is all you need.",
+              image: _buildImage(context,"slide_two.jpg"),
+              decoration: pageDecoration
+              ),
+    
+               PageViewModel(
+              title: "Connect with Suppliers?",
+              body: "We got you covered! we provide you with materials suppliers network to match your needs.",
+              image: _buildImage(context,"slide_three.jpg"),
+              decoration: pageDecoration
+              )
+        ],
+        onDone: ()=> _onIntroEnd(context),
+        showSkipButton: true,
+              // skipFlex: 0,
+              // nextFlex: 0,
+              skip: const Text('Skip', style: TextStyle( fontFamily: "QuickSand",color: Colors.white)),
+              next: const Icon(Icons.arrow_forward,color: Colors.white,),
+              done: const Text('Done', style: TextStyle(fontWeight: FontWeight.w600,  fontFamily: "QuickSand",color: Colors.white)),
+              dotsDecorator: const DotsDecorator(
+                size: Size(10.0, 10.0),
+                color: Color(0xFFBDBDBD),
+                activeSize: Size(22.0, 10.0),
+                activeColor: Color(0xfff56526),
+                activeShape: RoundedRectangleBorder(
+                  
+                  borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                ),
+              ),
+      ),
     );
   }
 }

@@ -23,20 +23,56 @@ import 'package:intechpro/screens/registration_succes_screen.dart';
 import 'package:intechpro/screens/terms_screen.dart';
 import 'package:intechpro/screens/wallet_screen.dart';
 import 'package:intechpro/screens/withdraw_screen.dart';
+import 'package:intechpro/services/fcm_push_notification_service.dart';
+import 'package:intechpro/services/local_push_notification_service.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'firebase_options.dart';
+
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // If you're going to use other Firebase services in the background, such as Firestore,
+  // make sure you call `initializeApp` before using other Firebase services.
+  await Firebase.initializeApp();
+  FirebasePushNotificationService.firebaseMessagingBackgroundHandler(message);
+}
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
-  await Firebase.initializeApp();
-  
+ //await Firebase.initializeApp();
+   await Firebase.initializeApp(name: "Intech", options: DefaultFirebaseOptions.currentPlatform);
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+  NotificationSettings settings = await messaging.requestPermission(
+    alert: false,
+    announcement: false,
+    badge: true,
+    carPlay: false,
+    criticalAlert: false,
+    provisional: false,
+    sound: true,
+  );
+
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class MyApp extends StatefulWidget {
+  
+  const MyApp({Key? key,}) : super();
 
+  static final ValueNotifier<ThemeMode> themeNotifier =
+      ValueNotifier(ThemeMode.light);
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+initState() {
+    LocalPushNotificationService.init();
+    FirebasePushNotificationService.init();
+  }
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -78,29 +114,29 @@ class MyApp extends StatelessWidget {
         ),
         home: AuthenticationWrapper(),
         routes: {
-          '/onboarding': (BuildContext context) => OnboardingScreen(key: key),
+          '/onboarding': (BuildContext context) => OnboardingScreen(),
           '/login': (BuildContext context) => LoginScreen(
-                key: key,
+                
               ),
               // '/register_success': (BuildContext context) => RegistrationSuccessScreen(
-              //   key: key,
+              //   ,
               // ),
               //  '/complete_profile': (BuildContext context) => CompleteProfileScreen(
-              //   key: key,
+              //   ,
               // ),
               
           '/register': (BuildContext context) => RegisterScreen(
-                key: key,
+                
               ),
                '/forgot_password': (BuildContext context) => ForgotPasswordScreen(
-                key: key,
+                
               ),
           '/wallet': (BuildContext context) => WalletScreen(),
           '/withdraw': (BuildContext context) => WithdrawScreen(),
-          '/customer_requests':(BuildContext context)=>CustomerRequestsScreen(key: key,),
-          '/terms_condition':(BuildContext context)=>TermsScreen(key: key,),
-           '/pay_subscription':(BuildContext context)=>SubscriptionScreen(key: key,),
-          // '/pay_subscription':(BuildContext context)=>SubscriptionScreen(key: key,),
+          '/customer_requests':(BuildContext context)=>CustomerRequestsScreen(),
+          '/terms_condition':(BuildContext context)=>TermsScreen(),
+           '/pay_subscription':(BuildContext context)=>SubscriptionScreen(),
+          // '/pay_subscription':(BuildContext context)=>SubscriptionScreen(,),
         },
       ),
     );
@@ -110,14 +146,14 @@ class MyApp extends StatelessWidget {
 class AuthenticationWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final firebaseUser = context.watch<User>();
+    final firebaseUser = context.watch<User?>();
     print(firebaseUser);
     if (firebaseUser != null) {
       //logined
       return HomeScreen();
     }
     return OnboardingScreen(
-      key: key,
+      
     );
   }
 }

@@ -4,8 +4,8 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:custom_switch/custom_switch.dart';
-import 'package:flutter/rendering.dart';
+import 'package:flutter_switch/flutter_switch.dart';
+// import 'package:flutter/rendering.dart';
 import 'package:intechpro/providers/customer_wallet_provider.dart';
 import 'package:intechpro/providers/profile_provider.dart';
 import 'package:intechpro/screens/update_profile_screen.dart';
@@ -85,10 +85,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                          context.watch<ProfileProvider>().profile.active? Text("Active",style: TextStyle(color: Colors.green),): Text("Inactive",style: TextStyle(color: Colors.red)),
                           SizedBox(
                             height: 25,
-                            child: CustomSwitch(
+                            child: FlutterSwitch(
                               activeColor: Colors.green,
                               value:context.watch<ProfileProvider>().profile.active ,
-                              onChanged: (value) {
+                              onToggle: (value) {
                                 print("VALUE : $value");
                                 context.read<ProfileProvider>().updateprofileStatus(value);
                                 // setState(() {

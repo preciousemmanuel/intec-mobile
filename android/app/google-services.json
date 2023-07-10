@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "980291827167",
+    "firebase_url": "https://intec-pro-default-rtdb.firebaseio.com",
     "project_id": "intec-pro",
     "storage_bucket": "intec-pro.appspot.com"
   },
@@ -29,6 +30,13 @@
             {
               "client_id": "980291827167-ft1gnl3cjgmpvqua18n6uu5dgt4443tv.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "980291827167-tsm6ef6hah51ofq8fsca698p615297kb.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.intechpro"
+              }
             }
           ]
         }

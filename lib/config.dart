@@ -6,7 +6,8 @@
 
  const String ENCRYPTION_KEY="FLWSECK_TESTe498c79913db";
 
- final String base_url="https://intecpro.herokuapp.com/api/";
+// final String base_url="https://intecpro.herokuapp.com/api/";
+ final String base_url="https://intecpro.uc.r.appspot.com/api/";
  //const String base_url="http://localhost:8000/api/";
 
  const int COMPANY_PERCENT=20;
