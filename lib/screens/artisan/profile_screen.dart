@@ -8,8 +8,11 @@ import 'package:flutter_switch/flutter_switch.dart';
 // import 'package:flutter/rendering.dart';
 import 'package:intechpro/providers/customer_wallet_provider.dart';
 import 'package:intechpro/providers/profile_provider.dart';
+import 'package:intechpro/screens/image_upload_screen.dart';
 import 'package:intechpro/screens/update_profile_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
+import '../../config.dart';
 import 'package:intechpro/model/currency.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -45,10 +48,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   child: Row(
                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Image.asset(
-                        "assets/images/user.png",
-                        width: 70,
-                        height: 70,
+                      GestureDetector(
+                        onTap: () =>  Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => ImageUploadScreen(
+                                userType:context.watch<ProfileProvider>().profile.userType,
+                                fromNav: "Profile",
+                              ),
+                            ),
+                          ),
+                        child: context.watch<ProfileProvider>().profile.imageUrl==""?  Image.asset(
+                          "assets/images/user.png",
+                          width: 70,
+                          height: 70,
+                        ):
+                        CircleAvatar(
+                          backgroundImage: AssetImage("assets/images/user.png"),
+                          radius: 50,
+                          
+                          child: CircleAvatar(
+                            radius: 50,
+                            backgroundImage: NetworkImage(context.watch<ProfileProvider>().profile.imageUrl!),),
+                        )
+                       
                       ),
                       // SizedBox(
                       //   width: 10,
@@ -123,8 +145,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               Divider(),
               ListTile(
+                onTap: (){
+                  //launch("tel://${contact_support}");
+                },
                 leading: Icon(Icons.info,color: Theme.of(context).accentColor),
-                title: Text("About Us"),
+                title: Text("Issues? Contact Us"),
               ),
               Divider(),
               ListTile(

@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:intechpro/model/currency.dart';
 import 'package:intechpro/providers/artisan_request_provider.dart';
+import 'package:intechpro/providers/service_payment_provider.dart';
 import 'package:intechpro/providers/user_location_provider.dart';
 import 'package:intechpro/screens/home_artisan_screen.dart';
 import 'package:intechpro/widgets/address_detail.dart';
@@ -39,6 +40,7 @@ class _TrackRequestScreenState extends State<TrackRequestScreen> {
   FirebaseException? _error;
   bool initialized = false;
   late DatabaseReference _dbRef;
+  final GlobalKey<ScaffoldState> scaffoldkey = new GlobalKey();
   late StreamSubscription<DatabaseEvent> _orderSubscription;
 
   Completer<GoogleMapController> _controller = Completer();
@@ -221,6 +223,86 @@ class _TrackRequestScreenState extends State<TrackRequestScreen> {
             onChanged: _handleCancelRadioValueChanged));
   }
 
+  void ShowSnackBar(String title, bool status) {
+    final snackbar = SnackBar(
+      content: Text(title),
+      backgroundColor: status ? Colors.green : Colors.red,
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackbar);
+  }
+
+  void _onClickIReach(order_id) async {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("INFO!"),
+            content: Text("Have you arrived work/service location?"),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () async {
+                  Navigator.pop(context);
+                  Map<String, dynamic> response = await context
+                      .read<ArtisanRequestProvider>()
+                      .artisanIveArrived(order_id);
+
+                  if (response["status"]) {
+                    ShowSnackBar(response["message"], true);
+                  } else {
+                    ShowSnackBar(response["message"], false);
+                  }
+                },
+                child: Text(
+                  'YES',
+                  style: TextStyle(color: Theme.of(context).primaryColor),
+                ),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  'NO',
+                  style: TextStyle(color: Colors.black),
+                ),
+              )
+            ],
+          );
+        });
+  }
+
+  Widget _buildArrivedButton() {
+    if (_request["requestStatus"] > 2 &&
+        (_request["hasArrived"] == null || !_request["hasArrived"])) {
+      return Column(children: [
+        Divider(),
+        TextButton(
+          onPressed: () {
+            Provider.of<ArtisanRequestProvider>(context, listen: false)
+                    .getSubmittingArrived
+                ? () {}
+                : _onClickIReach(_request["order_id"]);
+          },
+          child: Row(children: [
+            Icon(
+              Icons.place_outlined,
+              color: Colors.red,
+              size: 20,
+            ),
+            Text(
+              context.watch<ArtisanRequestProvider>().getSubmittingArrived
+                  ? "Please Wait..."
+                  : "Have you arrived?",
+              style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+            ),
+          ]),
+        ),
+      ]);
+    }
+
+    return Container();
+  }
+
   Widget _buildMore() {
     if (_request["requestStatus"] == 3) {
       return Column(
@@ -280,7 +362,9 @@ class _TrackRequestScreenState extends State<TrackRequestScreen> {
                                     // CancelTile(title: "", selected: ""),
                                     context
                                             .watch<ArtisanRequestProvider>()
-                                            .getSubmitting
+                                            .getSubmitting || context
+                                            .watch<ServicePaymentProvider>()
+                                            .isSubmitting
                                         ? Align(
                                             alignment: Alignment.center,
                                             child: CircularProgressIndicator(
@@ -303,75 +387,151 @@ class _TrackRequestScreenState extends State<TrackRequestScreen> {
                                                     "") {
                                                   if (_selectedIndexOption ==
                                                       "1") {
-                                                  } else {}
-                                                  context
-                                                      .read<
-                                                          ArtisanRequestProvider>()
-                                                      .confirmRequestComplete(
-                                                        _request["order_id"],
-                                                      )
-                                                      .then((value) {
-                                                    if (value["status"]) {
-                                                      showDialog(
-                                                          context: context,
-                                                          builder: (context) {
-                                                            return AlertDialog(
-                                                              title: Text(
-                                                                  "Message"),
-                                                              content: Text(
-                                                                    _request["paymentMode"]<3?"Pay will be transfered to your wallet soon.":"Client will pay you the required fee."),
-                                                              actions: <Widget>[
-                                                                TextButton(
-                                                                  onPressed:
-                                                                      () {
-                                                                    Navigator.pop(
-                                                                        context);
-                                                                    Navigator.of(context).pushAndRemoveUntil(
-                                                                        MaterialPageRoute(
-                                                                            builder: (BuildContext context) =>
-                                                                                HomeArtisanScreen()),
-                                                                        (Route<dynamic>
-                                                                                route) =>
-                                                                            false);
-                                                                  },
-                                                                  child: Text(
-                                                                    'OK',
-                                                                    style: TextStyle(
-                                                                        color: Theme.of(context)
-                                                                            .primaryColor),
-                                                                  ),
-                                                                )
-                                                              ],
-                                                            );
-                                                          });
-                                                    } else {
-                                                      showDialog(
-                                                          context: context,
-                                                          builder: (context) {
-                                                            return AlertDialog(
-                                                              title: Text(
-                                                                  "Message"),
-                                                              content: Text(value[
-                                                                  "message"]),
-                                                              actions: <Widget>[
-                                                                TextButton(
-                                                                  onPressed:
-                                                                      () {
-                                                                    Navigator.pop(
-                                                                        context);
-                                                                  },
-                                                                  child: Text(
-                                                                    'OK',
-                                                                    style: TextStyle(
-                                                                        color: Theme.of(context)
-                                                                            .primaryColor),
-                                                                  ),
-                                                                )
-                                                              ],
-                                                            );
-                                                          });
-                                                    }
-                                                  });
+                                                    context
+                                                        .read<
+                                                            ArtisanRequestProvider>()
+                                                        .confirmRequestComplete(
+                                                          _request["order_id"],
+                                                        )
+                                                        .then((value) {
+                                                      if (value["status"]) {
+                                                        showDialog(
+                                                            context: context,
+                                                            builder: (context) {
+                                                              return AlertDialog(
+                                                                title: Text(
+                                                                    "Message"),
+                                                                content: Text(_request[
+                                                                            "paymentMode"] <
+                                                                        3
+                                                                    ? "Pay will be transfered to your wallet soon as customer confirms."
+                                                                    : "Client will pay you the required fee."),
+                                                                actions: <
+                                                                    Widget>[
+                                                                  TextButton(
+                                                                    onPressed:
+                                                                        () {
+                                                                      Navigator.pop(
+                                                                          context);
+                                                                      Navigator.of(context).pushAndRemoveUntil(
+                                                                          MaterialPageRoute(
+                                                                              builder: (BuildContext context) =>
+                                                                                  HomeArtisanScreen()),
+                                                                          (Route<dynamic> route) =>
+                                                                              false);
+                                                                    },
+                                                                    child: Text(
+                                                                      'OK',
+                                                                      style: TextStyle(
+                                                                          color:
+                                                                              Theme.of(context).primaryColor),
+                                                                    ),
+                                                                  )
+                                                                ],
+                                                              );
+                                                            });
+                                                      } else {
+                                                        showDialog(
+                                                            context: context,
+                                                            builder: (context) {
+                                                              return AlertDialog(
+                                                                title: Text(
+                                                                    "Message"),
+                                                                content: Text(value[
+                                                                    "message"]),
+                                                                actions: <
+                                                                    Widget>[
+                                                                  TextButton(
+                                                                    onPressed:
+                                                                        () {
+                                                                      Navigator.pop(
+                                                                          context);
+                                                                    },
+                                                                    child: Text(
+                                                                      'OK',
+                                                                      style: TextStyle(
+                                                                          color:
+                                                                              Theme.of(context).primaryColor),
+                                                                    ),
+                                                                  )
+                                                                ],
+                                                              );
+                                                            });
+                                                      }
+                                                    });
+                                                  } else {
+                                                    context
+                                                        .read<
+                                                            ServicePaymentProvider>()
+                                                        .cancelRequest(
+                                                            _request[
+                                                                "order_id"],
+                                                            _selectedCancelOption,
+                                                            "artisan")
+                                                        .then((value) {
+                                                      if (value["status"]) {
+                                                        showDialog(
+                                                            context: context,
+                                                            builder: (context) {
+                                                              return AlertDialog(
+                                                                title: Text(
+                                                                    "Message"),
+                                                                content: Text(
+                                                                    "Request cancelled successfully"),
+                                                                actions: <
+                                                                    Widget>[
+                                                                  TextButton(
+                                                                    onPressed:
+                                                                        () {
+                                                                      Navigator.pop(
+                                                                          context);
+                                                                      // Navigator.of(context).pushAndRemoveUntil(
+                                                                      //     MaterialPageRoute(
+                                                                      //         builder: (BuildContext context) =>
+                                                                      //             HomeScreen()),
+                                                                      //     (Route<dynamic> route) =>
+                                                                      //         false);
+                                                                    },
+                                                                    child: Text(
+                                                                      'OK',
+                                                                      style: TextStyle(
+                                                                          color:
+                                                                              Theme.of(context).primaryColor),
+                                                                    ),
+                                                                  )
+                                                                ],
+                                                              );
+                                                            });
+                                                      } else {
+                                                        showDialog(
+                                                            context: context,
+                                                            builder: (context) {
+                                                              return AlertDialog(
+                                                                title: Text(
+                                                                    "Message"),
+                                                                content: Text(value[
+                                                                    "message"]),
+                                                                actions: <
+                                                                    Widget>[
+                                                                  TextButton(
+                                                                    onPressed:
+                                                                        () {
+                                                                      Navigator.pop(
+                                                                          context);
+                                                                    },
+                                                                    child: Text(
+                                                                      'OK',
+                                                                      style: TextStyle(
+                                                                          color:
+                                                                              Theme.of(context).primaryColor),
+                                                                    ),
+                                                                  )
+                                                                ],
+                                                              );
+                                                            });
+                                                      }
+                                                    });
+                                                  }
                                                 } else {}
                                               },
                                               child: Text(
@@ -396,12 +556,8 @@ class _TrackRequestScreenState extends State<TrackRequestScreen> {
                               );
                             });
                           });
-                   
-                   
                     },
-                   
-                    child: Row(
-                      children: [
+                    child: Row(children: [
                       Icon(
                         Icons.more_sharp,
                         color: Theme.of(context).accentColor,
@@ -422,8 +578,6 @@ class _TrackRequestScreenState extends State<TrackRequestScreen> {
                         primary: Colors.white),
                   ),
                 ),
-               
-               
                 Container(
                   height: 45.0,
                   // decoration: BoxDecoration(
@@ -466,6 +620,7 @@ class _TrackRequestScreenState extends State<TrackRequestScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldkey,
       appBar: AppBar(
         title: Text("Track Request "),
         backgroundColor: Theme.of(context).primaryColor,
@@ -520,42 +675,57 @@ class _TrackRequestScreenState extends State<TrackRequestScreen> {
                           Text(" | "),
                           _buildClientInfo("Service", _request["service_name"]),
                           Text(" | "),
-                          _buildClientInfo("Amount",
-                              currency.symbol + _request["userType"]==3 && _request["requestStatus"]==1?_request["amountForDistance"].toString() : _request["amount"].toString()),
+                          _buildClientInfo(
+                              "Amount",
+                              currency.symbol +
+                                  (_request["userType"] == 3 &&
+                                          _request["requestStatus"] <= 3
+                                      ? _request["amountForDistance"].toString()
+                                      : _request["amount"].toString())),
                         ],
                       ),
                     ),
                   ),
-                  SizedBox(height: 10,),
-                   Padding(
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     child: SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          PaymentMethodSection(paymentMethod: _request["paymentMethod"]),
+                          PaymentMethodSection(
+                              paymentMethod: _request["paymentMode"]),
                           Text(" | "),
-                          _request["userType"]==3? _buildClientInfo("No. of Trips", _request["selected_trip"].toString()):Container()
-                         
+                          _request["userType"] == 3
+                              ? _buildClientInfo("No. of Trips",
+                                  _request["selected_trip"].toString())
+                              : Container()
                         ],
                       ),
                     ),
                   ),
-
-
-                  _request["userType"]==3?Padding(
-                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: Align(alignment: Alignment.topLeft, child: _buildClientInfo("No. of Trips", _request["selected_trip"].toString())),
-                  ):Container(),
-
+                  _request["userType"] == 3
+                      ? Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                          child: Align(
+                              alignment: Alignment.topLeft,
+                              child: _buildClientInfo("No. of Trips",
+                                  _request["selected_trip"].toString())),
+                        )
+                      : Container(),
                   Divider(),
-
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child:AddressDetail(userType: _request["userType"], startAddress: _request["address"],destinationAdress: _request["userType"]==3?_request["address_destination"]:"",)
-                    
-                  ),
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      child: AddressDetail(
+                        userType: _request["userType"],
+                        startAddress: _request["address"],
+                        destinationAdress: _request["userType"] == 3
+                            ? _request["address_destination"]
+                            : "",
+                      )),
                   Divider(),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -568,18 +738,25 @@ class _TrackRequestScreenState extends State<TrackRequestScreen> {
                         SizedBox(
                           height: 10,
                         ),
-                         TrackStatus(
-                          title:_request["requestStatus"]> 2?"Confirmed by Customer":"Waiting for Customer Payment Confirmation",
+                        TrackStatus(
+                          title: _request["requestStatus"] > 2
+                              ? "Confirmed by Customer"
+                              : "Waiting for Customer Payment Confirmation",
                           status: _request["requestStatus"] > 2 ? true : false,
                         ),
-                       SizedBox(height: 10,),
+                        SizedBox(
+                          height: 10,
+                        ),
                         TrackStatus(
-                          title: _request["requestStatus"]>3 ?"Request Completed":"Request Not Completed",
+                          title: _request["requestStatus"] > 3
+                              ? "Request Completed"
+                              : "Request Not Completed",
                           status: _request["requestStatus"] > 3 ? true : false,
                         )
                       ],
                     ),
                   ),
+                  _buildArrivedButton(),
                   _buildMore()
                 ],
               ),

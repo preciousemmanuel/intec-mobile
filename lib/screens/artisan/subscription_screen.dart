@@ -25,15 +25,24 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   final GlobalKey<ScaffoldState> scaffoldkey = new GlobalKey();
 
   bool _isProcessingPayment=false;
+  int _subscription_fee=2000;
 
   initState() {
     super.initState();
    
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-     
+     getSubcriptionFee();
     });
   }
 
+void getSubcriptionFee()async{
+ Map<String,dynamic> result= await  Provider.of<ProfileProvider>(context, listen: false).fetch_subcription_amount();
+if (result["status"]) {
+  setState(() {
+    _subscription_fee=result["data"];
+  });
+}
+}
 
 
   void ShowSnackBar(String title, bool status) {
@@ -41,7 +50,6 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
       content: Text(title),
       backgroundColor: status ? Colors.green : Colors.red,
     );
-    // scaffoldkey.currentState!.showSnackBar(snackbar);
     ScaffoldMessenger.of(context).showSnackBar(snackbar);
   }
 
@@ -92,7 +100,7 @@ _handleSubscription(BuildContext context) async {
     setState(() {
       _isProcessingPayment=true;
     });
-    PaystackPayment paystack= PaystackPayment(2000,Provider.of<User>(context, listen: false).email??"");
+    PaystackPayment paystack= PaystackPayment(_subscription_fee,Provider.of<User>(context, listen: false).email??"");
    var response= await paystack.chargeCard(context);
    print("woringRT");
    print(response);
@@ -152,12 +160,25 @@ ShowSnackBar(response.message, false);
           height: MediaQuery.of(context).size.height,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(
+          child:context.watch<ProfileProvider>().loading? Center(
+                child: Column(
+                  children: [
+                    CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                          Theme.of(context).primaryColor),
+                    ),
+                    SizedBox(
+                      height: 20.0,
+                    ),
+                    Text("Please wait...")
+                  ],
+                ),
+              ): Column(
             
             children: [
               SizedBox(height: 30,),
               
-Text("For you to continue to be listed on customers page , pay the yearly subscription fee of ${currency.symbol}2000.",style:TextStyle(fontWeight: FontWeight.bold)),
+Text("For you to continue to be listed on customers page , pay the yearly subscription fee of ${currency.symbol}$_subscription_fee.",style:TextStyle(fontWeight: FontWeight.bold)),
 
 SizedBox(height: 40,),
 _buildSubmitButton(context)

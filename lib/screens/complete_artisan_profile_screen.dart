@@ -3,6 +3,7 @@ import 'package:intechpro/model/sub_service.dart';
 import 'package:intechpro/model/user.dart';
 import 'package:intechpro/providers/profile_provider.dart';
 import 'package:intechpro/providers/service_provider.dart';
+import 'package:intechpro/screens/image_upload_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'home_artisan_screen.dart';
@@ -76,9 +77,19 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
             Provider.of<ServiceProvider>(context, listen: false).getService.uid,
             _selectedService);
     if (response["status"]) {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => HomeArtisanScreen()),
-      );
+      if (widget.userType == 4) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => HomeArtisanScreen()),
+        );
+      } else {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (_) => ImageUploadScreen(
+              userType: widget.userType,
+            ),
+          ),
+        );
+      }
     } else {
       ShowSnackBar(response["message"], false);
     }
@@ -173,7 +184,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                             return _buildItemCard(subservice);
                           }),
                     ),
-                    SizedBox(height:100)
+                    SizedBox(height: 100)
                   ],
                 ),
         ),

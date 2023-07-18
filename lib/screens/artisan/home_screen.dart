@@ -10,12 +10,17 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intechpro/model/currency.dart';
+import 'package:intechpro/model/product.dart';
 import 'package:intechpro/providers/artisan_request_provider.dart';
 import 'package:intechpro/providers/profile_provider.dart';
 import 'package:intechpro/providers/service_provider.dart';
+import 'package:intechpro/screens/artisan/product_screen.dart';
 import 'package:intechpro/screens/artisan/track_request_screen.dart';
+import 'package:intechpro/screens/image_upload_screen.dart';
 import 'package:intechpro/widgets/address_detail.dart';
 import 'package:intechpro/widgets/artisan_request_card.dart';
+import 'package:intechpro/widgets/product_artisan_card.dart';
+import 'package:intechpro/widgets/product_search_text.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -39,30 +44,55 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   initState() {
-    
-    getUserServiceandSubService();
     // WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
     //   Provider.of<ServiceProvider>(context, listen: false)
     //       .fetch_service_and_sub_by_userType(Provider.of<ProfileProvider>(context,listen:false).profile.userType);
     // });
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-    mainInit();
-    newRequestInit();
+      getUserServiceandSubService();
+      if (Provider.of<ProfileProvider>(context, listen: false)
+              .profile
+              .userType ==
+          4) {
+        print("oiuwoo###");
+        fetch_products();
+      } else {
+        print("udgh##");
+        mainInit();
+        newRequestInit();
+      }
     });
 
     super.initState();
   }
 
+  Future<void> fetch_products() async {
+    await Provider.of<ProfileProvider>(context, listen: false).fetch_products(
+        Provider.of<ProfileProvider>(context, listen: false).profile.uid);
+  }
+
   void getUserServiceandSubService() async {
-    Map<String, dynamic> response =
-        await Provider.of<ServiceProvider>(context, listen: false)
-            .fetch_service_and_sub_by_id(
-                Provider.of<ProfileProvider>(context, listen: false)
-                    .profile
-                    .serviceId,
-                Provider.of<ProfileProvider>(context, listen: false)
-                    .profile
-                    .subServiceId);
+    print("hiiddd###");
+    print(
+        Provider.of<ProfileProvider>(context, listen: false).profile.serviceId);
+    if (Provider.of<ProfileProvider>(context, listen: false)
+                .profile
+                .serviceId !=
+            null &&
+        Provider.of<ProfileProvider>(context, listen: false)
+            .profile
+            .serviceId
+            .isNotEmpty) {
+      Map<String, dynamic> response =
+          await Provider.of<ServiceProvider>(context, listen: false)
+              .fetch_service_and_sub_by_id(
+                  Provider.of<ProfileProvider>(context, listen: false)
+                      .profile
+                      .serviceId,
+                  Provider.of<ProfileProvider>(context, listen: false)
+                      .profile
+                      .subServiceId);
+    }
   }
 
   Future<void> newRequestInit() async {
@@ -85,10 +115,10 @@ class _HomeScreenState extends State<HomeScreen> {
           _isnewRequest = true;
           _newRequest = values;
         });
-      }else{
+      } else {
         setState(() {
           _isnewRequest = false;
-         // _newRequest = values;
+          // _newRequest = values;
         });
       }
       // List respList=values.entries.map(( key,entry){
@@ -104,140 +134,140 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+//   Future<void> mainInit() async {
+//     setState(() {
+//       _isLoading = true;
+//     });
+//     print("heieo");
+//     print(_request);
+
+// // QuerySnapshot data = await  FirebaseFirestore.instance.collection("requests").where("artisans.",isEqualTo:serviceId )
+// //        .where("subServiceId",isEqualTo:subServiceId )
+// //         .where("active",isEqualTo:true )
+// //        .get();
+
+//     print(Provider.of<User>(context, listen: false).uid);
+//     _dbRef = FirebaseDatabase.instance.ref("queue");
+//     DataSnapshot event = await _dbRef
+//      //.orderByValue()
+//     //.orderByKey()
+//         .orderByChild("artisan/uid")
+
+//         .equalTo(Provider.of<User>(context, listen: false).uid)
+//         .get();
+//     //_dbRef.child("request/${Provider.of<User>(context,listen:false).uid}");
+
+//     // _requestSubscription = _dbRef.onValue.listen((DatabaseEvent event) {
+//     // DatabaseEvent event=await _dbRef.once();
+//     print("poas##");
+//     print(event.value);
+
+//     Map<dynamic, dynamic> data = event.value as Map<dynamic, dynamic>;
+//     // List respList=values.entries.map(( key,entry){
+
+//     // }).toList();
+//     //   print("mop3#o##");
+//     //  print(data.values);
+//     setState(() {
+//       _isLoading = false;
+//       _request = [];
+//     });
+//     if (event.value != null && data.values.isNotEmpty) {
+//       print("her##");
+//       List _newArray=[];
+//       //  print(values["request"]);
+//       setState(() {
+//         // _isLoading = false;
+//         _error = null;
+
+//         //final reversMap=LinkedHashMap.fromEntries(data.values.toList().reversed);
+//         data.values.forEach((value) {
+//           print("postdat");
+//           print(value);
+//           // print(key);
+//           _newArray.add(value);
+//         });
+//         // for (var value in event.snapshot.value) {
+//         //   _request.add(value);
+//         // }
+
+//         print("list data#");
+//         print(_newArray);
+//         for (var i = _newArray.length-1; i >=0 ; i--) {
+//           print("lko##");
+//           print(i);
+//           print(_newArray[i]);
+//           _request.add(_newArray[i]);
+//         }
+
+//         print(_request);
+
+//         // _request = event.snapshot.value;
+//       });
+//     }
+//     // }, onError: (Object o) {
+//     //   final error = o as FirebaseException;
+//     //   print(error);
+//     //   setState(() {
+//     //     _isLoading = false;
+//     //     _error = error;
+//     //   });
+//     // });
+//   }
+
   Future<void> mainInit() async {
     setState(() {
       _isLoading = true;
     });
-    print("heieo");
+    print("uiid");
     print(_request);
-
-// QuerySnapshot data = await  FirebaseFirestore.instance.collection("requests").where("artisans.",isEqualTo:serviceId )
-//        .where("subServiceId",isEqualTo:subServiceId )
-//         .where("active",isEqualTo:true )
-//        .get();
-
     print(Provider.of<User>(context, listen: false).uid);
-    _dbRef = FirebaseDatabase.instance.ref("queue");
-    DataSnapshot event = await _dbRef
-     //.orderByValue()
-    //.orderByKey()
-        .orderByChild("artisan/uid")
-        
-        .equalTo(Provider.of<User>(context, listen: false).uid)
-        .get();
+    _dbRef = FirebaseDatabase.instance
+        .ref("request/${Provider.of<User>(context, listen: false).uid}");
     //_dbRef.child("request/${Provider.of<User>(context,listen:false).uid}");
 
-    // _requestSubscription = _dbRef.onValue.listen((DatabaseEvent event) {
-    // DatabaseEvent event=await _dbRef.once();
-    print("poas##");
-    print(event.value);
+    _requestSubscription = _dbRef.onValue.listen((DatabaseEvent event) {
+      print("aboutDB#");
+      print(event.snapshot.value);
+      Map<dynamic, dynamic> values =
+          event.snapshot.value as Map<dynamic, dynamic>;
+      // List respList=values.entries.map(( key,entry){
 
-    Map<dynamic, dynamic> data = event.value as Map<dynamic, dynamic>;
-    // List respList=values.entries.map(( key,entry){
-
-    // }).toList();
-    //   print("mop3#o##");
-    //  print(data.values);
-    setState(() {
-      _isLoading = false;
-      _request = [];
-    });
-    if (event.value != null && data.values.isNotEmpty) {
-      print("her##");
-      List _newArray=[];
-      //  print(values["request"]);
+      // }).toList();
       setState(() {
-        // _isLoading = false;
-        _error = null;
-        
-        //final reversMap=LinkedHashMap.fromEntries(data.values.toList().reversed);
-        data.values.forEach((value) {
-          print("postdat");
-          print(value);
-          // print(key);
-          _newArray.add(value);
-        });
-        // for (var value in event.snapshot.value) {
-        //   _request.add(value);
-        // }
-
-        print("list data#");
-        print(_newArray);
-        for (var i = _newArray.length-1; i >=0 ; i--) {
-          print("lko##");
-          print(i);
-          print(_newArray[i]);
-          _request.add(_newArray[i]);
-        }
-
-        print(_request);
-
-        // _request = event.snapshot.value;
+        _isLoading = false;
+        _request = [];
       });
-    }
-    // }, onError: (Object o) {
-    //   final error = o as FirebaseException;
-    //   print(error);
-    //   setState(() {
-    //     _isLoading = false;
-    //     _error = error;
-    //   });
-    // });
+      if (values != null && values.isNotEmpty) {
+        print("her##");
+        print(values["request"]);
+        setState(() {
+          _isLoading = false;
+          _error = null;
+          values.forEach((key, value) {
+            print("postdat");
+            print(value);
+            print(key);
+            _request.add(value);
+          });
+          // for (var value in event.snapshot.value) {
+          //   _request.add(value);
+          // }
+          print("list data#");
+          print(_request);
+
+          // _request = event.snapshot.value;
+        });
+      }
+    }, onError: (Object o) {
+      final error = o as FirebaseException;
+      print(error);
+      setState(() {
+        _isLoading = false;
+        _error = error;
+      });
+    });
   }
-
-  // Future<void> mainInit() async {
-  //   setState(() {
-  //     _isLoading = true;
-  //   });
-  //   print("uiid");
-  //   print(_request);
-  //   print(Provider.of<User>(context, listen: false).uid);
-  //   _dbRef = FirebaseDatabase.instance
-  //       .ref("request/${Provider.of<User>(context, listen: false).uid}");
-  //   //_dbRef.child("request/${Provider.of<User>(context,listen:false).uid}");
-
-  //   _requestSubscription = _dbRef.onValue.listen((DatabaseEvent event) {
-  //     print("aboutDB#");
-  //     print(event.snapshot.value);
-  //     Map<dynamic, dynamic> values =
-  //         event.snapshot.value as Map<dynamic, dynamic>;
-  //     // List respList=values.entries.map(( key,entry){
-
-  //     // }).toList();
-  //     setState(() {
-  //       _isLoading = false;
-  //       _request = [];
-  //     });
-  //     if (values.isNotEmpty) {
-  //       print("her##");
-  //       print(values["request"]);
-  //       setState(() {
-  //         _isLoading = false;
-  //         _error = null;
-  //         values.forEach((key, value) {
-  //           print("postdat");
-  //           print(value);
-  //           print(key);
-  //           _request.add(value);
-  //         });
-  //         // for (var value in event.snapshot.value) {
-  //         //   _request.add(value);
-  //         // }
-  //         print("list data#");
-  //         print(_request);
-
-  //         // _request = event.snapshot.value;
-  //       });
-  //     }
-  //   }, onError: (Object o) {
-  //     final error = o as FirebaseException;
-  //     print(error);
-  //     setState(() {
-  //       _isLoading = false;
-  //       _error = error;
-  //     });
-  //   });
-  // }
 
   @override
   void dispose() {
@@ -252,6 +282,53 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: status ? Colors.green : Colors.red,
     );
     ScaffoldMessenger.of(context).showSnackBar(snackbar);
+  }
+
+  void _onClickIReach(order_id) async {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("INFO!"),
+            content: Text("Have you arrived work/service location?"),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () async {
+                  Navigator.pop(context);
+                  Map<String, dynamic> response = await context
+                      .read<ArtisanRequestProvider>()
+                      .artisanIveArrived(order_id);
+
+                  if (response["status"]) {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => TrackRequestScreen(
+                          request_id: order_id,
+                          // userType: profile.userType,
+                        ),
+                      ),
+                    );
+                  } else {
+                    ShowSnackBar(response["message"], false);
+                  }
+                },
+                child: Text(
+                  'YES',
+                  style: TextStyle(color: Theme.of(context).primaryColor),
+                ),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  'NO',
+                  style: TextStyle(color: Colors.black),
+                ),
+              )
+            ],
+          );
+        });
   }
 
   void _handleAcceptRequest(order_id) async {
@@ -277,7 +354,7 @@ class _HomeScreenState extends State<HomeScreen> {
         await context.read<ArtisanRequestProvider>().acceptRequest(order_id);
     Navigator.of(context).pop();
     setState(() {
-      _isnewRequest=false;
+      _isnewRequest = false;
     });
     if (response["status"]) {
       showDialog(
@@ -426,22 +503,38 @@ class _HomeScreenState extends State<HomeScreen> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Text(
-                                          _newRequest["service_name"],
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold),
+                                        Expanded(
+                                          child: Text(
+                                            _newRequest["service_name"],
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold),
+                                          ),
                                         ),
                                         Text(
                                             currency.symbol +
-                                                _newRequest["amount"]
-                                                    .toString(),
+                                                (_newRequest["userType"] == 3 &&
+                                                        _newRequest[
+                                                                "requestStatus"] ==
+                                                            1
+                                                    ? _newRequest[
+                                                            "amountForDistance"]
+                                                        .toString()
+                                                    : _newRequest["amount"]
+                                                        .toString()),
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold))
                                       ],
                                     ),
                                     Divider(),
-
-                                    AddressDetail(userType: _newRequest["userType"], startAddress: _newRequest["address"],destinationAdress: _newRequest["userType"]==3?_newRequest["address_destination"]:"",)
+                                    AddressDetail(
+                                      userType: _newRequest["userType"],
+                                      startAddress: _newRequest["address"],
+                                      destinationAdress:
+                                          _newRequest["userType"] == 3
+                                              ? _newRequest[
+                                                  "address_destination"]
+                                              : "",
+                                    )
                                     // Row(
                                     //   children: [
                                     //     Icon(
@@ -562,6 +655,36 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Widget _showNoImageAlert() {
+    return Column(children: [
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Container(
+          padding: EdgeInsets.all(10),
+          decoration: BoxDecoration(color: Colors.red),
+          child: TextButton(
+            child: Text(
+                "Please click to update your profile image, to enable you get match.",
+                style: TextStyle(color: Colors.white)),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => ImageUploadScreen(
+                    userType: context.watch<ProfileProvider>().profile.userType,
+                    fromNav: "Profile",
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ),
+      SizedBox(
+        height: 10,
+      )
+    ]);
+  }
+
   Widget _showExpiredAlert() {
     return Column(children: [
       Padding(
@@ -585,12 +708,27 @@ class _HomeScreenState extends State<HomeScreen> {
     ]);
   }
 
+  handleOnChange(text) {
+    print("ryt##");
+    print(text);
+    Provider.of<ProfileProvider>(context, listen: false)
+        .getProductsSearcherd(text);
+  }
+
   @override
   Widget build(BuildContext context) {
-    print("countme#");
-    print(_request.length);
-    print(_request);
     return Scaffold(
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.add),
+          onPressed: () {
+            if (Provider.of<ProfileProvider>(context, listen: false)
+                    .profile
+                    .userType ==
+                4) {
+              Navigator.pushNamed(context, "/product_create");
+            }
+          },
+        ),
         key: scaffoldkey,
         appBar: AppBar(
           backgroundColor: Colors.white,
@@ -599,21 +737,21 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Text(
               "My Request",
               textAlign: TextAlign.center,
-              style: TextStyle(color:Colors.black ),
+              style: TextStyle(color: Colors.black),
             ),
           ),
         ),
         body: SingleChildScrollView(
           child: Container(
-             height: MediaQuery.of(context).size.height,
-          decoration: const BoxDecoration(
-              color: Colors.white,
-              image: DecorationImage(
-                  image: AssetImage("assets/images/background-front.jpg"),
-                  fit: BoxFit.cover)
+            height: MediaQuery.of(context).size.height,
+            decoration: const BoxDecoration(
+                color: Colors.white,
+                image: DecorationImage(
+                    image: AssetImage("assets/images/background-front.jpg"),
+                    fit: BoxFit.cover)
 
-              //image: DecorationImage(image: AssetImage("assets/images/backgound.jpg"),fit: BoxFit.cover)
-              ),
+                //image: DecorationImage(image: AssetImage("assets/images/backgound.jpg"),fit: BoxFit.cover)
+                ),
             child: Column(
               children: [
                 SizedBox(
@@ -623,7 +761,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 SizedBox(
                   height: 30,
                 ),
-           
+
+                context.watch<ProfileProvider>().profile.imageUrl == "" &&
+                        context.watch<ProfileProvider>().profile.userType < 4
+                    ? _showNoImageAlert()
+                    : Container(),
+
                 (context.watch<ProfileProvider>().profile.userType == 4 &&
                         (!context
                                 .watch<ProfileProvider>()
@@ -638,7 +781,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       context.watch<ServiceProvider>().getSubService.name,
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
-            
+
                 SizedBox(
                   height: 10,
                 ),
@@ -649,61 +792,146 @@ class _HomeScreenState extends State<HomeScreen> {
                     style: TextStyle(fontSize: 10),
                   ),
                 ),
+                Provider.of<ProfileProvider>(context, listen: false)
+                            .profile
+                            .userType ==
+                        4
+                    ? ProductSearch(
+                        onRefreshed: () {
+                          fetch_products();
+                        },
+                        onChange: handleOnChange,
+                      )
+                    : Container(),
                 SizedBox(
                   height: 10,
                 ),
-                _isLoading
+                context.watch<ProfileProvider>().loading || _isLoading
                     ? Center(
                         child: CircularProgressIndicator(
                           valueColor: AlwaysStoppedAnimation<Color>(
                               Theme.of(context).primaryColor),
                         ),
                       )
-                    : _request.isEmpty
+                    : (context.watch<ProfileProvider>().loading &&
+                            _request.isEmpty)
                         ? Column(
-                          children: [
-                            SizedBox(
-                              height: 100,
-                            ),
-                            Icon(
-                              Icons.hourglass_empty,
-                              color: Theme.of(context).primaryColor,
-                            ),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            Text(
-                              "No Request Yet",
-                              style: TextStyle(
-                                  color: Theme.of(context).primaryColor),
-                            )
-                          ],
-                        )
-                        : RefreshIndicator(
-                            onRefresh: () {
-                              return mainInit();
-                            },
-                            child: SizedBox(
-                              height: 500,
+                            children: [
+                              SizedBox(
+                                height: 100,
+                              ),
+                              Icon(
+                                Icons.hourglass_empty,
+                                color: Theme.of(context).primaryColor,
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              Text(
+                                context
+                                            .watch<ProfileProvider>()
+                                            .profile
+                                            .userType ==
+                                        4
+                                    ? "No Items Added. Create Products"
+                                    : "No Request Yet",
+                                style: TextStyle(
+                                    color: Theme.of(context).primaryColor),
+                              )
+                            ],
+                          )
+                        : Expanded(
+                            // height: 500,
+                            child: RefreshIndicator(
+                              onRefresh: () {
+                                return Provider.of<ProfileProvider>(context,
+                                                listen: false)
+                                            .profile
+                                            .userType ==
+                                        4
+                                    ? fetch_products()
+                                    : mainInit();
+                              },
                               child: ListView.builder(
                                   shrinkWrap: true,
                                   physics: AlwaysScrollableScrollPhysics(),
-                                  itemCount: _request.length,
-                                  itemBuilder: (BuildContext context, int index) {
-                                    Map<dynamic, dynamic> data = _request[index];
+                                  itemCount: context
+                                              .watch<ProfileProvider>()
+                                              .profile
+                                              .userType ==
+                                          4
+                                      ? Provider.of<ProfileProvider>(context,
+                                              listen: false)
+                                          .getProducts
+                                          .length
+                                      : _request.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    var data;
+                                    if (context
+                                            .watch<ProfileProvider>()
+                                            .profile
+                                            .userType ==
+                                        4) {
+                                      data = context
+                                          .watch<ProfileProvider>()
+                                          .getProducts[index];
+                                    } else {
+                                      data = _request[index];
+                                    }
+
                                     return Padding(
-                                      padding: const EdgeInsets.all(20.0),
-                                      child: ArtisanRequestCard(
-                                        request: data,
-                                        onAcceptRequest: () {
-                                          _handleAcceptRequest(data["order_id"]);
-                                        },
-                                      ),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 20.0, vertical: 10),
+                                      child: context
+                                                  .watch<ProfileProvider>()
+                                                  .profile
+                                                  .userType ==
+                                              4
+                                          ? ProductArtisanCard(
+                                              onTap: () {
+                                                Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                    builder: (_) =>
+                                                        ProductScreen(
+                                                      productId: data.uid,
+                                                      action: "update",
+                                                      // userType: profile.userType,
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                              product: data as Product)
+                                          : ArtisanRequestCard(
+                                              request: data,
+                                              onAcceptRequest: () {
+                                                _handleAcceptRequest(
+                                                    data["order_id"]);
+                                              },
+                                              onClickIReach: () {
+                                                _onClickIReach(
+                                                    data["order_id"]);
+                                              },
+                                            ),
                                     );
                                   }),
                             ),
                           ),
-               
+                SizedBox(
+                  height: 200,
+                ),
+
+                // FloatingActionButton(
+                //   onPressed: () {
+                //     Navigator.pushNamed(context, "/product_create");
+                //   },
+                //   child: IconButton(
+                //     icon: Icon(Icons.add),
+                //     onPressed: () {
+                //       Navigator.pushNamed(context, "/product_create");
+                //     },
+                //   ),
+                // )
                 //ArtisanRequestCard()
               ],
             ),

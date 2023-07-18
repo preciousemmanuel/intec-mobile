@@ -13,6 +13,7 @@ import 'package:intechpro/widgets/cancel_tile.dart';
 import 'package:intechpro/widgets/payment_method_section.dart';
 import 'package:intechpro/widgets/track_status.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:intechpro/widgets/drawer.dart';
@@ -43,9 +44,13 @@ class _RequestStatusScreenState extends State<RequestStatusScreen> {
   bool initialized = false;
   late DatabaseReference _dbRef;
   late StreamSubscription<DatabaseEvent> _orderSubscription;
-
+  double _userRating = 3.0;
+  int _ratingBarMode = 1;
+  double _initialRating = 1.0;
   double latitude = 0.001;
   double longitude = 0.999;
+
+  TextEditingController _rateDetailController = new TextEditingController();
 
   String address = "";
   Completer<GoogleMapController> _controller = Completer();
@@ -214,12 +219,19 @@ class _RequestStatusScreenState extends State<RequestStatusScreen> {
           ),
           Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: TrackStatus(
+              child:_request["requestStatus"] >2 && (_request["hasArrived"] == null || !_request["hasArrived"])? TrackStatus(
                 title: _request["artisan"]["userType"] == 2
                     ? 'Artisan on the way to the location'
                     : _request["artisan"]["userType"] == 3
                         ? "Truck Driver On the way"
                         : "Supplier On the way",
+                status: true,
+              ):TrackStatus(
+                title: _request["artisan"]["userType"] == 2
+                    ? 'Artisan has arrived at '+_request["time_artisan_arrived"]
+                    : _request["artisan"]["userType"] == 3
+                        ? "Truck Driver On the way "+_request["time_artisan_arrived"]
+                        : "Supplier On the way "+_request["time_artisan_arrived"],
                 status: true,
               )),
           SizedBox(
@@ -255,16 +267,23 @@ class _RequestStatusScreenState extends State<RequestStatusScreen> {
             child: Row(
               children: [
                 Container(
-                  width: 60,
-                  height: 60,
+                  width: 70,
+                  height: 70,
                   decoration:
                       BoxDecoration(borderRadius: BorderRadius.circular(50)),
-                  child: Image.asset(
-                    "assets/images/user.png",
-                    width: 60,
-                    height: 60,
-                    fit: BoxFit.cover,
-                  ),
+                  child: !_request["artisan"].containsKey("imageurl") ?  Image.asset(
+                          "assets/images/user.png",
+                          width: 60,
+                          height: 60,
+                        ):
+                        CircleAvatar(
+                          backgroundImage: AssetImage("assets/images/user.png"),
+                          radius: 70,
+                          
+                          child: CircleAvatar(
+                            radius: 70,
+                            backgroundImage: NetworkImage(_request["artisan"]["imageurl"]),),
+                        ),
                 ),
                 SizedBox(
                   width: 10,
@@ -363,7 +382,6 @@ class _RequestStatusScreenState extends State<RequestStatusScreen> {
     print(title);
     return ListTile(
         onTap: () {
-        
           print(title);
           setState(() {
             _selectedCancelOption = title;
@@ -489,89 +507,197 @@ class _RequestStatusScreenState extends State<RequestStatusScreen> {
                       //   borderRadius: BorderRadius.circular(10)
                       // ),
                       // width: double.infinity,
-                      child: context
-                                            .watch<ServicePaymentProvider>()
-                                            .isSubmitting
-                                        ? Align(
-                                            alignment: Alignment.center,
-                                            child: CircularProgressIndicator(
-                                                valueColor:
-                                                    AlwaysStoppedAnimation<
-                                                            Color>(
-                                                        Theme.of(context)
-                                                            .primaryColor)),
-                                          ): ElevatedButton(
+                      child: ElevatedButton(
                         onPressed: () {
-                            context
-                                                      .read<
-                                                          ServicePaymentProvider>()
-                                                      .approveArtisanPayment(
-                                                        _request["order_id"],
-                                                        
-                                                      )
-                                                      .then((value) {
-                                                    if (value["status"]) {
-                                                      showDialog(
-                                                          context: context,
-                                                          builder: (context) {
-                                                            return AlertDialog(
-                                                              title: Text(
-                                                                  "Message"),
-                                                              content: Text(
-                                                                    "You have successfully approved the payment request."),
-                                                              actions: <Widget>[
-                                                                TextButton(
-                                                                  onPressed:
-                                                                      () {
-                                                                    Navigator.pop(
-                                                                        context);
-                                                                    // Navigator.of(context).pushAndRemoveUntil(
-                                                                    //     MaterialPageRoute(
-                                                                    //         builder: (BuildContext context) =>
-                                                                    //             HomeArtisanScreen()),
-                                                                    //     (Route<dynamic>
-                                                                    //             route) =>
-                                                                    //         false);
-                                                                  },
-                                                                  child: Text(
-                                                                    'OK',
-                                                                    style: TextStyle(
-                                                                        color: Theme.of(context)
-                                                                            .primaryColor),
-                                                                  ),
-                                                                )
-                                                              ],
-                                                            );
-                                                          });
-                                                    } else {
-                                                      showDialog(
-                                                          context: context,
-                                                          builder: (context) {
-                                                            return AlertDialog(
-                                                              title: Text(
-                                                                  "Message"),
-                                                              content: Text(value[
-                                                                  "message"]),
-                                                              actions: <Widget>[
-                                                                TextButton(
-                                                                  onPressed:
-                                                                      () {
-                                                                    Navigator.pop(
-                                                                        context);
-                                                                  },
-                                                                  child: Text(
-                                                                    'OK',
-                                                                    style: TextStyle(
-                                                                        color: Theme.of(context)
-                                                                            .primaryColor),
-                                                                  ),
-                                                                )
-                                                              ],
-                                                            );
-                                                          });
-                                                    }
-                                                  });
-                                                
+                          showModalBottomSheet(
+                              context: context,
+                              builder: (context) {
+                                return StatefulBuilder(builder:
+                                    (BuildContext context,
+                                        StateSetter setSheetState) {
+                                  return Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 20, vertical: 30),
+                                    child: ListView(
+                                      children: [
+                                        Text(
+                                          "Customer Satisfaction Rating",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 20),
+                                        ),
+                                        SizedBox(
+                                          height: 30,
+                                        ),
+                                        RatingBar.builder(
+                                          initialRating: _initialRating,
+                                          onRatingUpdate: (rating) {
+                                            print("rateintg#");
+                                            print(rating);
+                                            _initialRating = rating;
+                                          },
+                                          itemCount: 5,
+                                          itemSize: 50.0,
+                                          itemBuilder: (context, _) => Icon(
+                                            Icons.star,
+                                            color:
+                                                Theme.of(context).accentColor,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        TextFormField(
+                                          maxLines: 3,
+                                          //  keyboardType: TextInputType.phone,
+                                          controller: _rateDetailController,
+                                          // validator: (value) {
+                                          //   if (value == "") {
+                                          //     return "Please Enter Identification Number";
+                                          //   }
+                                          // },
+                                          decoration: InputDecoration(
+                                              labelText:
+                                                  "Describe the experience",
+                                              // filled: true,
+                                              labelStyle: TextStyle(
+                                                  color: Color(0xff52575C)),
+                                              focusedBorder: OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color: Theme.of(context)
+                                                          .accentColor)),
+                                              enabledBorder: OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color:
+                                                          Color(0xff52575C)))),
+                                        ),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        context
+                                                .watch<ServicePaymentProvider>()
+                                                .isSubmitting
+                                            ? Align(
+                                                alignment: Alignment.center,
+                                                child: CircularProgressIndicator(
+                                                    valueColor:
+                                                        AlwaysStoppedAnimation<
+                                                                Color>(
+                                                            Theme.of(context)
+                                                                .primaryColor)),
+                                              )
+                                            : Container(
+                                                height: 40,
+                                                child: ElevatedButton(
+                                                  child: Text(
+                                                    "Submit",
+                                                    style: TextStyle(
+                                                        color: Colors.white),
+                                                  ),
+                                                  onPressed: () {
+                                                    context
+                                                        .read<
+                                                            ServicePaymentProvider>()
+                                                        .approveArtisanPayment(
+                                                            _request[
+                                                                "order_id"],
+                                                            _rateDetailController
+                                                                .text,
+                                                            _initialRating)
+                                                        .then((value) {
+                                                      if (value["status"]) {
+                                                        showDialog(
+                                                            context: context,
+                                                            builder: (context) {
+                                                              return AlertDialog(
+                                                                title: Text(
+                                                                    "Message"),
+                                                                content: Text(_request[
+                                                                            "paymentMode"] <
+                                                                        3
+                                                                    ? "You have successfully approved the payment request."
+                                                                    : "Rating sent Successfull! Pay the cash for the service done."),
+                                                                actions: <
+                                                                    Widget>[
+                                                                  TextButton(
+                                                                    onPressed:
+                                                                        () {
+                                                                      Navigator.pushNamed(
+                                                                          context,
+                                                                          "/customer_requests");
+                                                                      // Navigator.pop(
+                                                                      //     context);
+                                                                      // Navigator.of(context).pushAndRemoveUntil(
+                                                                      //     MaterialPageRoute(
+                                                                      //         builder: (BuildContext context) =>
+                                                                      //             HomeArtisanScreen()),
+                                                                      //     (Route<dynamic>
+                                                                      //             route) =>
+                                                                      //         false);
+                                                                    },
+                                                                    child: Text(
+                                                                      'OK',
+                                                                      style: TextStyle(
+                                                                          color:
+                                                                              Theme.of(context).primaryColor),
+                                                                    ),
+                                                                  )
+                                                                ],
+                                                              );
+                                                            });
+                                                      } else {
+                                                        showDialog(
+                                                            context: context,
+                                                            builder: (context) {
+                                                              return AlertDialog(
+                                                                title: Text(
+                                                                    "Message"),
+                                                                content: Text(value[
+                                                                    "message"]),
+                                                                actions: <
+                                                                    Widget>[
+                                                                  TextButton(
+                                                                    onPressed:
+                                                                        () {
+                                                                      Navigator.pop(
+                                                                          context);
+                                                                    },
+                                                                    child: Text(
+                                                                      'OK',
+                                                                      style: TextStyle(
+                                                                          color:
+                                                                              Theme.of(context).primaryColor),
+                                                                    ),
+                                                                  )
+                                                                ],
+                                                              );
+                                                            });
+                                                      }
+                                                    });
+                                                  },
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                          shape:
+                                                              StadiumBorder(),
+                                                          side: BorderSide(
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .accentColor),
+                                                          padding: EdgeInsets
+                                                              .symmetric(
+                                                                  horizontal:
+                                                                      15,
+                                                                  vertical: 5),
+                                                          primary:
+                                                              Theme.of(context)
+                                                                  .accentColor),
+                                                ),
+                                              )
+                                      ],
+                                    ),
+                                  );
+                                });
+                              });
                         },
                         child: Row(children: [
                           Icon(Icons.check),
@@ -601,158 +727,169 @@ class _RequestStatusScreenState extends State<RequestStatusScreen> {
                       // width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () {
-                           showModalBottomSheet(
-                          context: context,
-                          builder: (context) {
-                            return StatefulBuilder(builder:
-                                (BuildContext context,
-                                    StateSetter setSheetState) {
-                              return Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 10),
-                                child: ListView(
-                                  children: [
-                                    SizedBox(
-                                      height: 30,
+                          showModalBottomSheet(
+                              context: context,
+                              builder: (context) {
+                                return StatefulBuilder(builder:
+                                    (BuildContext context,
+                                        StateSetter setSheetState) {
+                                  return Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 10),
+                                    child: ListView(
+                                      children: [
+                                        SizedBox(
+                                          height: 30,
+                                        ),
+                                        Text(
+                                          "Why do you want to decline payment?",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        _buildCancelTile("Task isnt completed",
+                                            "1", setSheetState),
+                                        Divider(),
+                                        _buildCancelTile(
+                                            "Worker is unavailable",
+                                            "2",
+                                            setSheetState),
+                                        Divider(),
+
+                                        // CancelTile(title: "", selected: ""),
+                                        context
+                                                .watch<ServicePaymentProvider>()
+                                                .isSubmitting
+                                            ? Align(
+                                                alignment: Alignment.center,
+                                                child:
+                                                    CircularProgressIndicator(
+                                                  valueColor:
+                                                      AlwaysStoppedAnimation<
+                                                              Color>(
+                                                          Theme.of(context)
+                                                              .primaryColor),
+                                                ),
+                                              )
+                                            : Container(
+                                                height: 40.0,
+                                                // decoration: BoxDecoration(
+                                                //   border: Border.all(color: Theme.of(context).primaryColor,width: 1),
+                                                //   borderRadius: BorderRadius.circular(10)
+                                                // ),
+                                                // width: double.infinity,
+                                                child: ElevatedButton(
+                                                  onPressed: () {
+                                                    if (_selectedCancelOption !=
+                                                        "") {
+                                                      context
+                                                          .read<
+                                                              ServicePaymentProvider>()
+                                                          .denyArtisanPayment(
+                                                              _request[
+                                                                  "order_id"],
+                                                              _selectedCancelOption)
+                                                          .then((value) {
+                                                        if (value["status"]) {
+                                                          showDialog(
+                                                              context: context,
+                                                              builder:
+                                                                  (context) {
+                                                                return AlertDialog(
+                                                                  title: Text(
+                                                                      "Message"),
+                                                                  content: Text(
+                                                                      "You have successfully denied the payment request."),
+                                                                  actions: <
+                                                                      Widget>[
+                                                                    TextButton(
+                                                                      onPressed:
+                                                                          () {
+                                                                        Navigator.pop(
+                                                                            context);
+                                                                        // Navigator.of(context).pushAndRemoveUntil(
+                                                                        //     MaterialPageRoute(
+                                                                        //         builder: (BuildContext context) =>
+                                                                        //             HomeArtisanScreen()),
+                                                                        //     (Route<dynamic>
+                                                                        //             route) =>
+                                                                        //         false);
+                                                                      },
+                                                                      child:
+                                                                          Text(
+                                                                        'OK',
+                                                                        style: TextStyle(
+                                                                            color:
+                                                                                Theme.of(context).primaryColor),
+                                                                      ),
+                                                                    )
+                                                                  ],
+                                                                );
+                                                              });
+                                                        } else {
+                                                          showDialog(
+                                                              context: context,
+                                                              builder:
+                                                                  (context) {
+                                                                return AlertDialog(
+                                                                  title: Text(
+                                                                      "Message"),
+                                                                  content: Text(
+                                                                      value[
+                                                                          "message"]),
+                                                                  actions: <
+                                                                      Widget>[
+                                                                    TextButton(
+                                                                      onPressed:
+                                                                          () {
+                                                                        Navigator.pop(
+                                                                            context);
+                                                                      },
+                                                                      child:
+                                                                          Text(
+                                                                        'OK',
+                                                                        style: TextStyle(
+                                                                            color:
+                                                                                Theme.of(context).primaryColor),
+                                                                      ),
+                                                                    )
+                                                                  ],
+                                                                );
+                                                              });
+                                                        }
+                                                      });
+                                                    } else {}
+                                                  },
+                                                  child: Text(
+                                                    "Continue ",
+                                                    style: TextStyle(
+                                                        color: Colors.white),
+                                                  ),
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                          shape:
+                                                              StadiumBorder(),
+                                                          side: BorderSide(
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .accentColor),
+                                                          padding: EdgeInsets
+                                                              .symmetric(
+                                                                  horizontal:
+                                                                      15,
+                                                                  vertical: 5),
+                                                          primary:
+                                                              Theme.of(context)
+                                                                  .accentColor),
+                                                ),
+                                              )
+                                      ],
                                     ),
-                                    Text(
-                                      "Why do you want to decline payment?",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    SizedBox(
-                                      height: 20,
-                                    ),
-                                    _buildCancelTile(
-                                        "Task isnt completed",
-                                        "1",
-                                        setSheetState),
-                                    Divider(),
-                                    _buildCancelTile(
-                                        "Worker is unavailable",
-                                        "2",
-                                        setSheetState),
-                                    Divider(),
-                                   
-                                    // CancelTile(title: "", selected: ""),
-                                    context
-                                            .watch<ServicePaymentProvider>()
-                                            .isSubmitting
-                                        ? Align(
-                                            alignment: Alignment.center,
-                                            child: CircularProgressIndicator(
-                                                valueColor:
-                                                    AlwaysStoppedAnimation<
-                                                            Color>(
-                                                        Theme.of(context)
-                                                            .primaryColor)),
-                                          )
-                                        : Container(
-                                            height: 40.0,
-                                            // decoration: BoxDecoration(
-                                            //   border: Border.all(color: Theme.of(context).primaryColor,width: 1),
-                                            //   borderRadius: BorderRadius.circular(10)
-                                            // ),
-                                            // width: double.infinity,
-                                            child: ElevatedButton(
-                                              onPressed: () {
-                                                if (_selectedCancelOption !=
-                                                    "") {
-                                                  
-                                                  context
-                                                      .read<
-                                                          ServicePaymentProvider>()
-                                                      .denyArtisanPayment(
-                                                        _request["order_id"],
-                                                        _selectedCancelOption
-                                                      )
-                                                      .then((value) {
-                                                    if (value["status"]) {
-                                                      showDialog(
-                                                          context: context,
-                                                          builder: (context) {
-                                                            return AlertDialog(
-                                                              title: Text(
-                                                                  "Message"),
-                                                              content: Text(
-                                                                    "You have successfully denied the payment request."),
-                                                              actions: <Widget>[
-                                                                TextButton(
-                                                                  onPressed:
-                                                                      () {
-                                                                    Navigator.pop(
-                                                                        context);
-                                                                    // Navigator.of(context).pushAndRemoveUntil(
-                                                                    //     MaterialPageRoute(
-                                                                    //         builder: (BuildContext context) =>
-                                                                    //             HomeArtisanScreen()),
-                                                                    //     (Route<dynamic>
-                                                                    //             route) =>
-                                                                    //         false);
-                                                                  },
-                                                                  child: Text(
-                                                                    'OK',
-                                                                    style: TextStyle(
-                                                                        color: Theme.of(context)
-                                                                            .primaryColor),
-                                                                  ),
-                                                                )
-                                                              ],
-                                                            );
-                                                          });
-                                                    } else {
-                                                      showDialog(
-                                                          context: context,
-                                                          builder: (context) {
-                                                            return AlertDialog(
-                                                              title: Text(
-                                                                  "Message"),
-                                                              content: Text(value[
-                                                                  "message"]),
-                                                              actions: <Widget>[
-                                                                TextButton(
-                                                                  onPressed:
-                                                                      () {
-                                                                    Navigator.pop(
-                                                                        context);
-                                                                  },
-                                                                  child: Text(
-                                                                    'OK',
-                                                                    style: TextStyle(
-                                                                        color: Theme.of(context)
-                                                                            .primaryColor),
-                                                                  ),
-                                                                )
-                                                              ],
-                                                            );
-                                                          });
-                                                    }
-                                                  });
-                                                
-                                                } else {}
-                                              },
-                                              child: Text(
-                                                "Continue ",
-                                                style: TextStyle(
-                                                    color: Colors.white),
-                                              ),
-                                              style: ElevatedButton.styleFrom(
-                                                  shape: StadiumBorder(),
-                                                  side: BorderSide(
-                                                      color: Theme.of(context)
-                                                          .accentColor),
-                                                  padding: EdgeInsets.symmetric(
-                                                      horizontal: 15,
-                                                      vertical: 5),
-                                                  primary: Theme.of(context)
-                                                      .accentColor),
-                                            ),
-                                          )
-                                  ],
-                                ),
-                              );
-                            });
-                          });
-                   
+                                  );
+                                });
+                              });
                         },
                         child: Row(children: [
                           Icon(Icons.cancel),
@@ -777,9 +914,19 @@ class _RequestStatusScreenState extends State<RequestStatusScreen> {
               ],
             ),
           ),
-
-          SizedBox(height: 20,)
+          SizedBox(
+            height: 20,
+          )
         ]));
+  }
+
+  _buildTimeArrived(){
+    return Column(
+      children: [
+        Divider(),
+        Text("Artisan arrive work location")
+      ],
+    );
   }
 
   @override
@@ -838,7 +985,9 @@ class _RequestStatusScreenState extends State<RequestStatusScreen> {
                             zoom: 11.0),
                       ),
                     ),
-                    _request["requestStatus"] == 4? _buildConfirmDeclinePay():Container(),
+                    _request["requestStatus"] == 4
+                        ? _buildConfirmDeclinePay()
+                        : Container(),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20.0),
                       child: Container(
@@ -905,7 +1054,7 @@ class _RequestStatusScreenState extends State<RequestStatusScreen> {
                         ),
                       ),
                     ),
-                   
+                    // _buildTimeArrived(),
                     _buildArtisanView(),
                     Divider(),
                     Padding(

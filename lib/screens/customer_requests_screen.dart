@@ -47,32 +47,43 @@ class _CustomerRequestsScreenState extends State<CustomerRequestsScreen> {
   }
 
   void _onHandleTap(Request request) {
-    //also check if not supplier then redirect to suppliers with the call phone number 
-    if (request.requestStatus>=1 && request.requestStatus<=2) {
+    //also check if not supplier then redirect to suppliers with the call phone number
+    if (request.requestStatus >= 1 && request.requestStatus <= 2) {
       print("fort#");
-      print(LatLng(request.customer_location["lat"], request.customer_location["lon"]));
-      Service service=Service(name: "",userType: request.userType,uid: request.parent_service_id,visible: true);
-      SubService subservice=SubService(name: request.service_name,uid: request.service_id,visible: true,hasTask:false,cost:request.amount.toInt(),serviceId: request.parent_service_id);
+      print(LatLng(
+          request.customer_location["lat"], request.customer_location["lon"]));
+      Service service = Service(
+          name: "",
+          userType: request.userType,
+          uid: request.parent_service_id,
+          visible: true);
+      SubService subservice = SubService(
+          name: request.service_name,
+          uid: request.service_id,
+          visible: true,
+          hasTask: false,
+          cost: request.amount.toInt(),
+          serviceId: request.parent_service_id);
       //SubService subservice=SubService(name: request.userType==2 && !request.service_name.contains("Request Assessment") ?"":request.service_name,uid: request.service_id,visible: true,hasTask: request.userType==2 && !request.service_name.contains("Request Assessment")?true:false,cost:int.parse(request.amount.toString()),serviceId: request.parent_service_id);
-     Navigator.push(
+      Navigator.push(
         context,
         MaterialPageRoute(
             builder: (_) => PaymentServiceScreen(
-                    destinationAddress: request.destination_address,
-                    requestId: request.uid,
-                    subservice: subservice,
-                    parentService: service,
-                    location: LatLng(request.customer_location["lat"], request.customer_location["lon"]),
-                    address: request.request_address)),
+                destinationAddress: request.destination_address,
+                requestId: request.uid,
+                subservice: subservice,
+                parentService: service,
+                location: LatLng(request.customer_location["lat"],
+                    request.customer_location["lon"]),
+                address: request.request_address)),
       );
     } else {
       Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (_) => RequestStatusScreen(request_id: request.uid)),);
+            builder: (_) => RequestStatusScreen(request_id: request.uid)),
+      );
     }
-
-    
   }
 
   @override
@@ -137,50 +148,54 @@ class _CustomerRequestsScreenState extends State<CustomerRequestsScreen> {
                       SizedBox(
                         height: 40,
                       ),
-                   context
-                              .watch<CustomerRequestProvider>()
-                              .getRequests
-                              .length==0? Column(
-                          children: [
-                            SizedBox(
-                              height: 100,
-                            ),
-                            Icon(
-                              Icons.hourglass_empty,
-                              color: Theme.of(context).primaryColor,
-                            ),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            Text(
-                              "You havent requested for a service.",
-                              style: TextStyle(
-                                  color: Theme.of(context).primaryColor),
+                      context
+                                  .watch<CustomerRequestProvider>()
+                                  .getRequests
+                                  .length ==
+                              0
+                          ? Column(
+                              children: [
+                                SizedBox(
+                                  height: 100,
+                                ),
+                                Icon(
+                                  Icons.hourglass_empty,
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                Text(
+                                  "You havent requested for a service.",
+                                  style: TextStyle(
+                                      color: Theme.of(context).primaryColor),
+                                )
+                              ],
                             )
-                          ],
-                        ) :   Expanded(
-                        child: ListView.separated(
-                          physics: BouncingScrollPhysics(),
-                          itemCount: context
-                              .watch<CustomerRequestProvider>()
-                              .getRequests
-                              .length,
-                          itemBuilder: (BuildContext context, int index) {
-                            Request request = context
-                                .watch<CustomerRequestProvider>()
-                                .getRequests[index];
+                          : Expanded(
+                              child: ListView.separated(
+                                physics: BouncingScrollPhysics(),
+                                itemCount: context
+                                    .watch<CustomerRequestProvider>()
+                                    .getRequests
+                                    .length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  Request request = context
+                                      .watch<CustomerRequestProvider>()
+                                      .getRequests[index];
 
-                            return RequestCard(
-                                onTap: () => _onHandleTap(request),
-                                request: request);
-                          },
-                          separatorBuilder: (BuildContext context, int index) {
-                            return SizedBox(
-                              height: 10,
-                            );
-                          },
-                        ),
-                      ),
+                                  return RequestCard(
+                                      onTap: () => _onHandleTap(request),
+                                      request: request);
+                                },
+                                separatorBuilder:
+                                    (BuildContext context, int index) {
+                                  return SizedBox(
+                                    height: 10,
+                                  );
+                                },
+                              ),
+                            ),
                     ]),
                   ),
           ),

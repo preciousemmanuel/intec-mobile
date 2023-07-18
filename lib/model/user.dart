@@ -11,9 +11,14 @@ class Profile {
   bool? busy;
   String address;
   String? state;
+  String? imageUrl;
+
   bool expired;
   bool hasSubscribed;
   bool active;
+  bool blocked;
+  bool verified;
+
 
   Profile(
       {required this.name,
@@ -26,11 +31,14 @@ class Profile {
       this.serviceId = "",
       this.subServiceId = "",
       this.address = "",
+      this.imageUrl="",
       this.busy,
       this.active=true,
       this.expired=false,
       this.hasSubscribed=false,
-      this.state
+      this.state,
+      this.blocked=false,
+      this.verified=false
 
       
       });
