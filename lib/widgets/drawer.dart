@@ -110,8 +110,14 @@ class AppDrawer extends StatelessWidget {
               _createDrawerItem(
                   icon: Icons.call,
                   text: "Any Issues? Contact us",
-                  onTap: () {
-                   // launch("tel://${contact_support}");
+                  onTap: () async {
+                    String url = "tel:${contact_support}";
+                    if (await canLaunchUrl(Uri.parse(url))) {
+                      await launchUrl(Uri.parse(url));
+                    } else {
+                      throw 'Could not launch $url';
+                    }
+                    //  launch("tel://${contact_support}");
                   }),
               Divider(),
               _createDrawerItem(

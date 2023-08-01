@@ -697,7 +697,7 @@ class _TrackRequestScreenState extends State<TrackRequestScreen> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           PaymentMethodSection(
-                              paymentMethod: _request["paymentMode"]),
+                              paymentMethod: _request["paymentMode"]??1),
                           Text(" | "),
                           _request["userType"] == 3
                               ? _buildClientInfo("No. of Trips",

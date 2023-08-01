@@ -45,12 +45,20 @@ class _SupplierProductScreen extends State<SupplierProductScreen> {
                  widget.service.uid);
    }
 
-  void onhandleTap() {
+  void onhandleTap() async{
     print("sher@##");
   
       //supplier just take them to call supplier
       //go to products screen
-      launch("tel://${widget.service.phone}");
+
+ String url = "tel:${widget.service.phone}";
+                    if (await canLaunchUrl(Uri.parse(url))) {
+                      await launchUrl(Uri.parse(url));
+                    } else {
+                      throw 'Could not launch $url';
+                    }
+
+     
     
   }
 
@@ -69,11 +77,11 @@ class _SupplierProductScreen extends State<SupplierProductScreen> {
   
       //supplier just take them to call supplier
       //go to products screen
-      if (await canLaunch(url())) {
-    await launch(url());
-  } else {
-    throw 'Could not launch ${url()}';
-  }
+      if (await canLaunchUrl(Uri.parse(url()))) {
+                      await launchUrl(Uri.parse(url()));
+                    } else {
+                      throw 'Could not launch $url()';
+                    }
 
     
   }

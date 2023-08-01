@@ -991,7 +991,7 @@ class _PaymentServiceScreenState extends State<PaymentServiceScreen> {
     return Scaffold(
       key: scaffoldkey,
       appBar: AppBar(
-        title: Text("Pay for Service"),
+        title: Text("Connect ServicePro"),
         backgroundColor: Theme.of(context).primaryColor,
       ),
       body: Container(

@@ -145,8 +145,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               Divider(),
               ListTile(
-                onTap: (){
-                  //launch("tel://${contact_support}");
+                onTap: ()async{
+                  String url = "tel:${contact_support}";
+                    if (await canLaunchUrl(Uri.parse(url))) {
+                      await launchUrl(Uri.parse(url));
+                    } else {
+                      throw 'Could not launch $url';
+                    }
                 },
                 leading: Icon(Icons.info,color: Theme.of(context).accentColor),
                 title: Text("Issues? Contact Us"),

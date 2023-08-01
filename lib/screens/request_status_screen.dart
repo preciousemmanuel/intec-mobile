@@ -1048,7 +1048,7 @@ class _RequestStatusScreenState extends State<RequestStatusScreen> {
                             ),
                             _request["requestStatus"] > 2
                                 ? PaymentMethodSection(
-                                    paymentMethod: _request["paymentMethod"])
+                                    paymentMethod: _request["paymentMethod"]??1)
                                 : Container()
                           ],
                         ),

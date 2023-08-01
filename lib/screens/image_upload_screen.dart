@@ -3,12 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intechpro/providers/profile_provider.dart';
-//import 'package:intechpro/screens/artisan/home_screen.dart';
-//import 'package:intechpro/screens/artisan/home_screen.dart';
-import 'package:intechpro/screens/complete_artisan_profile_screen.dart';
-import 'package:intechpro/screens/home_artisan_screen.dart';
+
+
 import 'package:intechpro/screens/home_screen.dart';
-import 'package:intechpro/model/currency.dart';
+
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -167,11 +165,11 @@ setState(() {
   Widget build(BuildContext context) {
     return Material(
       key: scaffoldkey,
-      child: SingleChildScrollView(
-        child: Container(
-          color: Theme.of(context).primaryColor,
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
+      child: Container(
+        color: Theme.of(context).primaryColor,
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        child: SingleChildScrollView(
           child: Column(
             children: [
               SizedBox(
@@ -216,7 +214,7 @@ setState(() {
               SizedBox(
                 height: 120,
               ),
-
+        
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Row(

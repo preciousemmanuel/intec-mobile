@@ -195,10 +195,10 @@ class _HomeScreen extends State<HomeScreen> {
                                 alignment: Alignment.bottomCenter,
                                 child: GridView.builder(
                                   gridDelegate:
-                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                      const SliverGridDelegateWithFixedCrossAxisCount(
                                           crossAxisCount: 3,
                                           crossAxisSpacing: 10,
-                                          childAspectRatio: 8.0 / 9.0),
+                                          childAspectRatio:0.7),
                                   itemCount: context
                                       .watch<ServiceProvider>()
                                       .getServices

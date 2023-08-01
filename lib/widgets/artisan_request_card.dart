@@ -17,8 +17,16 @@ class ArtisanRequestCard extends StatelessWidget {
   Widget _buildCallButton(context) {
     if (request["requestStatus"] >= 3 && request["requestStatus"] < 4) {
       return TextButton(
-        onPressed: () {
-          launch("tel://${request["customer_phone"]}");
+        onPressed: () async{
+
+          String url = "tel:${request["customer_phone"]}";
+                    if (await canLaunchUrl(Uri.parse(url))) {
+                      await launchUrl(Uri.parse(url));
+                    } else {
+                      throw 'Could not launch $url';
+                    }
+
+         // launch("tel://${request["customer_phone"]}");
         },
         child: Row(children: [
           Icon(

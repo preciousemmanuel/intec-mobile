@@ -45,6 +45,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> scaffoldkey = new GlobalKey();
 
+initState(){
+  _identification=_listIdentification[0];
+}
   void _handleRadioValueChanged(value) {
     setState(() => _userType = value);
   }

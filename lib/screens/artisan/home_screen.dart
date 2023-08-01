@@ -228,16 +228,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
     _requestSubscription = _dbRef.onValue.listen((DatabaseEvent event) {
       print("aboutDB#");
+      setState(() {
+        _isLoading = false;
+        _request = [];
+      });
       print(event.snapshot.value);
+      if(event.snapshot.value!=null){
       Map<dynamic, dynamic> values =
           event.snapshot.value as Map<dynamic, dynamic>;
       // List respList=values.entries.map(( key,entry){
 
       // }).toList();
-      setState(() {
-        _isLoading = false;
-        _request = [];
-      });
+      
       if (values != null && values.isNotEmpty) {
         print("her##");
         print(values["request"]);
@@ -258,6 +260,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
           // _request = event.snapshot.value;
         });
+      }
       }
     }, onError: (Object o) {
       final error = o as FirebaseException;

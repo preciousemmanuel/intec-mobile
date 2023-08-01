@@ -32,11 +32,11 @@ class _NotVerifyScreenState extends State<NotVerifyScreen> {
   @override
   Widget build(BuildContext context) {
     return Material(
-      child: SingleChildScrollView(
-        child:  Container(
-          color: Colors.white,
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
+      child: Container(
+        color: Colors.white,
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        child: SingleChildScrollView(
           child: Column(
             children: [
               SizedBox(
@@ -59,7 +59,7 @@ class _NotVerifyScreenState extends State<NotVerifyScreen> {
                     fontSize: 17),
               ),
               SizedBox(height: 30,),
-
+        
               !context.watch<ProfileProvider>().profile.verified?  Text("You will be notified, when your account is verifed shortly."):Container(),
             //   SizedBox(
             //     height: 30,
@@ -78,9 +78,9 @@ class _NotVerifyScreenState extends State<NotVerifyScreen> {
                 child: ElevatedButton(
                   onPressed: ()async {
                     
-  Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => HomeScreen()),
-      );
+          Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (_) => HomeScreen()),
+              );
                    
                   },
                   child: Text("OK"),
@@ -88,10 +88,18 @@ class _NotVerifyScreenState extends State<NotVerifyScreen> {
                       primary: Theme.of(context).primaryColor),
                 ),
               ),
-
+        
               SizedBox(height: 10,),
-              TextButton(onPressed: (){
-               //  launch("tel://${contact_support}");
+              TextButton(onPressed: ()async{
+        
+                 String url = "tel:${contact_support}";
+                    if (await canLaunchUrl(Uri.parse(url))) {
+                      await launchUrl(Uri.parse(url));
+                    } else {
+                      throw 'Could not launch $url';
+                    }
+        
+                 //launch("tel://${contact_support}");
               }, child: Text("Contact Support")),
               SizedBox(height: 20,),
               TextButton(onPressed: ()async{
