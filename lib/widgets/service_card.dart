@@ -24,7 +24,7 @@ class ServiceCard extends StatelessWidget {
                 width: 50,
                 height: 50,
               );
-          }else if (service.name.contains("Truck ")) {
+          }else if (service.name.contains("Rides ")) {
             return  Image.asset(
                 type == "subservice"
                     ? "assets/images/customer-service.png"

@@ -3,6 +3,7 @@ import 'package:intechpro/providers/profile_provider.dart';
 import 'package:intechpro/screens/complete_artisan_profile_screen.dart';
 import 'package:intechpro/screens/home_screen.dart';
 import 'package:intechpro/model/currency.dart';
+import 'package:intechpro/screens/image_upload_screen.dart';
 import 'package:provider/provider.dart';
 
 class RegistrationSuccessScreen extends StatefulWidget {
@@ -16,7 +17,6 @@ class RegistrationSuccessScreen extends StatefulWidget {
 }
 
 class _RegistrationSuccessScreenState extends State<RegistrationSuccessScreen> {
-
   @override
   void initState() {
     super.initState();
@@ -25,8 +25,8 @@ class _RegistrationSuccessScreenState extends State<RegistrationSuccessScreen> {
     // });
   }
 
-  setProfile()async{
-     Map<String, dynamic> response =
+  setProfile() async {
+    Map<String, dynamic> response =
         await context.read<ProfileProvider>().fetch_user();
   }
 
@@ -34,7 +34,7 @@ class _RegistrationSuccessScreenState extends State<RegistrationSuccessScreen> {
   Widget build(BuildContext context) {
     return Material(
       child: SingleChildScrollView(
-        child:  Container(
+        child: Container(
           color: Colors.white,
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
@@ -59,61 +59,64 @@ class _RegistrationSuccessScreenState extends State<RegistrationSuccessScreen> {
                     color: Colors.black,
                     fontSize: 17),
               ),
-              SizedBox(
-                height: 30,
-              ),
-             widget.userType==1? Text(
-                "You have recieved ${currency.symbol}1000 into your walllet.",
-                style: TextStyle(fontSize: 13,fontWeight: FontWeight.bold),
-              ):Container(),
+              //   SizedBox(
+              //     height: 30,
+              //   ),
+              //  widget.userType==1? Text(
+              //     "You have recieved ${currency.symbol}1000 into your walllet.",
+              //     style: TextStyle(fontSize: 13,fontWeight: FontWeight.bold),
+              //   ):Container(),
               SizedBox(
                 height: 70,
               ),
-            context.watch<ProfileProvider>().loading?Center(
-                    child: Column(
-                      children: [
-                        CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                                Theme.of(context).primaryColor)),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Text("Please wait...")
-                      ],
-                    ),
-                  ):  Container(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                height: 50.0,
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: ()async {
- Map<String, dynamic> response =
-        await context.read<ProfileProvider>().fetch_user();
-        if (response["status"]) {
-           if (widget.userType == 1) {
-                      //customer
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(builder: (_) => HomeScreen()),
-                      );
-                    } else {
-                      //artisans
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                            builder: (_) => CompleteProfileScreen(
-                                  userType: widget.userType,
-                                )),
-                      );
-                    }
-        } else {
-        }
+              context.watch<ProfileProvider>().loading
+                  ? Center(
+                      child: Column(
+                        children: [
+                          CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                  Theme.of(context).primaryColor)),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Text("Please wait...")
+                        ],
+                      ),
+                    )
+                  : Container(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      height: 50.0,
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          Map<String, dynamic> response = await context
+                              .read<ProfileProvider>()
+                              .fetch_user();
+                          if (response["status"]) {
+                            if (widget.userType == 1) {
+                              //customer
+                              Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(builder: (_) => HomeScreen()),
+                              );
+                            } else {
+                              //artisans
 
-                   
-                  },
-                  child: Text("Continue"),
-                  style: ElevatedButton.styleFrom(
-                      primary: Theme.of(context).primaryColor),
-                ),
-              )
+                              
+
+                              Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                    builder: (_) => CompleteProfileScreen(
+                                          userType: widget.userType,
+                                        )),
+                              );
+                            }
+                          } else {}
+                        },
+                        child: Text("Continue"),
+                        style: ElevatedButton.styleFrom(
+                            primary: Theme.of(context).primaryColor),
+                      ),
+                    )
             ],
           ),
         ),

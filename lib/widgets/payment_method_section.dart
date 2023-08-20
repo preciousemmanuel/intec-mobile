@@ -31,8 +31,12 @@ Widget _buildRow(text,context){
     } else if (paymentMethod == 2) {
         return _buildRow("PAYMENT METHOD: WALLET",context);
      
-    }
+    }else if(paymentMethod == 3){
 return _buildRow("PAYMENT METHOD: CASH",context);
+    }
+
+    return Container();
+
     
   }
 

@@ -48,6 +48,17 @@ class RequestCard extends StatelessWidget {
             style: TextStyle(fontSize: 10, color: Colors.white)),
       );
     } 
+     else if (request.requestStatus ==4) {
+      return Container(
+        decoration: BoxDecoration(
+            color: Color(0xff5779b9),
+            borderRadius: BorderRadius.horizontal(
+                right: Radius.circular(10), left: Radius.circular(10))),
+        padding: EdgeInsets.all(5),
+        child: Text("Your Action Required to complete",
+            style: TextStyle(fontSize: 6, color: Colors.white)),
+      );
+    }
     
     
      else if (request.requestStatus > 3) {

@@ -10,4 +10,6 @@
  final String base_url="https://intecpro.uc.r.appspot.com/api/";
  //const String base_url="http://localhost:8000/api/";
 
+ const contact_support="+2349153121217";
+
  const int COMPANY_PERCENT=20;

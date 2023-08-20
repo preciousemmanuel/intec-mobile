@@ -8,6 +8,7 @@ import 'package:intechpro/model/user.dart';
 import 'package:intechpro/providers/profile_provider.dart';
 import 'package:intechpro/providers/service_provider.dart';
 import 'package:intechpro/screens/home_artisan_screen.dart';
+import 'package:intechpro/screens/not_verified_screen.dart';
 import 'package:intechpro/screens/notification.dart';
 import 'package:intechpro/screens/sub_service_screen.dart';
 import 'package:intechpro/widgets/drawer.dart';
@@ -65,6 +66,7 @@ class _HomeScreen extends State<HomeScreen> {
       Profile user = response["user"];
       print("ysue###");
       print(user.userType);
+     
       if (user.userType > 1) {
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(
@@ -193,10 +195,10 @@ class _HomeScreen extends State<HomeScreen> {
                                 alignment: Alignment.bottomCenter,
                                 child: GridView.builder(
                                   gridDelegate:
-                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                      const SliverGridDelegateWithFixedCrossAxisCount(
                                           crossAxisCount: 3,
                                           crossAxisSpacing: 10,
-                                          childAspectRatio: 8.0 / 9.0),
+                                          childAspectRatio:0.7),
                                   itemCount: context
                                       .watch<ServiceProvider>()
                                       .getServices
