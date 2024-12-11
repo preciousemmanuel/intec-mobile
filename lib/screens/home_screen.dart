@@ -66,7 +66,7 @@ class _HomeScreen extends State<HomeScreen> {
       Profile user = response["user"];
       print("ysue###");
       print(user.userType);
-     
+
       if (user.userType > 1) {
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(
@@ -113,31 +113,32 @@ class _HomeScreen extends State<HomeScreen> {
       ),
       body: SingleChildScrollView(
         child: context.watch<ProfileProvider>().loading
-                ? Center(
-                    child: Column(
-                      children: [
-                        CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                                Theme.of(context).primaryColor)),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Text("Please wait...")
-                      ],
+            ? Center(
+                child: Column(
+                  children: [
+                    CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                            Theme.of(context).primaryColor)),
+                    SizedBox(
+                      height: 20,
                     ),
-                  ): Container(
-          height: MediaQuery.of(context).size.height,
-          decoration: const BoxDecoration(
-              color: Colors.white,
-              image: DecorationImage(
-                  image: AssetImage("assets/images/backgound.jpg"),
-                  fit: BoxFit.cover)
+                    Text("Please wait...")
+                  ],
+                ),
+              )
+            : Container(
+                height: MediaQuery.of(context).size.height,
+                decoration: const BoxDecoration(
+                    color: Colors.white,
+                    image: DecorationImage(
+                        image: AssetImage("assets/images/backgound.jpg"),
+                        fit: BoxFit.cover)
 
-              //image: DecorationImage(image: AssetImage("assets/images/backgound.jpg"),fit: BoxFit.cover)
-              ),
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
+                    //image: DecorationImage(image: AssetImage("assets/images/backgound.jpg"),fit: BoxFit.cover)
+                    ),
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(
@@ -150,7 +151,7 @@ class _HomeScreen extends State<HomeScreen> {
                             style: TextStyle(
                                 fontWeight: FontWeight.w500,
                                 fontSize: 25.0,
-                                color: Theme.of(context).accentColor),
+                                color: Theme.of(context).primaryColor),
                           ),
                           SizedBox(
                             width: 7,
@@ -198,7 +199,7 @@ class _HomeScreen extends State<HomeScreen> {
                                       const SliverGridDelegateWithFixedCrossAxisCount(
                                           crossAxisCount: 3,
                                           crossAxisSpacing: 10,
-                                          childAspectRatio:0.7),
+                                          childAspectRatio: 0.7),
                                   itemCount: context
                                       .watch<ServiceProvider>()
                                       .getServices
@@ -218,8 +219,8 @@ class _HomeScreen extends State<HomeScreen> {
                             )
                     ],
                   ),
-          ),
-        ),
+                ),
+              ),
       ),
     );
   }

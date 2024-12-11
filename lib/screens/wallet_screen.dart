@@ -18,8 +18,6 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_paystack/flutter_paystack.dart';
 //PayButton widget import below
 
-
-
 class WalletScreen extends StatefulWidget {
   const WalletScreen({Key? key}) : super(key: key);
 
@@ -33,11 +31,11 @@ class _WalletScreenState extends State<WalletScreen> {
   // final String _currency = FlutterwaveCurrency.NGN;
   final GlobalKey<ScaffoldState> scaffoldkey = new GlobalKey();
   final plugin = PaystackPlugin();
-  bool _isProcessingPayment=false;
+  bool _isProcessingPayment = false;
 
   initState() {
     super.initState();
-    plugin.initialize(publicKey: dotenv.env["PAYSTACK_PUBLIC_API_KEY"]??"");
+    plugin.initialize(publicKey: dotenv.env["PAYSTACK_PUBLIC_API_KEY"] ?? "");
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
       Provider.of<CustomerWalletProvider>(context, listen: false)
           .fetch_wallet();
@@ -56,59 +54,57 @@ class _WalletScreenState extends State<WalletScreen> {
       content: Text(title),
       backgroundColor: status ? Colors.green : Colors.red,
     );
-   ScaffoldMessenger.of(context).showSnackBar(snackbar);
+    ScaffoldMessenger.of(context).showSnackBar(snackbar);
   }
-
 
   _handleWalletUpdate(BuildContext context) async {
     Map<String, dynamic> result = await context
         .read<CustomerWalletProvider>()
         .updateWallet(double.parse(_amountTextController.text));
-        setState(() {
-        _isProcessingPayment=false;
-      });
+    setState(() {
+      _isProcessingPayment = false;
+    });
     if (result["status"]) {
-      
       ShowSnackBar(result["message"], true);
     } else {
-      
       ShowSnackBar(result["message"], false);
     }
     Navigator.pop(context);
   }
 
-  Future<String>_createAccessCode(_getReference) async {                        
- // skTest -> Secret key                        
- Map<String, String> headers = {                           
-   'Content-Type': 'application/json',
-   'Accept': 'application/json',
-   'Authorization': 'Bearer ${dotenv.env["PAYSTACK_SECRET_API_KEY"]}'};
-Map data = {"amount":  int.parse(_amountTextController.text) *100, "email": Provider.of<User>(context, listen: false).email??"", "reference": _getReference};
-String payload = json.encode(data);                      
-   http.Response response = await http.post( Uri.parse(
-   'https://api.paystack.co/transaction/initialize'),
-    headers: headers,
-    body: payload);
-final Map datax = jsonDecode(response.body);
-String accessCode = datax['data']['access_code'];
-return accessCode;
- }
-
-
+  Future<String> _createAccessCode(_getReference) async {
+    // skTest -> Secret key
+    Map<String, String> headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${dotenv.env["PAYSTACK_SECRET_API_KEY"]}'
+    };
+    Map data = {
+      "amount": int.parse(_amountTextController.text) * 100,
+      "email": Provider.of<User>(context, listen: false).email ?? "",
+      "reference": _getReference
+    };
+    String payload = json.encode(data);
+    http.Response response = await http.post(
+        Uri.parse('https://api.paystack.co/transaction/initialize'),
+        headers: headers,
+        body: payload);
+    final Map datax = jsonDecode(response.body);
+    String accessCode = datax['data']['access_code'];
+    return accessCode;
+  }
 
   //async method to charge users card and return a response
   chargeCard(BuildContext context) async {
-    
-   String accesscode= await _createAccessCode(_getReference()) ;
+    String accesscode = await _createAccessCode(_getReference());
     var charge = Charge()
       ..amount = int.parse(_amountTextController.text) *
           100 //the money should be in kobo hence the need to multiply the value by 100
       ..reference = _getReference()
-       ..accessCode=accesscode
+      ..accessCode = accesscode
       ..putCustomField('custom_id',
           '846gey6w') //to pass extra parameters to be retrieved on the response from Paystack
-      ..email = Provider.of<User>(context, listen: false).email??"";
-      
+      ..email = Provider.of<User>(context, listen: false).email ?? "";
 
     CheckoutResponse response = await plugin.checkout(
       context,
@@ -116,26 +112,27 @@ return accessCode;
       charge: charge,
     );
 
-print("dud#");
-print(response);
-print(response.message);
+    print("dud#");
+    print(response);
+    print(response.message);
     //check if the response is true or not
     if (response.status == true) {
-    //   //you can send some data from the response to an API or use webhook to record the payment on a database
-    Map<dynamic,dynamic> _resp =await Provider.of<CustomerWalletProvider>(context,listen: false).validatePayment(response.reference);
-    if (_resp["status"]) {
-       _handleWalletUpdate(context);
-    } else {
-       ShowSnackBar(_resp["message"], false);
-    }
-     
+      //   //you can send some data from the response to an API or use webhook to record the payment on a database
+      Map<dynamic, dynamic> _resp =
+          await Provider.of<CustomerWalletProvider>(context, listen: false)
+              .validatePayment(response.reference);
+      if (_resp["status"]) {
+        _handleWalletUpdate(context);
+      } else {
+        ShowSnackBar(_resp["message"], false);
+      }
     } else {
       setState(() {
-        _isProcessingPayment=false;
+        _isProcessingPayment = false;
       });
-    //   print(response.message);
-    //   //the payment wasn't successsful or the user cancelled the payment
-       ShowSnackBar(response.message, false);
+      //   print(response.message);
+      //   //the payment wasn't successsful or the user cancelled the payment
+      ShowSnackBar(response.message, false);
     }
   }
 
@@ -188,24 +185,23 @@ print(response.message);
   //       response.data!.currency == _currency;
   // }
 
- 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldkey,
       body: Container(
         // height: MediaQuery.of(context).size.height,
-          decoration: const BoxDecoration(
-              color: Colors.white,
-              image: DecorationImage(
-                  image: AssetImage("assets/images/background.jpg"),
-                  fit: BoxFit.cover)
+        decoration: const BoxDecoration(
+            color: Colors.white,
+            image: DecorationImage(
+                image: AssetImage("assets/images/background.jpg"),
+                fit: BoxFit.cover)
 
-              //image: DecorationImage(image: AssetImage("assets/images/backgound.jpg"),fit: BoxFit.cover)
-              ),
+            //image: DecorationImage(image: AssetImage("assets/images/backgound.jpg"),fit: BoxFit.cover)
+            ),
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
-       // color: Colors.white,
+        // color: Colors.white,
         child: SingleChildScrollView(
           child: context.watch<CustomerWalletProvider>().loading
               ? Center(
@@ -293,11 +289,9 @@ print(response.message);
                               ),
                             ),
                           ),
-                      
                         ],
                       ),
                     ),
-                   
                     SizedBox(
                       height: 50,
                     ),
@@ -310,11 +304,10 @@ print(response.message);
                             borderRadius: BorderRadius.circular(10)),
                         child: ElevatedButton(
                           onPressed: () {
-                            showModalBottomSheet( 
+                            showModalBottomSheet(
                                 context: context,
                                 builder: (context) {
                                   return FundWalletBottomSheet();
-                                
                                 });
                           },
                           child: Row(
@@ -336,7 +329,8 @@ print(response.message);
                       child: Text(
                         "Our Payment system is secured with the latest encryption algorithm from Paystack.  ",
                         style: TextStyle(
-                            fontSize: 10, color: Theme.of(context).accentColor),
+                            fontSize: 10,
+                            color: Theme.of(context).primaryColor),
                       ),
                     )
                   ],

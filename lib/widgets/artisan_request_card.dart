@@ -11,33 +11,33 @@ class ArtisanRequestCard extends StatelessWidget {
   final request;
   final Function? onAcceptRequest;
   final Function? onClickIReach;
-  const ArtisanRequestCard({Key? key, this.request, this.onAcceptRequest,this.onClickIReach})
+  const ArtisanRequestCard(
+      {Key? key, this.request, this.onAcceptRequest, this.onClickIReach})
       : super(key: key);
 
   Widget _buildCallButton(context) {
     if (request["requestStatus"] >= 3 && request["requestStatus"] < 4) {
       return TextButton(
-        onPressed: () async{
-
+        onPressed: () async {
           String url = "tel:${request["customer_phone"]}";
-                    if (await canLaunchUrl(Uri.parse(url))) {
-                      await launchUrl(Uri.parse(url));
-                    } else {
-                      throw 'Could not launch $url';
-                    }
+          if (await canLaunchUrl(Uri.parse(url))) {
+            await launchUrl(Uri.parse(url));
+          } else {
+            throw 'Could not launch $url';
+          }
 
-         // launch("tel://${request["customer_phone"]}");
+          // launch("tel://${request["customer_phone"]}");
         },
         child: Row(children: [
           Icon(
             Icons.call_rounded,
-            color: Theme.of(context).accentColor,
+            color: Theme.of(context).primaryColor,
             size: 20,
           ),
           Text(
             "Call Client",
             style: TextStyle(
-                color: Theme.of(context).accentColor,
+                color: Theme.of(context).primaryColor,
                 fontWeight: FontWeight.bold),
           ),
         ]),
@@ -47,13 +47,15 @@ class ArtisanRequestCard extends StatelessWidget {
     return Container();
   }
 
-
-  
   Widget _buildArrivedButton(context) {
-    if (request["requestStatus"] >2 && (request["hasArrived"] == null || !request["hasArrived"]) ){
+    if (request["requestStatus"] > 2 &&
+        (request["hasArrived"] == null || !request["hasArrived"])) {
       return TextButton(
         onPressed: () {
-         Provider.of<ArtisanRequestProvider>(context, listen: false).getSubmittingArrived?(){}:  onClickIReach!();
+          Provider.of<ArtisanRequestProvider>(context, listen: false)
+                  .getSubmittingArrived
+              ? () {}
+              : onClickIReach!();
         },
         child: Row(children: [
           Icon(
@@ -62,10 +64,12 @@ class ArtisanRequestCard extends StatelessWidget {
             size: 20,
           ),
           Text(
-             Provider.of<ArtisanRequestProvider>(context, listen: false).getSubmittingArrived?"Please Wait...": "Have you arrived?",
-            style: TextStyle(
-                color: Colors.blueGrey,
-                fontWeight: FontWeight.bold),
+            Provider.of<ArtisanRequestProvider>(context, listen: false)
+                    .getSubmittingArrived
+                ? "Please Wait..."
+                : "Have you arrived?",
+            style:
+                TextStyle(color: Colors.blueGrey, fontWeight: FontWeight.bold),
           ),
         ]),
       );
@@ -127,7 +131,7 @@ class ArtisanRequestCard extends StatelessWidget {
         padding: EdgeInsets.all(10),
         height: 35,
         decoration: BoxDecoration(
-            color: Theme.of(context).accentColor,
+            color: Theme.of(context).primaryColor,
             borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(10),
                 topRight: Radius.circular(10))),
@@ -141,7 +145,7 @@ class ArtisanRequestCard extends StatelessWidget {
         padding: EdgeInsets.all(10),
         height: 35,
         decoration: BoxDecoration(
-            color: Theme.of(context).accentColor,
+            color: Theme.of(context).primaryColor,
             borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(10),
                 topRight: Radius.circular(10))),
@@ -178,7 +182,7 @@ class ArtisanRequestCard extends StatelessWidget {
           style: TextStyle(color: Colors.white),
         ),
       );
-    }else if (request["requestStatus"] == 6) {
+    } else if (request["requestStatus"] == 6) {
       return Container(
         padding: EdgeInsets.all(10),
         height: 35,
@@ -275,7 +279,7 @@ class ArtisanRequestCard extends StatelessWidget {
               Row(
                 children: [
                   Icon(Icons.electric_moped,
-                      color: Theme.of(context).accentColor),
+                      color: Theme.of(context).primaryColor),
                   SizedBox(
                     width: 20,
                   ),
@@ -294,13 +298,17 @@ class ArtisanRequestCard extends StatelessWidget {
                 children: [
                   Icon(
                     Icons.attach_money,
-                    color: Theme.of(context).accentColor,
+                    color: Theme.of(context).primaryColor,
                   ),
                   SizedBox(
                     width: 20,
                   ),
                   Text(
-                    currency.symbol +(request["userType"]==3 && request["requestStatus"]<=3?request["amountForDistance"].toString() : request["amount"].toString()),
+                    currency.symbol +
+                        (request["userType"] == 3 &&
+                                request["requestStatus"] <= 3
+                            ? request["amountForDistance"].toString()
+                            : request["amount"].toString()),
                     style: TextStyle(color: Color(0xff52575C)),
                   )
                 ],
@@ -320,18 +328,15 @@ class ArtisanRequestCard extends StatelessWidget {
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
-            
-              
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 _buildAcceptViewButton(context),
                 Row(
                   children: [
                     _buildArrivedButton(context),
-                     _buildCallButton(context)
+                    _buildCallButton(context)
                   ],
                 )
-               
               ],
             ),
           )

@@ -4,12 +4,11 @@ import 'package:intechpro/controllers/place_api_controller.dart';
 import 'package:intechpro/model/address_suggestion.dart';
 
 class AddressSearch extends SearchDelegate<AddressSuggestion> {
-    final sessionToken;
-    
+  final sessionToken;
+
   AddressSearch(this.sessionToken) {
     apiClient = PlaceApiProvider(sessionToken);
   }
-
 
   PlaceApiProvider? apiClient;
   @override
@@ -17,7 +16,7 @@ class AddressSearch extends SearchDelegate<AddressSuggestion> {
     return [
       IconButton(
         tooltip: 'Clear',
-        icon: Icon(Icons.clear,color: Theme.of(context).primaryColor),
+        icon: Icon(Icons.clear, color: Theme.of(context).primaryColor),
         onPressed: () {
           query = '';
         },
@@ -25,18 +24,20 @@ class AddressSearch extends SearchDelegate<AddressSuggestion> {
     ];
   }
 
- String? get searchFieldLabel => "Search Location...";
+  String? get searchFieldLabel => "Search Location...";
   @override
   ThemeData appBarTheme(BuildContext context) {
     return Theme.of(context).copyWith(
       backgroundColor: Colors.white,
       textTheme: TextTheme(
-    headline6: TextStyle(
-      color: Colors.black,
-      fontSize: 15.0,
-    ),
-  ),
-      appBarTheme: AppBarTheme(backgroundColor: Colors.white,),
+        headline6: TextStyle(
+          color: Colors.black,
+          fontSize: 15.0,
+        ),
+      ),
+      appBarTheme: AppBarTheme(
+        backgroundColor: Colors.white,
+      ),
       hintColor: Theme.of(context).primaryColor,
     );
   }
@@ -45,7 +46,10 @@ class AddressSearch extends SearchDelegate<AddressSuggestion> {
   Widget buildLeading(BuildContext context) {
     return IconButton(
       tooltip: 'Back',
-      icon: Icon(Icons.arrow_back,color: Theme.of(context).primaryColor,),
+      icon: Icon(
+        Icons.arrow_back,
+        color: Theme.of(context).primaryColor,
+      ),
       onPressed: () {
         close(context, AddressSuggestion());
       },
@@ -67,50 +71,57 @@ class AddressSearch extends SearchDelegate<AddressSuggestion> {
           : apiClient?.fetchSuggestions(
               query, Localizations.localeOf(context).languageCode),
 
-      builder: (context, AsyncSnapshot<List<AddressSuggestion>> snapshot) => query == ''
-          ? Container(
-              padding: EdgeInsets.all(16.0),
-              child: Center(
-                child: Column(
-                  children: [
-                    Icon(Icons.search_off_rounded,
-                        size: 70, color: Theme.of(context).primaryColor),
-                    // Text(
-                    //   "Enter Address",
-                    //   style: TextStyle(color: Theme.of(context).accentColor),
-                    // )
-                  ],
-                ),
-              ),
-            )
-          : snapshot.hasData
-              ? ListView.separated(
-                 separatorBuilder: (BuildContext context, int index) {
-                          return SizedBox(
-                            
-                            height: 10,
-                          );
-                        },
-                  itemCount: snapshot.data!.length,
-                  itemBuilder: (context, index) {
-                    print("delegate###");
-                    print(snapshot.data);
-                    var list = snapshot.data! as List;
-                    return ListTile(
-                      leading: Icon(Icons.place,color: Colors.black38,),
-                      // we will display the data returned from our future here
-                      title:
-                          Text((list[index] as AddressSuggestion).description,style:TextStyle(color: Colors.black)),
-                      onTap: () {
-                        close(context, list[index] as AddressSuggestion);
-                      },
-                    );
-                  },
+      builder: (context, AsyncSnapshot<List<AddressSuggestion>> snapshot) =>
+          query == ''
+              ? Container(
+                  padding: EdgeInsets.all(16.0),
+                  child: Center(
+                    child: Column(
+                      children: [
+                        Icon(Icons.search_off_rounded,
+                            size: 70, color: Theme.of(context).primaryColor),
+                        // Text(
+                        //   "Enter Address",
+                        //   style: TextStyle(color: Theme.of(context).primaryColor),
+                        // )
+                      ],
+                    ),
+                  ),
                 )
-              : Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Text('Loading...',style: TextStyle(color: Colors.black),),
-              ),
+              : snapshot.hasData
+                  ? ListView.separated(
+                      separatorBuilder: (BuildContext context, int index) {
+                        return SizedBox(
+                          height: 10,
+                        );
+                      },
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (context, index) {
+                        print("delegate###");
+                        print(snapshot.data);
+                        var list = snapshot.data! as List;
+                        return ListTile(
+                          leading: Icon(
+                            Icons.place,
+                            color: Colors.black38,
+                          ),
+                          // we will display the data returned from our future here
+                          title: Text(
+                              (list[index] as AddressSuggestion).description,
+                              style: TextStyle(color: Colors.black)),
+                          onTap: () {
+                            close(context, list[index] as AddressSuggestion);
+                          },
+                        );
+                      },
+                    )
+                  : Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Text(
+                        'Loading...',
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    ),
     );
   }
 }

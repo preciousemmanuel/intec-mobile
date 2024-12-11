@@ -19,12 +19,13 @@ class RequestCard extends StatelessWidget {
   Widget _buildStatus() {
     if (request.requestStatus == 2) {
       return Container(
-        decoration:  BoxDecoration(
-          color: Color(0xffFFF3DB),
-          borderRadius: BorderRadius.horizontal(
-              right: Radius.circular(10), left: Radius.circular(10))),
+        decoration: BoxDecoration(
+            color: Color(0xffFFF3DB),
+            borderRadius: BorderRadius.horizontal(
+                right: Radius.circular(10), left: Radius.circular(10))),
         padding: EdgeInsets.all(5),
-        child: Text("Yet to Pay", style: TextStyle(fontSize: 10,color: Color(0xffFDB72B))),
+        child: Text("Yet to Pay",
+            style: TextStyle(fontSize: 10, color: Color(0xffFDB72B))),
       );
     } else if (request.requestStatus == 3) {
       return Container(
@@ -36,8 +37,7 @@ class RequestCard extends StatelessWidget {
         child:
             Text("Active", style: TextStyle(fontSize: 10, color: Colors.white)),
       );
-    }
-     else if (request.requestStatus ==6) {
+    } else if (request.requestStatus == 6) {
       return Container(
         decoration: BoxDecoration(
             color: Color(0xff5779b9),
@@ -47,8 +47,7 @@ class RequestCard extends StatelessWidget {
         child: Text("Complete; Not Paid ",
             style: TextStyle(fontSize: 10, color: Colors.white)),
       );
-    } 
-     else if (request.requestStatus ==4) {
+    } else if (request.requestStatus == 4) {
       return Container(
         decoration: BoxDecoration(
             color: Color(0xff5779b9),
@@ -58,10 +57,7 @@ class RequestCard extends StatelessWidget {
         child: Text("Your Action Required to complete",
             style: TextStyle(fontSize: 6, color: Colors.white)),
       );
-    }
-    
-    
-     else if (request.requestStatus > 3) {
+    } else if (request.requestStatus > 3) {
       return Container(
         decoration: BoxDecoration(
             color: Color(0xff5779b9),
@@ -118,7 +114,7 @@ class RequestCard extends StatelessWidget {
           },
           leading: Icon(
             Icons.electric_rickshaw,
-            color: Theme.of(context).accentColor,
+            color: Theme.of(context).primaryColor,
           ),
           title: Text(
             request.service_name,

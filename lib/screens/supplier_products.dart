@@ -21,7 +21,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 class SupplierProductScreen extends StatefulWidget {
   Task service;
-  
+
   SupplierProductScreen({required this.service});
   @override
   State<StatefulWidget> createState() {
@@ -33,33 +33,27 @@ class _SupplierProductScreen extends State<SupplierProductScreen> {
   initState() {
     super.initState();
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-      
-       fetch_products();
-     
+      fetch_products();
     });
   }
 
-   Future<void> fetch_products() async {
- Provider.of<ProfileProvider>(context, listen: false)
-            .fetch_products(
-                 widget.service.uid);
-   }
+  Future<void> fetch_products() async {
+    Provider.of<ProfileProvider>(context, listen: false)
+        .fetch_products(widget.service.uid);
+  }
 
-  void onhandleTap() async{
+  void onhandleTap() async {
     print("sher@##");
-  
-      //supplier just take them to call supplier
-      //go to products screen
 
- String url = "tel:${widget.service.phone}";
-                    if (await canLaunchUrl(Uri.parse(url))) {
-                      await launchUrl(Uri.parse(url));
-                    } else {
-                      throw 'Could not launch $url';
-                    }
+    //supplier just take them to call supplier
+    //go to products screen
 
-     
-    
+    String url = "tel:${widget.service.phone}";
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url));
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
   String url() {
@@ -72,23 +66,21 @@ class _SupplierProductScreen extends State<SupplierProductScreen> {
     }
   }
 
-  void onhandleTapMsg()async {
+  void onhandleTapMsg() async {
     print("sher@##");
-  
-      //supplier just take them to call supplier
-      //go to products screen
-      if (await canLaunchUrl(Uri.parse(url()))) {
-                      await launchUrl(Uri.parse(url()));
-                    } else {
-                      throw 'Could not launch $url()';
-                    }
 
-    
+    //supplier just take them to call supplier
+    //go to products screen
+    if (await canLaunchUrl(Uri.parse(url()))) {
+      await launchUrl(Uri.parse(url()));
+    } else {
+      throw 'Could not launch $url()';
+    }
   }
 
-  void onhandleTapMsgTwo()async {
+  void onhandleTapMsgTwo() async {
     print("sher@##");
-   // Android
+    // Android
     String uri = "sms:+234${widget.service.phone}?body=hello%20there";
     if (await canLaunch(uri)) {
       await launch(uri);
@@ -101,24 +93,18 @@ class _SupplierProductScreen extends State<SupplierProductScreen> {
         throw 'Could not launch $uri';
       }
     }
-    
   }
 
-  
-
-
- handleOnChange(text){
+  handleOnChange(text) {
     print("ryt##");
     print(text);
-    Provider.of<ProfileProvider>(context, listen: false).getProductsSearcherd(text);
+    Provider.of<ProfileProvider>(context, listen: false)
+        .getProductsSearcherd(text);
   }
- 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-     
-        
       backgroundColor: Color(0xffF0F0F0),
       appBar: AppBar(
         leading: IconButton(
@@ -132,10 +118,9 @@ class _SupplierProductScreen extends State<SupplierProductScreen> {
         ),
         backgroundColor: Colors.white,
         title: Text(
-          widget.service.name+ " Products",
+          widget.service.name + " Products",
           style: TextStyle(color: Colors.black),
         ),
-        
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -157,16 +142,16 @@ class _SupplierProductScreen extends State<SupplierProductScreen> {
                   height: 22.0,
                 ),
                 Text(
-                   "See products available in ${widget.service.name} shop. You can call for further details. ",
+                  "See products available in ${widget.service.name} shop. You can call for further details. ",
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 SizedBox(
                   height: 30,
                 ),
-                 ProductSearch(
-                  onRefreshed:(){
+                ProductSearch(
+                  onRefreshed: () {
                     fetch_products();
-                  } ,
+                  },
                   onChange: handleOnChange,
                 ),
                 context.watch<ProfileProvider>().loading
@@ -202,44 +187,50 @@ class _SupplierProductScreen extends State<SupplierProductScreen> {
                               Product product = context
                                   .watch<ProfileProvider>()
                                   .getProducts[index];
-                              return  Padding(
+                              return Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: ProductArtisanCard(onTap:()=> onhandleTap(), product: product),
+                                child: ProductArtisanCard(
+                                    onTap: () => onhandleTap(),
+                                    product: product),
                               );
                             },
                             // crossAxisCount: 3,
                           ),
                         ),
-                      ), SizedBox(height: 80,)
+                      ),
+                SizedBox(
+                  height: 80,
+                )
               ],
             ),
           ),
         ),
       ),
-       floatingActionButton: Column(
-         mainAxisAlignment: MainAxisAlignment.end,
-        children:[ FloatingActionButton(
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
             child: Icon(Icons.call),
             onPressed: () {
-           onhandleTap();
-             
+              onhandleTap();
             },
           ),
-          SizedBox(height: 10,),
-           FloatingActionButton(
+          SizedBox(
+            height: 10,
+          ),
+          FloatingActionButton(
             child: Icon(Icons.chat_rounded),
             onPressed: () {
-           onhandleTapMsg();
-             
+              onhandleTapMsg();
             },
           ),
-
-           SizedBox(height: 10,),
-           FloatingActionButton(
+          SizedBox(
+            height: 10,
+          ),
+          FloatingActionButton(
             child: Icon(Icons.sms_rounded),
             onPressed: () {
-           onhandleTapMsgTwo();
-             
+              onhandleTapMsgTwo();
             },
           ),
         ],

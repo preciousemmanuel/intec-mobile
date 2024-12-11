@@ -11,6 +11,10 @@ import 'package:intechpro/screens/artisan/home_screen.dart';
 import 'package:intechpro/screens/artisan/profile_screen.dart';
 import 'package:intechpro/screens/complete_artisan_profile_screen.dart';
 import 'package:intechpro/screens/not_verified_screen.dart';
+import 'package:intechpro/utils/size_utils.dart';
+import 'package:intechpro/widgets/artisan/app_header.dart';
+import 'package:intechpro/widgets/artisan/wallet_section.dart';
+import 'package:intechpro/widgets/space.dart';
 import 'package:location/location.dart';
 import 'package:http/http.dart' as http;
 import 'package:dart_geohash/dart_geohash.dart';
@@ -128,14 +132,14 @@ class _HomeArtisanScreenState extends State<HomeArtisanScreen> {
 
   void checkArtisanSetting() {
     print("siorn##jkkk##");
-  
+
     Profile profile =
         Provider.of<ProfileProvider>(context, listen: false).profile;
-        print(profile.toString());
-          print(profile.verified);
-          print("heir###f");
-    print( profile.blocked);
-     if (profile.verified ==false || profile.blocked==true) {
+    print(profile.toString());
+    print(profile.verified);
+    print("heir###f");
+    print(profile.blocked);
+    if (profile.verified == false || profile.blocked == true) {
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(
               builder: (BuildContext context) => NotVerifyScreen()),
@@ -153,7 +157,6 @@ class _HomeArtisanScreenState extends State<HomeArtisanScreen> {
         ),
       );
     }
-    
   }
 
   void _onItemTapped(int index) {
@@ -191,17 +194,19 @@ class _HomeArtisanScreenState extends State<HomeArtisanScreen> {
     return WillPopScope(
       onWillPop: _onBackPressed,
       child: Scaffold(
-        body: _pages.elementAt(_selectedIndex),
-
-        // body:  Navigator(
-        //   onGenerateRoute: (settings) {
-        //     print("settingf");
-        //     print(settings.name);
-        //     Widget page = HomeScreen();
-        //     // if (_selectedIndex == 1) page = ProfileScreen();
-        //     return MaterialPageRoute(builder: (_) => page);
-        //   },
-        // ),
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: Column(
+              children: [
+                VSpace(20),
+                ArtisanAppHeader(),
+                VSpace(20.v),
+                WalletSection()
+              ],
+            ),
+          ),
+        ),
         bottomNavigationBar: BottomNavigationBar(
           backgroundColor: Theme.of(context).primaryColor,
           // type: BottomNavigationBarType.shifting,

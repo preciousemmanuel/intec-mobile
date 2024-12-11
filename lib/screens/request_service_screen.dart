@@ -51,8 +51,8 @@ class _RequestServiceScreenState extends State<RequestServiceScreen> {
   late LatLng _center;
   Map<String, dynamic>? _startLocationMap;
 
-  late LatLng _destination=LatLng(0.0001, 0.001);
-  Map<String, dynamic>? _destinationMap={};
+  late LatLng _destination = LatLng(0.0001, 0.001);
+  Map<String, dynamic>? _destinationMap = {};
   bool _isPickupChosen = true;
   // LatLng _lastMapPosition = _center;
 
@@ -210,14 +210,13 @@ class _RequestServiceScreenState extends State<RequestServiceScreen> {
     var result = await googGeocoding.geocoding.getReverse(coord);
     print("opi##");
     print(result!.results);
-    
-    if (result.results!.length>0) {
+
+    if (result.results!.length > 0) {
       print(result.results![0].formattedAddress);
       return "${result.results![0].formattedAddress}";
     }
     return "";
-    
-    
+
     //return "${address.streetAddress}, ${address.city}, ${address.countryName}, ";
   }
 
@@ -286,9 +285,9 @@ class _RequestServiceScreenState extends State<RequestServiceScreen> {
     print(_destination.latitude);
     print(_destination.longitude);
 
-var amount=widget.subService.hasTask
+    var amount = widget.subService.hasTask
         ? widget.task!.cost == 0
-            ? widget.subService.cost 
+            ? widget.subService.cost
             : widget.task!.cost
         : widget.subService.cost;
 
@@ -400,7 +399,8 @@ var amount=widget.subService.hasTask
                                     child: Text(
                                       'No',
                                       style: TextStyle(
-                                          color: Theme.of(context).accentColor),
+                                          color:
+                                              Theme.of(context).primaryColor),
                                     )),
                                 TextButton(
                                   onPressed: () {
@@ -537,7 +537,7 @@ var amount=widget.subService.hasTask
                                         decoration: BoxDecoration(
                                             border: Border.all(
                                                 color: Theme.of(context)
-                                                    .accentColor,
+                                                    .primaryColor,
                                                 width: 2)),
                                         child: Row(
                                           mainAxisAlignment:
@@ -545,8 +545,8 @@ var amount=widget.subService.hasTask
                                           children: [
                                             Icon(
                                               Icons.place,
-                                              color:
-                                                  Theme.of(context).accentColor,
+                                              color: Theme.of(context)
+                                                  .primaryColor,
                                             ),
                                             Expanded(
                                                 child: Text(
@@ -555,13 +555,13 @@ var amount=widget.subService.hasTask
                                                   : _addressDestination,
                                               style: TextStyle(
                                                   color: Theme.of(context)
-                                                      .accentColor,
+                                                      .primaryColor,
                                                   fontWeight: FontWeight.bold),
                                             )),
                                             Icon(
                                               Icons.search,
-                                              color:
-                                                  Theme.of(context).accentColor,
+                                              color: Theme.of(context)
+                                                  .primaryColor,
                                             ),
                                           ],
                                         )),

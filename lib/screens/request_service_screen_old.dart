@@ -18,7 +18,8 @@ class RequestServiceScreen extends StatefulWidget {
   SubService subService;
   Service parentService;
 
-  RequestServiceScreen({Key? key, required this.subService,required this.parentService});
+  RequestServiceScreen(
+      {Key? key, required this.subService, required this.parentService});
 
   @override
   _RequestServiceScreenState createState() => _RequestServiceScreenState();
@@ -26,7 +27,7 @@ class RequestServiceScreen extends StatefulWidget {
 
 class _RequestServiceScreenState extends State<RequestServiceScreen> {
   final _textcontroller = TextEditingController();
- late GoogleGeocoding googGeocoding;
+  late GoogleGeocoding googGeocoding;
   bool _isMapLoaded = false;
   String _streetNumber = '';
   String _street = '';
@@ -46,8 +47,8 @@ class _RequestServiceScreenState extends State<RequestServiceScreen> {
   @override
   initState() {
     print("googleKeuy");
-    print(dotenv.env["GOOGLE_API_KEY"]??"");
-    googGeocoding=GoogleGeocoding(dotenv.env["GOOGLE_API_KEY"]??"");
+    print(dotenv.env["GOOGLE_API_KEY"] ?? "");
+    googGeocoding = GoogleGeocoding(dotenv.env["GOOGLE_API_KEY"] ?? "");
     _getLocation();
     super.initState();
   }
@@ -88,10 +89,11 @@ class _RequestServiceScreenState extends State<RequestServiceScreen> {
         print("uyDF#");
         print(value);
         setState(() {
-           _isMapLoaded = false;
+          _isMapLoaded = false;
           currentLocation = location;
           _address = value;
-          _center =LatLng(location.latitude??0.00, location.longitude??0.00);
+          _center =
+              LatLng(location.latitude ?? 0.00, location.longitude ?? 0.00);
         });
       }).catchError((e) {
         print("preee##");
@@ -113,26 +115,22 @@ class _RequestServiceScreenState extends State<RequestServiceScreen> {
   //   return coordinates;
   // }
 
-   Future<Null> _getCoordinates(String address) async {
+  Future<Null> _getCoordinates(String address) async {
     print("add##");
     print(address);
-   // if (address == null || address == "") ;
+    // if (address == null || address == "") ;
     print("code###");
-    
-    var response =
-        await googGeocoding.geocoding.get(address,[]);
-        if (response != null && response.results != null) {
-          print(response.results![0].geometry!.location!.lat);
-          print(response.results![0].geometry!.location!.lng);
-           setState(() {
-          
-         
-          _address = address;
-          _center =LatLng(response.results![0].geometry!.location!.lat??0.00, response.results![0].geometry!.location!.lng??0.00);
-        });
-        } 
-  
-   
+
+    var response = await googGeocoding.geocoding.get(address, []);
+    if (response != null && response.results != null) {
+      print(response.results![0].geometry!.location!.lat);
+      print(response.results![0].geometry!.location!.lng);
+      setState(() {
+        _address = address;
+        _center = LatLng(response.results![0].geometry!.location!.lat ?? 0.00,
+            response.results![0].geometry!.location!.lng ?? 0.00);
+      });
+    }
   }
 
   Future<String> _getAddress(double? lat, double? lang) async {
@@ -140,10 +138,9 @@ class _RequestServiceScreenState extends State<RequestServiceScreen> {
     print(lat);
     if (lat == null || lang == null) return "";
     print("pass##");
-    final LatLon coord=LatLon(lat, lang);
+    final LatLon coord = LatLon(lat, lang);
     print(coord);
-    var result =
-        await googGeocoding.geocoding.getReverse(coord);
+    var result = await googGeocoding.geocoding.getReverse(coord);
     print("opi##");
     print(result!.results![0].formattedAddress);
     return "${result.results![0].formattedAddress}";
@@ -209,7 +206,7 @@ class _RequestServiceScreenState extends State<RequestServiceScreen> {
                 final sessionToken = Uuid().v4();
                 final AddressSuggestion? result = await showSearch(
                     context: context, delegate: AddressSearch(sessionToken));
-print("addressSe#del");
+                print("addressSe#del");
                 print(result!.description);
                 _getCoordinates(result.description);
               },
@@ -340,20 +337,17 @@ print("addressSe#del");
                   ),
                   Padding(
                     padding: const EdgeInsets.all(20),
-                    child: Column(
-                      children:[ 
-                        Row(
-                          children: [
-                            Icon(Icons.home),
-                            Expanded(child: Text(_address))
-
-
-                          ],
-                        ),
-
-                        SizedBox(height: 10,),
-                        
-                        Container(
+                    child: Column(children: [
+                      Row(
+                        children: [
+                          Icon(Icons.home),
+                          Expanded(child: Text(_address))
+                        ],
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Container(
                           height: 90.0,
                           width: MediaQuery.of(context).size.width,
                           decoration: BoxDecoration(
@@ -370,12 +364,17 @@ print("addressSe#del");
                             ],
                           ),
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 20.0),
                             child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Row(children: [
-                                    Text("Selected Service:",style: TextStyle(fontWeight: FontWeight.bold),),
+                                    Text(
+                                      "Selected Service:",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
                                     SizedBox(
                                       width: 20,
                                     ),
@@ -395,7 +394,9 @@ print("addressSe#del");
                                     height: 10,
                                   ),
                                   Row(children: [
-                                    Text("Service Cost:",style: TextStyle(fontWeight: FontWeight.bold)),
+                                    Text("Service Cost:",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold)),
                                     SizedBox(
                                       width: 20,
                                     ),
@@ -404,14 +405,13 @@ print("addressSe#del");
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 16,
-                                          color: Theme.of(context).accentColor),
+                                          color:
+                                              Theme.of(context).primaryColor),
                                     ),
                                   ])
                                 ]),
                           )),
-                      ]
-                    ),
-                      
+                    ]),
                   )
                 ]),
               ),

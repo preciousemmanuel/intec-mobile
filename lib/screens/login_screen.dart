@@ -5,7 +5,14 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:intechpro/providers/authentication_service.dart';
 import 'package:intechpro/screens/home_screen.dart';
+import 'package:intechpro/theme/cusotm_button_style.dart';
+import 'package:intechpro/theme/custom_text_style.dart';
+import 'package:intechpro/theme/theme_helper.dart';
+import 'package:intechpro/utils/size_utils.dart';
+import 'package:intechpro/widgets/custom_elevated_button.dart';
+import 'package:intechpro/widgets/custom_text_field.dart';
 import 'package:intechpro/widgets/custome_snackbar.dart';
+import 'package:intechpro/widgets/space.dart';
 import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -31,7 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
       content: Text(title),
       backgroundColor: status ? Colors.green : Colors.red,
     );
- ScaffoldMessenger.of(context).showSnackBar(snackbar);
+    ScaffoldMessenger.of(context).showSnackBar(snackbar);
   }
 
   void _handleSubmit() async {
@@ -63,21 +70,15 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _buildSubmitButton() {
-    return _isLogin
-        ? CircularProgressIndicator(
-            valueColor:
-                AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
-          )
-        : Container(
-            height: 50.0,
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () => _handleSubmit(),
-              child: Text("Submit"),
-              style: ElevatedButton.styleFrom(
-                  primary: Theme.of(context).accentColor),
-            ),
-          );
+    return CustomElevatedButton(
+        onPressed: (() {
+          _handleSubmit();
+        }),
+        isDisabled: _isLogin,
+        loading: _isLogin,
+        text: "Continue",
+        buttonStyle: CustomButtonStyles.none,
+        decoration: CustomButtonStyles.gradientIndigoAToPrimaryDecoration);
   }
 
   @override
@@ -87,14 +88,14 @@ class _LoginScreenState extends State<LoginScreen> {
       key: scaffoldkey,
       body: Container(
         height: deviceHeight,
-        decoration: const BoxDecoration(
-            color: Colors.white,
-            image: DecorationImage(
-                image: AssetImage("assets/images/background-front.jpg"),
-                fit: BoxFit.cover)
+        // decoration: const BoxDecoration(
+        //     color: Colors.white,
+        //     image: DecorationImage(
+        //         image: AssetImage("assets/images/background-front.jpg"),
+        //         fit: BoxFit.cover)
 
-            //image: DecorationImage(image: AssetImage("assets/images/backgound.jpg"),fit: BoxFit.cover)
-            ),
+        //     //image: DecorationImage(image: AssetImage("assets/images/backgound.jpg"),fit: BoxFit.cover)
+        //     ),
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15.0),
@@ -105,85 +106,78 @@ class _LoginScreenState extends State<LoginScreen> {
                   SizedBox(
                     height: 100.0,
                   ),
-                  Image(
-                    image: AssetImage("assets/images/logo.jpg"),
-                    width: 100.0,
-                    height: 100.0,
-                    alignment: Alignment.center,
-                  ),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  Text(
-                    "Login to Continue!",
-                    style: TextStyle(
-                        fontWeight: FontWeight.w800,
-                        fontSize: 18.0,
-                        color: Color(0xff25282B)),
-                  ),
+
+                  Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        "Login",
+                        style: CustomTextStyles.titleMediumBlue900Medium,
+                      )),
+
+                  Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        "Welcome back",
+                        style: CustomTextStyles.bodyMediumInterBluegray900,
+                      )),
                   SizedBox(
                     height: 50.0,
                   ),
-                  TextFormField(
-                      controller: _emailController,
-                      validator: (value) {
-                        if (value == "") {
-                          return "Please Enter Email";
-                        }
-                      },
-                      decoration: InputDecoration(
-                          labelText: "Email",
-                          // filled: true,
-                          labelStyle: TextStyle(color: Color(0xff52575C)),
-                          prefixIcon: Icon(
-                            Icons.email,
-                            color: Color(0xff52575C),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Theme.of(context).accentColor)),
-                          enabledBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Color(0xff52575C)))),
-                      onSaved: (value) => _email = value!),
+                  CustomTextFormField(
+                    controller: _emailController,
+                    hintText: "Enter email",
+                    validator: (value) {
+                      if (value == "") {
+                        return "Please Enter Email";
+                      }
+                    },
+                    prefix: Icon(
+                      Icons.email,
+                      color: appTheme.gray200,
+                    ),
+                  ),
 
                   SizedBox(
                     height: 40.0,
                   ),
-
-                  TextFormField(
+                  CustomTextFormField(
+                    textInputType: TextInputType.text,
                     controller: _passwordController,
+                    hintText: "Password",
+                    obscureText: _obscureText,
                     validator: (value) {
                       if (value == "") {
-                        return "Please Enter Email Address";
+                        return "Please Enter Password";
                       }
                     },
-                    obscureText: _obscureText,
-                    decoration: InputDecoration(
-                        labelText: "Password",
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                              _obscureText
-                                  ? Icons.visibility
-                                  : Icons.visibility_off,
-                              color: Color(0xff52575C)),
-                          onPressed: () => {
-                            setState(() {
-                              _obscureText = !_obscureText;
-                            })
-                          },
-                        ),
-                        labelStyle: TextStyle(color: Color(0xff52575C)),
-                        prefixIcon: Icon(
-                          Icons.lock_outline,
-                          color: Color(0xff52575C),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Theme.of(context).accentColor)),
-                        enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Color(0xff52575C)))),
+                    prefix: Icon(
+                      Icons.key_outlined,
+                      color: appTheme.gray200,
+                    ),
+                    suffix: IconButton(
+                      icon: Icon(
+                          _obscureText
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                          color: appTheme.gray200),
+                      onPressed: () => {
+                        setState(() {
+                          _obscureText = !_obscureText;
+                        })
+                      },
+                    ),
                   ),
+                  VSpace(10.v),
+
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      child: Text("Forgot Password?"),
+                      onPressed: () =>
+                          Navigator.pushNamed(context, "/forgot_password"),
+                    ),
+                  ),
+
                   SizedBox(
                     height: 40.0,
                   ),
@@ -192,22 +186,24 @@ class _LoginScreenState extends State<LoginScreen> {
                   SizedBox(
                     height: 20.0,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      TextButton(
-                        child: Text("Forgot Password?"),
-                        onPressed: () =>
-                            Navigator.pushNamed(context, "/forgot_password"),
-                      ),
-                      GestureDetector(
-                          onTap: () =>
-                              Navigator.pushNamed(context, "/register"),
-                          child: Text(
-                            "Create new Account",
-                          )),
-                    ],
-                  )
+                  GestureDetector(
+                      onTap: () => Navigator.pushNamed(context, "/register"),
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: RichText(
+                          text: TextSpan(
+                              text: "Dont have an accout with IntecPro?",
+                              style: CustomTextStyles.bodyMediumBlack500,
+                              children: [
+                                TextSpan(
+                                    text: " Register",
+                                    style: CustomTextStyles.bodyMediumBlack500
+                                        .copyWith(
+                                      color: appTheme.blue200,
+                                    ))
+                              ]),
+                        ),
+                      ))
 
                   // Positioned(
                   //   bottom: 0,

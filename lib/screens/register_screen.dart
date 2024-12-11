@@ -4,10 +4,18 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:intechpro/data/states.dart';
 import 'package:intechpro/providers/authentication_service.dart';
 import 'package:intechpro/screens/home_screen.dart';
 import 'package:intechpro/screens/registration_succes_screen.dart';
+import 'package:intechpro/theme/cusotm_button_style.dart';
+import 'package:intechpro/theme/custom_text_style.dart';
+import 'package:intechpro/theme/theme_helper.dart';
+import 'package:intechpro/utils/size_utils.dart';
+import 'package:intechpro/widgets/custom_dropdown.dart';
+import 'package:intechpro/widgets/custom_elevated_button.dart';
+import 'package:intechpro/widgets/custom_text_field.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -23,15 +31,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool _obscureText = true;
   bool _isSignup = false;
   int _userType = 1;
-  List _listIdentification = [
-    "Select type of Identification",
+  final List<String> _listIdentification = [
     "National Identification",
     "International Passport",
     "Drivers Licence",
     "Voters Card"
   ];
   bool isCheckTerms = false;
-  String _state = states[0];
+  String _state = "";
   String _identification = "";
   String _address = "";
   TextEditingController _emailController = new TextEditingController();
@@ -44,12 +51,32 @@ class _RegisterScreenState extends State<RegisterScreen> {
   TextEditingController _passwordController = new TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> scaffoldkey = new GlobalKey();
+  List<String> dropdownItemList = [
+    "Customer",
+    "Artisan",
+    "Supplier",
+    "Truck Driver"
+  ];
 
-initState(){
-  _identification=_listIdentification[0];
-}
+  @override
+  initState() {
+    super.initState();
+    _identification = _listIdentification[0];
+    _state = states[0];
+  }
+
   void _handleRadioValueChanged(value) {
-    setState(() => _userType = value);
+    int code = 0;
+    if (value == UserType.customer) {
+      code = UserType.customerCode;
+    } else if (value == UserType.artisan) {
+      code = UserType.artisanCode;
+    } else if (value == UserType.supplier) {
+      code = UserType.supplierCode;
+    } else if (value == UserType.truck) {
+      code = UserType.truckCode;
+    }
+    setState(() => _userType = code);
   }
 
   void ShowSnackBar(String title, bool status) {
@@ -57,7 +84,7 @@ initState(){
       content: Text(title),
       backgroundColor: status ? Colors.green : Colors.red,
     );
-   ScaffoldMessenger.of(context).showSnackBar(snackbar);
+    ScaffoldMessenger.of(context).showSnackBar(snackbar);
   }
 
   void _handleSubmit() async {
@@ -119,51 +146,42 @@ initState(){
       children: [
         // SizedBox(height: 20,),
 
-        SizedBox(
-          width: MediaQuery.of(context).size.width,
-          //padding: EdgeInsets.symmetric(horizontal: 20),
-          child: DropdownButton(
-              value: _identification,
-              hint: Text("Choose Identification Type"),
-              items: _listIdentification.map((identity) {
-                return DropdownMenuItem(
-                  child: Text(identity),
-                  value: identity,
-                );
-              }).toList(),
-              onChanged: (val) {
-                setState(() {
-                  _identification = val.toString();
-                });
-              }),
+        CustomDropDown(
+          icon: Container(
+              margin: EdgeInsets.fromLTRB(10, 0.v, 10.h, 10.v),
+              child: Icon(Icons.arrow_downward)),
+          hintText: "Choose Identification Type",
+          items: _listIdentification,
+          hintStyle: CustomTextStyles.titleSmallBluegray300,
+          // prefix: Container(margin: EdgeInsets.only(left: 20)),
+          contentPadding: EdgeInsets.symmetric(
+            vertical: 19.v,
+            horizontal: 10,
+          ),
+          borderDecoration: DropDownStyleHelper.fillGray,
+          onChanged: (value) {
+            setState(() {
+              _identification = value.toString();
+            });
+          },
         ),
 
         SizedBox(
           height: 40,
         ),
-        TextFormField(
-          //  keyboardType: TextInputType.phone,
+        CustomTextFormField(
+          textInputType: TextInputType.text,
           controller: _identificationNumberController,
+          hintText: "Identification number",
           validator: (value) {
             if (value == "") {
               return "Please Enter Identification Number";
             }
           },
-          decoration: InputDecoration(
-              labelText:
-                  _identificationNumberController.text == _listIdentification[0]
-                      ? "Enter Identification Number"
-                      : "Enter " + _identification + " Number",
-              // filled: true,
-              labelStyle: TextStyle(color: Color(0xff52575C)),
-              prefixIcon: Icon(
-                Icons.book,
-                color: Color(0xff52575C),
-              ),
-              focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Theme.of(context).accentColor)),
-              enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Color(0xff52575C)))),
+          prefix: Icon(
+            Icons.perm_identity,
+            color: appTheme.gray200,
+          ),
         ),
 
         SizedBox(
@@ -174,23 +192,15 @@ initState(){
   }
 
   Widget _buildSubmitButton() {
-    return _isSignup
-        ? Align(
-            alignment: Alignment.center,
-            child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(
-                    Theme.of(context).primaryColor)),
-          )
-        : Container(
-            height: 50.0,
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () => _handleSubmit(),
-              child: Text("Submit"),
-              style: ElevatedButton.styleFrom(
-                  primary: Theme.of(context).accentColor),
-            ),
-          );
+    return CustomElevatedButton(
+        onPressed: (() {
+          _handleSubmit();
+        }),
+        isDisabled: _isSignup,
+        loading: _isSignup,
+        text: "Submit",
+        buttonStyle: CustomButtonStyles.none,
+        decoration: CustomButtonStyles.gradientIndigoAToPrimaryDecoration);
   }
 
   @override
@@ -201,11 +211,7 @@ initState(){
       body: SafeArea(
         child: Container(
           height: deviceHeight,
-          decoration: const BoxDecoration(
-              color: Colors.white,
-              image: DecorationImage(
-                  image: AssetImage("assets/images/background-front.jpg"),
-                  fit: BoxFit.cover)),
+          color: appTheme.white,
           child: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15.0),
@@ -215,257 +221,193 @@ initState(){
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(
-                      height: 10.0,
+                      height: 30.0,
                     ),
-                    IconButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      icon: Icon(
-                        Icons.arrow_back,
-                        color: Theme.of(context).accentColor,
-                      ),
-                      alignment: Alignment.topLeft,
-                    ),
-                    SizedBox(
-                      height: 20.0,
-                    ),
-                    Align(
-                      alignment: Alignment.center,
-                      child: Image(
-                        image: AssetImage("assets/images/logo.jpg"),
-                        width: 100.0,
-                        height: 100.0,
-                        alignment: Alignment.center,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 30,
-                    ),
+
                     Align(
                         alignment: Alignment.center,
                         child: Text(
-                          "Registration!",
-                          style: TextStyle(
-                              fontWeight: FontWeight.w800,
-                              fontSize: 18.0,
-                              color: Color(0xff25282B)),
+                          "Sign up to IntecPro",
+                          style: CustomTextStyles.titleMediumBlue900Medium,
+                        )),
+
+                    Align(
+                        alignment: Alignment.center,
+                        child: Text(
+                          "Sign up to enjoy all the amazing features on intecPro",
+                          style: CustomTextStyles.bodyMediumInterBluegray900,
                         )),
                     SizedBox(
                       height: 50.0,
                     ),
-                    TextFormField(
+
+                    CustomTextFormField(
                       controller: _nameController,
+                      hintText: "Fullname",
                       validator: (value) {
                         if (value == "") {
                           return "Please Enter Fullname";
                         }
                       },
-                      decoration: InputDecoration(
-                          labelText: "Fullname",
-                          // filled: true,
-                          labelStyle: TextStyle(color: Color(0xff52575C)),
-                          prefixIcon: Icon(
-                            Icons.person,
-                            color: Color(0xff52575C),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Theme.of(context).accentColor)),
-                          enabledBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Color(0xff52575C)))),
+                      prefix: Icon(
+                        Icons.person_4_outlined,
+                        color: appTheme.gray200,
+                      ),
                     ),
+
                     SizedBox(
-                      height: 40.0,
+                      height: 25.0,
                     ),
-                    TextFormField(
+
+                    CustomTextFormField(
+                      textInputType: TextInputType.emailAddress,
                       controller: _emailController,
+                      hintText: "Email",
                       validator: (value) {
                         if (value == "") {
                           return "Please Enter Email";
                         }
                       },
-                      decoration: InputDecoration(
-                          labelText: "Email",
-                          // filled: true,
-                          labelStyle: TextStyle(color: Color(0xff52575C)),
-                          prefixIcon: Icon(
-                            Icons.email,
-                            color: Color(0xff52575C),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Theme.of(context).accentColor)),
-                          enabledBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Color(0xff52575C)))),
-                    ),
-                    SizedBox(
-                      height: 40.0,
-                    ),
-                    TextFormField(
-                      keyboardType: TextInputType.phone,
-                      controller: _phoneNumberController,
-                      validator: (value) {
-                        if (value == "") {
-                          return "Please Enter Phone Number";
-                        }
-                      },
-                      decoration: InputDecoration(
-                          labelText: "Phone Number",
-                          // filled: true,
-                          labelStyle: TextStyle(color: Color(0xff52575C)),
-                          prefixIcon: Icon(
-                            Icons.phone,
-                            color: Color(0xff52575C),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Theme.of(context).accentColor)),
-                          enabledBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Color(0xff52575C)))),
-                    ),
-
-                    SizedBox(
-                      height: 40.0,
-                    ),
-                    Text(
-                      "Please choose user type:",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Radio(
-                              value: 1,
-                              groupValue: _userType,
-                              onChanged: _handleRadioValueChanged),
-                          Text("Customer"),
-                          SizedBox(
-                            width: 30.0,
-                          ),
-                          Radio(
-                              value: 2,
-                              groupValue: _userType,
-                              onChanged: _handleRadioValueChanged),
-                          Text("Artisan"),
-                          SizedBox(
-                            width: 30.0,
-                          ),
-                        ],
+                      prefix: Icon(
+                        Icons.email,
+                        color: appTheme.gray200,
                       ),
                     ),
 
-                    Row(
-                      // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Radio(
-                            value: 3,
-                            groupValue: _userType,
-                            onChanged: _handleRadioValueChanged),
-                        Text("Truck Driver"),
-                        SizedBox(
-                          width: 30.0,
-                        ),
-                        Radio(
-                            value: 4,
-                            groupValue: _userType,
-                            onChanged: _handleRadioValueChanged),
-                        Text("Supplier"),
-                      ],
+                    SizedBox(
+                      height: 25.0,
+                    ),
+
+                    CustomTextFormField(
+                      textInputType: TextInputType.phone,
+                      controller: _phoneNumberController,
+                      hintText: "Phone",
+                      validator: (value) {
+                        if (value == "") {
+                          return "Please Enter Phone";
+                        }
+                      },
+                      prefix: Icon(
+                        Icons.phone,
+                        color: appTheme.gray200,
+                      ),
                     ),
 
                     SizedBox(
-                      width: MediaQuery.of(context).size.width,
-                      //padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: DropdownButton(
-                          value: _state,
-                          hint: Text("Choose your state of residence"),
-                          items: states.map((state) {
-                            return DropdownMenuItem(
-                              child: Text(state),
-                              value: state,
-                            );
-                          }).toList(),
-                          onChanged: (val) {
-                            setState(() {
-                              _state = val.toString();
-                            });
-                          }),
+                      height: 25.0,
+                    ),
+
+                    CustomTextFormField(
+                      textInputType: TextInputType.text,
+                      controller: _passwordController,
+                      hintText: "Password",
+                      obscureText: _obscureText,
+                      validator: (value) {
+                        if (value == "") {
+                          return "Please Enter Password";
+                        }
+                      },
+                      prefix: Icon(
+                        Icons.key_outlined,
+                        color: appTheme.gray200,
+                      ),
+                      suffix: IconButton(
+                        icon: Icon(
+                            _obscureText
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                            color: appTheme.gray200),
+                        onPressed: () => {
+                          setState(() {
+                            _obscureText = !_obscureText;
+                          })
+                        },
+                      ),
                     ),
                     SizedBox(
-                      height: 40,
+                      height: 25.0,
                     ),
-                    TextFormField(
-                      //  keyboardType: TextInputType.phone,
+
+                    CustomDropDown(
+                      icon: Container(
+                          margin: EdgeInsets.fromLTRB(10, 0.v, 10.h, 10.v),
+                          child: Icon(Icons.arrow_downward)),
+                      hintText: "Select User Type",
+                      items: UserType.userList,
+                      hintStyle: CustomTextStyles.titleSmallBluegray300,
+                      // prefix: Container(
+                      //     margin:
+                      //         EdgeInsets.fromLTRB(20.h, 25.v, 10.h, 25.v),
+                      //     child: CustomImageView(
+                      //         imagePath: ImageConstant.imgPin,
+                      //         height: 18.adaptSize,
+                      //         width: 18.adaptSize)),
+                      //  prefixConstraints: BoxConstraints(maxHeight: 69.v),
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 19.v, horizontal: 10),
+                      borderDecoration: DropDownStyleHelper.fillGray,
+
+                      onChanged: (value) {
+                        _handleRadioValueChanged(value);
+                      },
+                    ),
+
+                    SizedBox(
+                      height: 25.0,
+                    ),
+
+                    CustomDropDown(
+                      icon: Container(
+                          margin: EdgeInsets.fromLTRB(10, 0.v, 10.h, 10.v),
+                          child: Icon(Icons.arrow_downward)),
+                      hintText: "Select state of residence",
+                      items: states,
+                      hintStyle: CustomTextStyles.titleSmallBluegray300,
+
+                      // prefix: Container(
+                      //     margin:
+                      //         EdgeInsets.fromLTRB(20.h, 25.v, 10.h, 25.v),
+                      //     child: CustomImageView(
+                      //         imagePath: ImageConstant.imgPin,
+                      //         height: 18.adaptSize,
+                      //         width: 18.adaptSize)),
+                      //  prefixConstraints: BoxConstraints(maxHeight: 69.v),
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 19.v, horizontal: 10),
+                      borderDecoration: DropDownStyleHelper.fillGray,
+
+                      onChanged: (value) {
+                        setState(() {
+                          _state = value.toString();
+                        });
+                      },
+                    ),
+
+                    SizedBox(
+                      height: 20,
+                    ),
+
+                    CustomTextFormField(
+                      textInputType: TextInputType.text,
                       controller: _addressController,
+                      hintText: "Address",
                       validator: (value) {
                         if (value == "") {
                           return "Please Enter Full address";
                         }
                       },
-                      decoration: InputDecoration(
-                          labelText: "Address",
-                          // filled: true,
-                          labelStyle: TextStyle(color: Color(0xff52575C)),
-                          prefixIcon: Icon(
-                            Icons.place_outlined,
-                            color: Color(0xff52575C),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Theme.of(context).accentColor)),
-                          enabledBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Color(0xff52575C)))),
+                      prefix: Icon(
+                        Icons.pin,
+                        color: appTheme.gray200,
+                      ),
                     ),
+
                     SizedBox(
                       height: 40,
                     ),
                     _userType == 1 ? Container() : _buildMoreFields(),
                     SizedBox(
                       height: 10,
-                    ),
-                    TextFormField(
-                      obscureText: _obscureText,
-                      controller: _passwordController,
-                      validator: (value) {
-                        if (value == "") {
-                          return "Please Enter Password";
-                        }
-                      },
-                      decoration: InputDecoration(
-                          labelText: "Password",
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                                _obscureText
-                                    ? Icons.visibility
-                                    : Icons.visibility_off,
-                                color: Color(0xff52575C)),
-                            onPressed: () => {
-                              setState(() {
-                                _obscureText = !_obscureText;
-                              })
-                            },
-                          ),
-                          labelStyle: TextStyle(color: Color(0xff52575C)),
-                          prefixIcon: Icon(
-                            Icons.lock_outline,
-                            color: Color(0xff52575C),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Theme.of(context).accentColor)),
-                          enabledBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Color(0xff52575C)))),
-                    ),
-                    SizedBox(
-                      height: 40.0,
                     ),
 
                     CheckboxListTile(
@@ -494,8 +436,21 @@ initState(){
                         onTap: () {
                           Navigator.pushNamed(context, "/login");
                         },
-                        child: Text(
-                          "Already have an account? Login",
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: RichText(
+                            text: TextSpan(
+                                text: "Have an account on intecPro already?",
+                                style: CustomTextStyles.bodyMediumBlack500,
+                                children: [
+                                  TextSpan(
+                                      text: " Login",
+                                      style: CustomTextStyles.bodyMediumBlack500
+                                          .copyWith(
+                                        color: appTheme.blue200,
+                                      ))
+                                ]),
+                          ),
                         )),
                     SizedBox(
                       height: 50.0,

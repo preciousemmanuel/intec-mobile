@@ -219,21 +219,28 @@ class _RequestStatusScreenState extends State<RequestStatusScreen> {
           ),
           Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              child:_request["requestStatus"] >2 && (_request["hasArrived"] == null || !_request["hasArrived"])? TrackStatus(
-                title: _request["artisan"]["userType"] == 2
-                    ? 'Artisan on the way to the location'
-                    : _request["artisan"]["userType"] == 3
-                        ? "Truck Driver On the way"
-                        : "Supplier On the way",
-                status: true,
-              ):TrackStatus(
-                title: _request["artisan"]["userType"] == 2
-                    ? 'Artisan has arrived at '+_request["time_artisan_arrived"]
-                    : _request["artisan"]["userType"] == 3
-                        ? "Truck Driver On the way "+_request["time_artisan_arrived"]
-                        : "Supplier On the way "+_request["time_artisan_arrived"],
-                status: true,
-              )),
+              child: _request["requestStatus"] > 2 &&
+                      (_request["hasArrived"] == null ||
+                          !_request["hasArrived"])
+                  ? TrackStatus(
+                      title: _request["artisan"]["userType"] == 2
+                          ? 'Artisan on the way to the location'
+                          : _request["artisan"]["userType"] == 3
+                              ? "Truck Driver On the way"
+                              : "Supplier On the way",
+                      status: true,
+                    )
+                  : TrackStatus(
+                      title: _request["artisan"]["userType"] == 2
+                          ? 'Artisan has arrived at ' +
+                              _request["time_artisan_arrived"]
+                          : _request["artisan"]["userType"] == 3
+                              ? "Truck Driver On the way " +
+                                  _request["time_artisan_arrived"]
+                              : "Supplier On the way " +
+                                  _request["time_artisan_arrived"],
+                      status: true,
+                    )),
           SizedBox(
             height: 20,
           ),
@@ -271,18 +278,20 @@ class _RequestStatusScreenState extends State<RequestStatusScreen> {
                   height: 70,
                   decoration:
                       BoxDecoration(borderRadius: BorderRadius.circular(50)),
-                  child: !_request["artisan"].containsKey("imageurl") ?  Image.asset(
+                  child: !_request["artisan"].containsKey("imageurl")
+                      ? Image.asset(
                           "assets/images/user.png",
                           width: 60,
                           height: 60,
-                        ):
-                        CircleAvatar(
+                        )
+                      : CircleAvatar(
                           backgroundImage: AssetImage("assets/images/user.png"),
                           radius: 70,
-                          
                           child: CircleAvatar(
                             radius: 70,
-                            backgroundImage: NetworkImage(_request["artisan"]["imageurl"]),),
+                            backgroundImage:
+                                NetworkImage(_request["artisan"]["imageurl"]),
+                          ),
                         ),
                 ),
                 SizedBox(
@@ -295,7 +304,7 @@ class _RequestStatusScreenState extends State<RequestStatusScreen> {
                       style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
-                          color: Theme.of(context).accentColor),
+                          color: Theme.of(context).primaryColor),
                     ),
                     Text(_request["artisan"]["name"])
                   ],
@@ -310,7 +319,7 @@ class _RequestStatusScreenState extends State<RequestStatusScreen> {
                       style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
-                          color: Theme.of(context).accentColor),
+                          color: Theme.of(context).primaryColor),
                     ),
                     Text(_request["artisan"]["phone"])
                   ],
@@ -409,7 +418,7 @@ class _RequestStatusScreenState extends State<RequestStatusScreen> {
           children: [
             Icon(
               Icons.home,
-              color: Theme.of(context).accentColor,
+              color: Theme.of(context).primaryColor,
             ),
             Expanded(child: Text(_request["address"])),
           ],
@@ -427,7 +436,7 @@ class _RequestStatusScreenState extends State<RequestStatusScreen> {
           children: [
             Icon(
               Icons.place,
-              color: Theme.of(context).accentColor,
+              color: Theme.of(context).primaryColor,
             ),
             Expanded(child: Text(_request["address_destination"])),
           ],
@@ -440,7 +449,7 @@ class _RequestStatusScreenState extends State<RequestStatusScreen> {
           children: [
             Icon(
               Icons.car_rental,
-              color: Theme.of(context).accentColor,
+              color: Theme.of(context).primaryColor,
             ),
             Expanded(
                 child: Text(
@@ -460,7 +469,7 @@ class _RequestStatusScreenState extends State<RequestStatusScreen> {
         children: [
           Icon(
             Icons.location_city,
-            color: Theme.of(context).accentColor,
+            color: Theme.of(context).primaryColor,
           ),
           Expanded(child: Text(_request["address"])),
         ],
@@ -541,7 +550,7 @@ class _RequestStatusScreenState extends State<RequestStatusScreen> {
                                           itemBuilder: (context, _) => Icon(
                                             Icons.star,
                                             color:
-                                                Theme.of(context).accentColor,
+                                                Theme.of(context).primaryColor,
                                           ),
                                         ),
                                         SizedBox(
@@ -565,7 +574,7 @@ class _RequestStatusScreenState extends State<RequestStatusScreen> {
                                               focusedBorder: OutlineInputBorder(
                                                   borderSide: BorderSide(
                                                       color: Theme.of(context)
-                                                          .accentColor)),
+                                                          .primaryColor)),
                                               enabledBorder: OutlineInputBorder(
                                                   borderSide: BorderSide(
                                                       color:
@@ -617,8 +626,7 @@ class _RequestStatusScreenState extends State<RequestStatusScreen> {
                                                                         3
                                                                     ? "You have successfully approved the payment request."
                                                                     : "Rating sent Successfull! Pay the cash for the service done."),
-                                                                actions: <
-                                                                    Widget>[
+                                                                actions: <Widget>[
                                                                   TextButton(
                                                                     onPressed:
                                                                         () {
@@ -654,8 +662,7 @@ class _RequestStatusScreenState extends State<RequestStatusScreen> {
                                                                     "Message"),
                                                                 content: Text(value[
                                                                     "message"]),
-                                                                actions: <
-                                                                    Widget>[
+                                                                actions: <Widget>[
                                                                   TextButton(
                                                                     onPressed:
                                                                         () {
@@ -682,15 +689,15 @@ class _RequestStatusScreenState extends State<RequestStatusScreen> {
                                                           side: BorderSide(
                                                               color: Theme.of(
                                                                       context)
-                                                                  .accentColor),
+                                                                  .primaryColor),
                                                           padding: EdgeInsets
                                                               .symmetric(
                                                                   horizontal:
                                                                       15,
                                                                   vertical: 5),
-                                                          primary:
-                                                              Theme.of(context)
-                                                                  .accentColor),
+                                                          primary: Theme.of(
+                                                                  context)
+                                                              .primaryColor),
                                                 ),
                                               )
                                       ],
@@ -802,8 +809,7 @@ class _RequestStatusScreenState extends State<RequestStatusScreen> {
                                                                       "Message"),
                                                                   content: Text(
                                                                       "You have successfully denied the payment request."),
-                                                                  actions: <
-                                                                      Widget>[
+                                                                  actions: <Widget>[
                                                                     TextButton(
                                                                       onPressed:
                                                                           () {
@@ -839,8 +845,7 @@ class _RequestStatusScreenState extends State<RequestStatusScreen> {
                                                                   content: Text(
                                                                       value[
                                                                           "message"]),
-                                                                  actions: <
-                                                                      Widget>[
+                                                                  actions: <Widget>[
                                                                     TextButton(
                                                                       onPressed:
                                                                           () {
@@ -874,15 +879,15 @@ class _RequestStatusScreenState extends State<RequestStatusScreen> {
                                                           side: BorderSide(
                                                               color: Theme.of(
                                                                       context)
-                                                                  .accentColor),
+                                                                  .primaryColor),
                                                           padding: EdgeInsets
                                                               .symmetric(
                                                                   horizontal:
                                                                       15,
                                                                   vertical: 5),
-                                                          primary:
-                                                              Theme.of(context)
-                                                                  .accentColor),
+                                                          primary: Theme.of(
+                                                                  context)
+                                                              .primaryColor),
                                                 ),
                                               )
                                       ],
@@ -920,12 +925,9 @@ class _RequestStatusScreenState extends State<RequestStatusScreen> {
         ]));
   }
 
-  _buildTimeArrived(){
+  _buildTimeArrived() {
     return Column(
-      children: [
-        Divider(),
-        Text("Artisan arrive work location")
-      ],
+      children: [Divider(), Text("Artisan arrive work location")],
     );
   }
 
@@ -1011,7 +1013,7 @@ class _RequestStatusScreenState extends State<RequestStatusScreen> {
                               children: [
                                 Icon(
                                   Icons.work_rounded,
-                                  color: Theme.of(context).accentColor,
+                                  color: Theme.of(context).primaryColor,
                                 ),
                                 SizedBox(
                                   width: 20,
@@ -1035,7 +1037,7 @@ class _RequestStatusScreenState extends State<RequestStatusScreen> {
                             Row(
                               children: [
                                 Icon(Icons.money,
-                                    color: Theme.of(context).accentColor),
+                                    color: Theme.of(context).primaryColor),
                                 SizedBox(
                                   width: 20,
                                 ),
@@ -1048,7 +1050,8 @@ class _RequestStatusScreenState extends State<RequestStatusScreen> {
                             ),
                             _request["requestStatus"] > 2
                                 ? PaymentMethodSection(
-                                    paymentMethod: _request["paymentMethod"]??1)
+                                    paymentMethod:
+                                        _request["paymentMethod"] ?? 1)
                                 : Container()
                           ],
                         ),
@@ -1206,7 +1209,7 @@ class _RequestStatusScreenState extends State<RequestStatusScreen> {
                                                                   side: BorderSide(
                                                                       color: Theme.of(
                                                                               context)
-                                                                          .accentColor),
+                                                                          .primaryColor),
                                                                   padding: EdgeInsets
                                                                       .symmetric(
                                                                           horizontal:
@@ -1215,7 +1218,7 @@ class _RequestStatusScreenState extends State<RequestStatusScreen> {
                                                                               5),
                                                                   primary: Theme.of(
                                                                           context)
-                                                                      .accentColor),
+                                                                      .primaryColor),
                                                             ),
                                                           )
                                                   ],

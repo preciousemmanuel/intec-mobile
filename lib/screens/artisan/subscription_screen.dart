@@ -15,7 +15,7 @@ import 'dart:io';
 import 'package:flutter_paystack/flutter_paystack.dart';
 
 class SubscriptionScreen extends StatefulWidget {
-  const SubscriptionScreen({ Key? key }) : super(key: key);
+  const SubscriptionScreen({Key? key}) : super(key: key);
 
   @override
   _SubscriptionScreenState createState() => _SubscriptionScreenState();
@@ -24,26 +24,27 @@ class SubscriptionScreen extends StatefulWidget {
 class _SubscriptionScreenState extends State<SubscriptionScreen> {
   final GlobalKey<ScaffoldState> scaffoldkey = new GlobalKey();
 
-  bool _isProcessingPayment=false;
-  int _subscription_fee=2000;
+  bool _isProcessingPayment = false;
+  int _subscription_fee = 2000;
 
   initState() {
     super.initState();
-   
+
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-     getSubcriptionFee();
+      getSubcriptionFee();
     });
   }
 
-void getSubcriptionFee()async{
- Map<String,dynamic> result= await  Provider.of<ProfileProvider>(context, listen: false).fetch_subcription_amount();
-if (result["status"]) {
-  setState(() {
-    _subscription_fee=result["data"];
-  });
-}
-}
-
+  void getSubcriptionFee() async {
+    Map<String, dynamic> result =
+        await Provider.of<ProfileProvider>(context, listen: false)
+            .fetch_subcription_amount();
+    if (result["status"]) {
+      setState(() {
+        _subscription_fee = result["data"];
+      });
+    }
+  }
 
   void ShowSnackBar(String title, bool status) {
     final snackbar = SnackBar(
@@ -53,16 +54,13 @@ if (result["status"]) {
     ScaffoldMessenger.of(context).showSnackBar(snackbar);
   }
 
-
-_handleSubscription(BuildContext context) async {
-    Map<String, dynamic> result = await context
-        .read<ProfileProvider>()
-        .handleSubscription();
-        setState(() {
-        _isProcessingPayment=false;
-      });
+  _handleSubscription(BuildContext context) async {
+    Map<String, dynamic> result =
+        await context.read<ProfileProvider>().handleSubscription();
+    setState(() {
+      _isProcessingPayment = false;
+    });
     if (result["status"]) {
-      
       //ShowSnackBar("Subscription payment is successfull!", true);
       showDialog(
           context: context,
@@ -76,7 +74,8 @@ _handleSubscription(BuildContext context) async {
                     Navigator.pop(context);
                     Navigator.of(context).pushAndRemoveUntil(
                         MaterialPageRoute(
-                            builder: (BuildContext context) => HomeArtisanScreen()),
+                            builder: (BuildContext context) =>
+                                HomeArtisanScreen()),
                         (Route<dynamic> route) => false);
                   },
                   child: Text(
@@ -87,45 +86,36 @@ _handleSubscription(BuildContext context) async {
               ],
             );
           });
-     
     } else {
-      
       ShowSnackBar(result["message"], false);
     }
     Navigator.pop(context);
   }
 
-
   void _handleFundSubmit(BuildContext context) async {
     setState(() {
-      _isProcessingPayment=true;
+      _isProcessingPayment = true;
     });
-    PaystackPayment paystack= PaystackPayment(_subscription_fee,Provider.of<User>(context, listen: false).email??"");
-   var response= await paystack.chargeCard(context);
-   print("woringRT");
-   print(response);
+    PaystackPayment paystack = PaystackPayment(_subscription_fee,
+        Provider.of<User>(context, listen: false).email ?? "");
+    var response = await paystack.chargeCard(context);
+    print("woringRT");
+    print(response);
 
-   if (response.status) {
-_handleSubscription(context);
-     //do your process successfull
-   } else {
-     setState(() {
-       _isProcessingPayment=false;
-     });
-ShowSnackBar(response.message, false);
-   }
+    if (response.status) {
+      _handleSubscription(context);
+      //do your process successfull
+    } else {
+      setState(() {
+        _isProcessingPayment = false;
+      });
+      ShowSnackBar(response.message, false);
+    }
   }
 
-  
-
- 
-
-
-
-  
-
   Widget _buildSubmitButton(BuildContext context) {
-    return _isProcessingPayment || context.watch<ProfileProvider>().getSubmitting
+    return _isProcessingPayment ||
+            context.watch<ProfileProvider>().getSubmitting
         ? Align(
             alignment: Alignment.center,
             child: CircularProgressIndicator(
@@ -146,47 +136,51 @@ ShowSnackBar(response.message, false);
           );
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldkey,
-      appBar: AppBar(title: Text("Suppliers Subscription"),
-      backgroundColor: Theme.of(context).primaryColor,
+      appBar: AppBar(
+        title: Text("Suppliers Subscription"),
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       body: SingleChildScrollView(
-        child: 
-      Container(
+        child: Container(
           height: MediaQuery.of(context).size.height,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child:context.watch<ProfileProvider>().loading? Center(
-                child: Column(
-                  children: [
-                    CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                          Theme.of(context).primaryColor),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: context.watch<ProfileProvider>().loading
+                ? Center(
+                    child: Column(
+                      children: [
+                        CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                              Theme.of(context).primaryColor),
+                        ),
+                        SizedBox(
+                          height: 20.0,
+                        ),
+                        Text("Please wait...")
+                      ],
                     ),
-                    SizedBox(
-                      height: 20.0,
-                    ),
-                    Text("Please wait...")
-                  ],
-                ),
-              ): Column(
-            
-            children: [
-              SizedBox(height: 30,),
-              
-Text("For you to continue to be listed on customers page , pay the yearly subscription fee of ${currency.symbol}$_subscription_fee.",style:TextStyle(fontWeight: FontWeight.bold)),
-
-SizedBox(height: 40,),
-_buildSubmitButton(context)
-
-            ],
+                  )
+                : Column(
+                    children: [
+                      SizedBox(
+                        height: 30,
+                      ),
+                      Text(
+                          "For you to continue to be listed on customers page , pay the yearly subscription fee of ${currency.symbol}$_subscription_fee.",
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      SizedBox(
+                        height: 40,
+                      ),
+                      _buildSubmitButton(context)
+                    ],
+                  ),
           ),
         ),
-      ),),
+      ),
     );
   }
 }

@@ -5,6 +5,11 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:intechpro/providers/authentication_service.dart';
 import 'package:intechpro/screens/home_screen.dart';
+import 'package:intechpro/theme/cusotm_button_style.dart';
+import 'package:intechpro/theme/custom_text_style.dart';
+import 'package:intechpro/theme/theme_helper.dart';
+import 'package:intechpro/widgets/custom_elevated_button.dart';
+import 'package:intechpro/widgets/custom_text_field.dart';
 import 'package:intechpro/widgets/custome_snackbar.dart';
 import 'package:provider/provider.dart';
 
@@ -18,13 +23,12 @@ class ForgotPasswordScreen extends StatefulWidget {
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   bool _obscureText = true;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final GlobalKey<ScaffoldState> scaffoldkey =  GlobalKey();
+  final GlobalKey<ScaffoldState> scaffoldkey = GlobalKey();
 
   String _email = "";
- 
+
   bool _isLogin = false;
   TextEditingController _emailController = new TextEditingController();
-  
 
   void ShowSnackBar(String title, bool status) {
     final snackbar = SnackBar(
@@ -51,7 +55,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     });
     if (data["status"]) {
       print("success");
-       ShowSnackBar(data["message"], true);
+      ShowSnackBar(data["message"], true);
     } else {
       // ignore: deprecated_member_use
       ShowSnackBar(data["message"], false);
@@ -61,21 +65,15 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   }
 
   Widget _buildSubmitButton() {
-    return _isLogin
-        ? CircularProgressIndicator(
-            valueColor:
-                AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
-                )
-        : Container(
-            height: 50.0,
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () => _handleSubmit(),
-              child: Text("Submit"),
-              style: ElevatedButton.styleFrom(
-                  primary: Theme.of(context).accentColor),
-            ),
-          );
+    return CustomElevatedButton(
+        onPressed: (() {
+          _handleSubmit();
+        }),
+        isDisabled: _isLogin,
+        loading: _isLogin,
+        text: "Continue",
+        buttonStyle: CustomButtonStyles.none,
+        decoration: CustomButtonStyles.gradientIndigoAToPrimaryDecoration);
   }
 
   @override
@@ -85,14 +83,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       key: scaffoldkey,
       body: Container(
         height: deviceHeight,
-        decoration: const BoxDecoration(
-            color: Colors.white,
-            image: DecorationImage(
-                image: AssetImage("assets/images/background-front.jpg"),
-                fit: BoxFit.cover)
-
-            //image: DecorationImage(image: AssetImage("assets/images/backgound.jpg"),fit: BoxFit.cover)
-            ),
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15.0),
@@ -103,47 +93,37 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   SizedBox(
                     height: 100.0,
                   ),
-                  Image(
-                    image: AssetImage("assets/images/logo.jpg"),
-                    width: 100.0,
-                    height: 100.0,
-                    alignment: Alignment.center,
-                  ),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  Text(
-                    "Forgot your Password!",
-                    style: TextStyle(
-                        fontWeight: FontWeight.w800,
-                        fontSize: 18.0,
-                        color: Color(0xff25282B)),
-                  ),
+
+                  Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        "Forgot your password?",
+                        style: CustomTextStyles.titleMediumBlue900Medium,
+                      )),
+
+                  Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        "Kindly enter your email to reset your password",
+                        style: CustomTextStyles.bodyMediumInterBluegray900,
+                      )),
                   SizedBox(
                     height: 50.0,
                   ),
-                  TextFormField(
-                    controller: _emailController,
-                      validator: (value) {
-                        if (value == "") {
-                          return "Please Enter Email";
-                        }
-                      },
-                      decoration: InputDecoration(
-                          labelText: "Email",
-                          // filled: true,
-                          labelStyle: TextStyle(color: Color(0xff52575C)),
-                          prefixIcon: Icon(
-                            Icons.email,
-                            color: Color(0xff52575C),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Theme.of(context).accentColor)),
-                          enabledBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Color(0xff52575C)))),
-                      onSaved: (value) => _email = value!),
 
+                  CustomTextFormField(
+                    controller: _emailController,
+                    hintText: "Enter email",
+                    validator: (value) {
+                      if (value == "") {
+                        return "Please Enter Email";
+                      }
+                    },
+                    prefix: Icon(
+                      Icons.email,
+                      color: appTheme.gray200,
+                    ),
+                  ),
 
                   SizedBox(
                     height: 40.0,
@@ -153,22 +133,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   SizedBox(
                     height: 20.0,
                   ),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        TextButton(onPressed: ()=>Navigator.pushNamed(context, "/login"), child: Text("Remembered Password? Login"),
-                  ),
-                        GestureDetector(
-                            onTap: () =>
-                                Navigator.pushNamed(context, "/register"),
-                            child: Text(
-                              "Create new Account",
-                            )),
-                      ],
+                  TextButton(
+                    onPressed: () => Navigator.pushNamed(context, "/login"),
+                    child: Text(
+                      "Cancel",
+                      style: CustomTextStyles.titleSmallRed200,
                     ),
-                  )
+                  ),
 
                   // Positioned(
                   //   bottom: 0,

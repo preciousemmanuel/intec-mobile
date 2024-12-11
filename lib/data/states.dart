@@ -1,7 +1,4 @@
-
-
-List states=[
-  "Select State of Residence",
+List<String> states = [
   "Abia",
   "Adamawa",
   "Akwa Ibom",
@@ -40,3 +37,17 @@ List states=[
   "Yobe",
   "Zamfara"
 ];
+
+class UserType {
+  static String customer = "Customer";
+  static String artisan = "Artisan";
+  static String supplier = "Supplier";
+  static String truck = "Truck Driver";
+
+  static int customerCode = 1;
+  static int artisanCode = 2;
+  static int supplierCode = 3;
+  static int truckCode = 4;
+
+  static List<String> userList = [customer, artisan, supplier, truck];
+}

@@ -9,17 +9,15 @@ import 'package:url_launcher/url_launcher.dart';
 import '../config.dart';
 
 class NotVerifyScreen extends StatefulWidget {
- 
-  const NotVerifyScreen({Key? key,})
-      : super(key: key);
+  const NotVerifyScreen({
+    Key? key,
+  }) : super(key: key);
 
   @override
-  _NotVerifyScreenState createState() =>
-      _NotVerifyScreenState();
+  _NotVerifyScreenState createState() => _NotVerifyScreenState();
 }
 
 class _NotVerifyScreenState extends State<NotVerifyScreen> {
-
   @override
   void initState() {
     super.initState();
@@ -28,7 +26,6 @@ class _NotVerifyScreenState extends State<NotVerifyScreen> {
     // });
   }
 
-  
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -51,62 +48,78 @@ class _NotVerifyScreenState extends State<NotVerifyScreen> {
                 height: 60,
               ),
               Text(
-                context.watch<ProfileProvider>().profile.blocked? "Your account is Blocked":"Your account is not yet verified",
+                context.watch<ProfileProvider>().profile.blocked
+                    ? "Your account is Blocked"
+                    : "Your account is not yet verified",
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
                     letterSpacing: 1.2,
                     color: Colors.black,
                     fontSize: 17),
               ),
-              SizedBox(height: 30,),
-        
-              !context.watch<ProfileProvider>().profile.verified?  Text("You will be notified, when your account is verifed shortly."):Container(),
-            //   SizedBox(
-            //     height: 30,
-            //   ),
-            //  widget.userType==1? Text(
-            //     "You have recieved ${currency.symbol}1000 into your walllet.",
-            //     style: TextStyle(fontSize: 13,fontWeight: FontWeight.bold),
-            //   ):Container(),
+              SizedBox(
+                height: 30,
+              ),
+
+              !context.watch<ProfileProvider>().profile.verified
+                  ? Text(
+                      "You will be notified, when your account is verifed shortly.")
+                  : Container(),
+              //   SizedBox(
+              //     height: 30,
+              //   ),
+              //  widget.userType==1? Text(
+              //     "You have recieved ${currency.symbol}1000 into your walllet.",
+              //     style: TextStyle(fontSize: 13,fontWeight: FontWeight.bold),
+              //   ):Container(),
               SizedBox(
                 height: 70,
               ),
-            Container(
+              Container(
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 height: 50.0,
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: ()async {
-                    
-          Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (_) => HomeScreen()),
-              );
-                   
+                  onPressed: () async {
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(builder: (_) => HomeScreen()),
+                    );
                   },
                   child: Text("OK"),
                   style: ElevatedButton.styleFrom(
                       primary: Theme.of(context).primaryColor),
                 ),
               ),
-        
-              SizedBox(height: 10,),
-              TextButton(onPressed: ()async{
-        
-                 String url = "tel:${contact_support}";
+
+              SizedBox(
+                height: 10,
+              ),
+              TextButton(
+                  onPressed: () async {
+                    String url = "tel:${contact_support}";
                     if (await canLaunchUrl(Uri.parse(url))) {
                       await launchUrl(Uri.parse(url));
                     } else {
                       throw 'Could not launch $url';
                     }
-        
-                 //launch("tel://${contact_support}");
-              }, child: Text("Contact Support")),
-              SizedBox(height: 20,),
-              TextButton(onPressed: ()async{
+
+                    //launch("tel://${contact_support}");
+                  },
+                  child: Text("Contact Support")),
+              SizedBox(
+                height: 20,
+              ),
+              TextButton(
+                  onPressed: () async {
                     await FirebaseAuth.instance.signOut();
-                   Provider.of<ProfileProvider>(context, listen: false).resetProfile();
-                  Navigator.pushReplacementNamed(context, "/login");
-              }, child: Text("Logout",style: TextStyle(color: Colors.red),))
+                    Provider.of<ProfileProvider>(context, listen: false)
+                        .resetProfile();
+                    Navigator.pushReplacementNamed(context, "/login");
+                  },
+                  child: Text(
+                    "Logout",
+                    style: TextStyle(color: Colors.red),
+                  ))
             ],
           ),
         ),

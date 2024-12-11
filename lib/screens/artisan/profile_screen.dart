@@ -1,5 +1,3 @@
-
-
 // ignore_for_file: prefer_const_constructors
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -25,8 +23,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   bool _activeStatus = false;
 
-
- initState() {
+  initState() {
     super.initState();
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
       Provider.of<CustomerWalletProvider>(context, listen: false)
@@ -46,32 +43,42 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
-                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       GestureDetector(
-                        onTap: () =>  Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) => ImageUploadScreen(
-                                userType:context.watch<ProfileProvider>().profile.userType,
-                                fromNav: "Profile",
+                          onTap: () => Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) => ImageUploadScreen(
+                                    userType: context
+                                        .watch<ProfileProvider>()
+                                        .profile
+                                        .userType,
+                                    fromNav: "Profile",
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                        child: context.watch<ProfileProvider>().profile.imageUrl==""?  Image.asset(
-                          "assets/images/user.png",
-                          width: 70,
-                          height: 70,
-                        ):
-                        CircleAvatar(
-                          backgroundImage: AssetImage("assets/images/user.png"),
-                          radius: 50,
-                          
-                          child: CircleAvatar(
-                            radius: 50,
-                            backgroundImage: NetworkImage(context.watch<ProfileProvider>().profile.imageUrl!),),
-                        )
-                       
-                      ),
+                          child: context
+                                      .watch<ProfileProvider>()
+                                      .profile
+                                      .imageUrl ==
+                                  ""
+                              ? Image.asset(
+                                  "assets/images/user.png",
+                                  width: 70,
+                                  height: 70,
+                                )
+                              : CircleAvatar(
+                                  backgroundImage:
+                                      AssetImage("assets/images/user.png"),
+                                  radius: 50,
+                                  child: CircleAvatar(
+                                    radius: 50,
+                                    backgroundImage: NetworkImage(context
+                                        .watch<ProfileProvider>()
+                                        .profile
+                                        .imageUrl!),
+                                  ),
+                                )),
                       // SizedBox(
                       //   width: 10,
                       // ),
@@ -104,15 +111,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       // ),
                       Row(
                         children: [
-                         context.watch<ProfileProvider>().profile.active? Text("Active",style: TextStyle(color: Colors.green),): Text("Inactive",style: TextStyle(color: Colors.red)),
+                          context.watch<ProfileProvider>().profile.active
+                              ? Text(
+                                  "Active",
+                                  style: TextStyle(color: Colors.green),
+                                )
+                              : Text("Inactive",
+                                  style: TextStyle(color: Colors.red)),
                           SizedBox(
                             height: 25,
                             child: FlutterSwitch(
                               activeColor: Colors.green,
-                              value:context.watch<ProfileProvider>().profile.active ,
+                              value: context
+                                  .watch<ProfileProvider>()
+                                  .profile
+                                  .active,
                               onToggle: (value) {
                                 print("VALUE : $value");
-                                context.read<ProfileProvider>().updateprofileStatus(value);
+                                context
+                                    .read<ProfileProvider>()
+                                    .updateprofileStatus(value);
                                 // setState(() {
                                 //   _activeStatus = value;
                                 // });
@@ -131,29 +149,45 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               Divider(),
               ListTile(
-                onTap: ()=>Navigator.pushNamed(context, "/withdraw"),
-                leading: Icon(Icons.money,color: Theme.of(context).accentColor,),
-                title: Text("My Earnings"),
-                subtitle: Row(children: [
-                  Icon(Icons.wallet_giftcard_sharp,color: Theme.of(context).primaryColor,),
-                  Text("Withdraw",style: TextStyle(color: Theme.of(context).primaryColor,fontWeight: FontWeight.bold),)
-                ],),
-                trailing: context.watch<CustomerWalletProvider>().loading?Text("Loading...") : Text(
-                  "${currency.symbol} ${context.watch<CustomerWalletProvider>().wallet.amount.toString()}",
-                  style: TextStyle(),
+                onTap: () => Navigator.pushNamed(context, "/withdraw"),
+                leading: Icon(
+                  Icons.money,
+                  color: Theme.of(context).primaryColor,
                 ),
+                title: Text("My Earnings"),
+                subtitle: Row(
+                  children: [
+                    Icon(
+                      Icons.wallet_giftcard_sharp,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    Text(
+                      "Withdraw",
+                      style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.bold),
+                    )
+                  ],
+                ),
+                trailing: context.watch<CustomerWalletProvider>().loading
+                    ? Text("Loading...")
+                    : Text(
+                        "${currency.symbol} ${context.watch<CustomerWalletProvider>().wallet.amount.toString()}",
+                        style: TextStyle(),
+                      ),
               ),
               Divider(),
               ListTile(
-                onTap: ()async{
+                onTap: () async {
                   String url = "tel:${contact_support}";
-                    if (await canLaunchUrl(Uri.parse(url))) {
-                      await launchUrl(Uri.parse(url));
-                    } else {
-                      throw 'Could not launch $url';
-                    }
+                  if (await canLaunchUrl(Uri.parse(url))) {
+                    await launchUrl(Uri.parse(url));
+                  } else {
+                    throw 'Could not launch $url';
+                  }
                 },
-                leading: Icon(Icons.info,color: Theme.of(context).accentColor),
+                leading:
+                    Icon(Icons.info, color: Theme.of(context).primaryColor),
                 title: Text("Issues? Contact Us"),
               ),
               Divider(),
@@ -168,7 +202,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 onTap: () async {
                   await FirebaseAuth.instance.signOut();
-                   Provider.of<ProfileProvider>(context, listen: false).resetProfile();
+                  Provider.of<ProfileProvider>(context, listen: false)
+                      .resetProfile();
                   Navigator.pushReplacementNamed(context, "/login");
                 },
               ),

@@ -27,7 +27,7 @@ class AppDrawer extends StatelessWidget {
               colors: [
                 Theme.of(context).primaryColor,
                 Theme.of(context).primaryColor,
-                Theme.of(context).accentColor,
+                Theme.of(context).primaryColor,
                 Colors.blue
               ],
             )),
@@ -141,7 +141,7 @@ class AppDrawer extends StatelessWidget {
               child: ListTile(
                 title: Text(
                   'v0.0.1',
-                  style: TextStyle(color: Theme.of(context).accentColor),
+                  style: TextStyle(color: Theme.of(context).primaryColor),
                 ),
                 onTap: () {},
               ),

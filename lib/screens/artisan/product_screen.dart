@@ -19,7 +19,6 @@ class _ProductScreenState extends State<ProductScreen> {
   TextEditingController _costController = new TextEditingController();
   TextEditingController _nameController = new TextEditingController();
   TextEditingController _descriptionController = new TextEditingController();
-  
 
   @override
   initState() {
@@ -32,13 +31,14 @@ class _ProductScreenState extends State<ProductScreen> {
   }
 
   void fetchProduct() async {
-    Map<String,dynamic> response=await Provider.of<ProfileProvider>(context, listen: false)
-        .fetch_one_product(widget.productId);
-        if (response["status"]) {
-          _nameController.text=response["product"].name;
-          _costController.text=response["product"].cost.toString();
-          _descriptionController.text=response["product"].description;
-        }
+    Map<String, dynamic> response =
+        await Provider.of<ProfileProvider>(context, listen: false)
+            .fetch_one_product(widget.productId);
+    if (response["status"]) {
+      _nameController.text = response["product"].name;
+      _costController.text = response["product"].cost.toString();
+      _descriptionController.text = response["product"].description;
+    }
   }
 
   void ShowSnackBar(String title, bool status) {
@@ -55,25 +55,26 @@ class _ProductScreenState extends State<ProductScreen> {
     }
     _formKey.currentState!.save();
 
-Map<String, dynamic> data;
-if (widget.action=="") {
-   data = await context
-        .read<ProfileProvider>()
-        .createProduct(_nameController.text, int.parse(_costController.text),
-            _descriptionController.text);
-} else {
-    data = await context
-        .read<ProfileProvider>()
-        .updateProduct(_nameController.text, int.parse(_costController.text),
-            _descriptionController.text,widget.productId!);
-}
+    Map<String, dynamic> data;
+    if (widget.action == "") {
+      data = await context.read<ProfileProvider>().createProduct(
+          _nameController.text,
+          int.parse(_costController.text),
+          _descriptionController.text);
+    } else {
+      data = await context.read<ProfileProvider>().updateProduct(
+          _nameController.text,
+          int.parse(_costController.text),
+          _descriptionController.text,
+          widget.productId!);
+    }
 
     if (data["status"]) {
       print("success");
-      if (widget.action=="") {
-      _nameController.text = "";
-      _costController.text = "";
-      _descriptionController.text = "";
+      if (widget.action == "") {
+        _nameController.text = "";
+        _costController.text = "";
+        _descriptionController.text = "";
       }
       ShowSnackBar(data["message"], true);
       //  Navigator.of(context).pop(
@@ -168,7 +169,7 @@ if (widget.action=="") {
                               ),
                               focusedBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
-                                      color: Theme.of(context).accentColor)),
+                                      color: Theme.of(context).primaryColor)),
                               enabledBorder: OutlineInputBorder(
                                   borderSide:
                                       BorderSide(color: Color(0xff52575C)))),
@@ -197,7 +198,7 @@ if (widget.action=="") {
                               ),
                               focusedBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
-                                      color: Theme.of(context).accentColor)),
+                                      color: Theme.of(context).primaryColor)),
                               enabledBorder: OutlineInputBorder(
                                   borderSide:
                                       BorderSide(color: Color(0xff52575C)))),
@@ -220,7 +221,7 @@ if (widget.action=="") {
                               ),
                               focusedBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
-                                      color: Theme.of(context).accentColor)),
+                                      color: Theme.of(context).primaryColor)),
                               enabledBorder: OutlineInputBorder(
                                   borderSide:
                                       BorderSide(color: Color(0xff52575C)))),

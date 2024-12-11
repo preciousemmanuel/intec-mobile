@@ -361,10 +361,11 @@ class _TrackRequestScreenState extends State<TrackRequestScreen> {
                                     Divider(),
                                     // CancelTile(title: "", selected: ""),
                                     context
-                                            .watch<ArtisanRequestProvider>()
-                                            .getSubmitting || context
-                                            .watch<ServicePaymentProvider>()
-                                            .isSubmitting
+                                                .watch<ArtisanRequestProvider>()
+                                                .getSubmitting ||
+                                            context
+                                                .watch<ServicePaymentProvider>()
+                                                .isSubmitting
                                         ? Align(
                                             alignment: Alignment.center,
                                             child: CircularProgressIndicator(
@@ -406,8 +407,7 @@ class _TrackRequestScreenState extends State<TrackRequestScreen> {
                                                                         3
                                                                     ? "Pay will be transfered to your wallet soon as customer confirms."
                                                                     : "Client will pay you the required fee."),
-                                                                actions: <
-                                                                    Widget>[
+                                                                actions: <Widget>[
                                                                   TextButton(
                                                                     onPressed:
                                                                         () {
@@ -439,8 +439,7 @@ class _TrackRequestScreenState extends State<TrackRequestScreen> {
                                                                     "Message"),
                                                                 content: Text(value[
                                                                     "message"]),
-                                                                actions: <
-                                                                    Widget>[
+                                                                actions: <Widget>[
                                                                   TextButton(
                                                                     onPressed:
                                                                         () {
@@ -478,8 +477,7 @@ class _TrackRequestScreenState extends State<TrackRequestScreen> {
                                                                     "Message"),
                                                                 content: Text(
                                                                     "Request cancelled successfully"),
-                                                                actions: <
-                                                                    Widget>[
+                                                                actions: <Widget>[
                                                                   TextButton(
                                                                     onPressed:
                                                                         () {
@@ -511,8 +509,7 @@ class _TrackRequestScreenState extends State<TrackRequestScreen> {
                                                                     "Message"),
                                                                 content: Text(value[
                                                                     "message"]),
-                                                                actions: <
-                                                                    Widget>[
+                                                                actions: <Widget>[
                                                                   TextButton(
                                                                     onPressed:
                                                                         () {
@@ -543,12 +540,12 @@ class _TrackRequestScreenState extends State<TrackRequestScreen> {
                                                   shape: StadiumBorder(),
                                                   side: BorderSide(
                                                       color: Theme.of(context)
-                                                          .accentColor),
+                                                          .primaryColor),
                                                   padding: EdgeInsets.symmetric(
                                                       horizontal: 15,
                                                       vertical: 5),
                                                   primary: Theme.of(context)
-                                                      .accentColor),
+                                                      .primaryColor),
                                             ),
                                           )
                                   ],
@@ -560,19 +557,19 @@ class _TrackRequestScreenState extends State<TrackRequestScreen> {
                     child: Row(children: [
                       Icon(
                         Icons.more_sharp,
-                        color: Theme.of(context).accentColor,
+                        color: Theme.of(context).primaryColor,
                       ),
                       SizedBox(
                         width: 10,
                       ),
                       Text(
                         "More",
-                        style: TextStyle(color: Theme.of(context).accentColor),
+                        style: TextStyle(color: Theme.of(context).primaryColor),
                       ),
                     ]),
                     style: OutlinedButton.styleFrom(
                         shape: StadiumBorder(),
-                        side: BorderSide(color: Theme.of(context).accentColor),
+                        side: BorderSide(color: Theme.of(context).primaryColor),
                         padding:
                             EdgeInsets.symmetric(horizontal: 15, vertical: 5),
                         primary: Colors.white),
@@ -697,7 +694,7 @@ class _TrackRequestScreenState extends State<TrackRequestScreen> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           PaymentMethodSection(
-                              paymentMethod: _request["paymentMode"]??1),
+                              paymentMethod: _request["paymentMode"] ?? 1),
                           Text(" | "),
                           _request["userType"] == 3
                               ? _buildClientInfo("No. of Trips",

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intechpro/providers/profile_provider.dart';
 
-
 import 'package:intechpro/screens/home_screen.dart';
 
 import 'package:provider/provider.dart';
@@ -50,7 +49,7 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
         ShowSnackBar("Please take a photo", false);
       }
       setState(() {
-        isSubmitting=true;
+        isSubmitting = true;
       });
       Reference _firebaseStorage = FirebaseStorage.instance.ref();
       String uniqueId = Uuid().v4();
@@ -66,8 +65,8 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
       Map<String, dynamic> data =
           await context.read<ProfileProvider>().updateprofileImage(imageUrl);
       print(snapshot.ref.bucket);
-setState(() {
-        isSubmitting=false;
+      setState(() {
+        isSubmitting = false;
       });
 //call api to store playtore
       if (data["status"]) {
@@ -89,11 +88,11 @@ setState(() {
                         //     ),
                         //   );
                         // } else {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) => HomeScreen(),
-                            ),
-                          );
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => HomeScreen(),
+                          ),
+                        );
                         // }
                       },
                       child: Text("OK"))
@@ -102,8 +101,8 @@ setState(() {
             });
       } else {
         setState(() {
-        isSubmitting=false;
-      });
+          isSubmitting = false;
+        });
         showDialog(
             context: context,
             builder: (context) {
@@ -117,7 +116,6 @@ setState(() {
       //  var fileURL=  await _firebaseStorage.getDownloadURL();
       //  print("down###");
       //  print(fileURL);
-
     } on FirebaseException catch (e) {
       showDialog(
           context: context,
@@ -214,7 +212,7 @@ setState(() {
               SizedBox(
                 height: 120,
               ),
-        
+
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Row(
@@ -222,8 +220,8 @@ setState(() {
                   children: [
                     isSubmitting
                         ? CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                                Colors.white))
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.white))
                         : OutlinedButton(
                             onPressed: () {
                               takePhoto();
@@ -237,15 +235,15 @@ setState(() {
                             )),
                     isSubmitting
                         ? CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                                Colors.white))
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.white))
                         : ElevatedButton(
                             onPressed: () {
                               onSubmit();
                             },
                             child: Text("Continue"),
                             style: ElevatedButton.styleFrom(
-                                primary: Theme.of(context).accentColor),
+                                primary: Theme.of(context).primaryColor),
                           )
                   ],
                 ),

@@ -233,34 +233,34 @@ class _HomeScreenState extends State<HomeScreen> {
         _request = [];
       });
       print(event.snapshot.value);
-      if(event.snapshot.value!=null){
-      Map<dynamic, dynamic> values =
-          event.snapshot.value as Map<dynamic, dynamic>;
-      // List respList=values.entries.map(( key,entry){
+      if (event.snapshot.value != null) {
+        Map<dynamic, dynamic> values =
+            event.snapshot.value as Map<dynamic, dynamic>;
+        // List respList=values.entries.map(( key,entry){
 
-      // }).toList();
-      
-      if (values != null && values.isNotEmpty) {
-        print("her##");
-        print(values["request"]);
-        setState(() {
-          _isLoading = false;
-          _error = null;
-          values.forEach((key, value) {
-            print("postdat");
-            print(value);
-            print(key);
-            _request.add(value);
+        // }).toList();
+
+        if (values != null && values.isNotEmpty) {
+          print("her##");
+          print(values["request"]);
+          setState(() {
+            _isLoading = false;
+            _error = null;
+            values.forEach((key, value) {
+              print("postdat");
+              print(value);
+              print(key);
+              _request.add(value);
+            });
+            // for (var value in event.snapshot.value) {
+            //   _request.add(value);
+            // }
+            print("list data#");
+            print(_request);
+
+            // _request = event.snapshot.value;
           });
-          // for (var value in event.snapshot.value) {
-          //   _request.add(value);
-          // }
-          print("list data#");
-          print(_request);
-
-          // _request = event.snapshot.value;
-        });
-      }
+        }
       }
     }, onError: (Object o) {
       final error = o as FirebaseException;

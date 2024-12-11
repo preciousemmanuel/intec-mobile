@@ -133,7 +133,6 @@ class _PaymentServiceScreenState extends State<PaymentServiceScreen> {
       backgroundColor: status ? Colors.green : Colors.red,
     );
     ScaffoldMessenger.of(context).showSnackBar(snackbar);
-    
   }
 
   // String _getReference() {
@@ -268,7 +267,7 @@ class _PaymentServiceScreenState extends State<PaymentServiceScreen> {
                     },
                     child: Text(
                       'Close',
-                      style: TextStyle(color: Theme.of(context).accentColor),
+                      style: TextStyle(color: Theme.of(context).primaryColor),
                     )),
                 TextButton(
                   onPressed: () {
@@ -285,7 +284,6 @@ class _PaymentServiceScreenState extends State<PaymentServiceScreen> {
           });
 
       // ShowSnackBar(response["message"], false);
-
     }
   }
 
@@ -377,7 +375,7 @@ class _PaymentServiceScreenState extends State<PaymentServiceScreen> {
                                 child: Text(
                                   'Close',
                                   style: TextStyle(
-                                      color: Theme.of(context).accentColor),
+                                      color: Theme.of(context).primaryColor),
                                 )),
                             TextButton(
                               onPressed: () {
@@ -404,11 +402,10 @@ class _PaymentServiceScreenState extends State<PaymentServiceScreen> {
                                                 height: 20,
                                               ),
                                               ListTile(
-                                                onTap: 
-                                                        _isProcessingPayment
+                                                onTap: _isProcessingPayment
                                                     ? () {}
                                                     : () {
-                                                      setState(() {
+                                                        setState(() {
                                                           _isProcessingPayment =
                                                               true;
                                                         });
@@ -444,7 +441,7 @@ class _PaymentServiceScreenState extends State<PaymentServiceScreen> {
                                                         //   _isProcessingPayment =
                                                         //       true;
                                                         // });
-                                                        
+
                                                         _handleWalletPayment(
                                                             3, amountToPay);
                                                       },
@@ -654,10 +651,11 @@ class _PaymentServiceScreenState extends State<PaymentServiceScreen> {
                                         shape: StadiumBorder(),
                                         side: BorderSide(
                                             color:
-                                                Theme.of(context).accentColor),
+                                                Theme.of(context).primaryColor),
                                         padding: EdgeInsets.symmetric(
                                             horizontal: 15, vertical: 5),
-                                        primary: Theme.of(context).accentColor),
+                                        primary:
+                                            Theme.of(context).primaryColor),
                                   ),
                                 )
                         ],
@@ -669,19 +667,19 @@ class _PaymentServiceScreenState extends State<PaymentServiceScreen> {
           child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             Icon(
               Icons.more_sharp,
-              color: Theme.of(context).accentColor,
+              color: Theme.of(context).primaryColor,
             ),
             SizedBox(
               width: 10,
             ),
             Text(
               "More",
-              style: TextStyle(color: Theme.of(context).accentColor),
+              style: TextStyle(color: Theme.of(context).primaryColor),
             ),
           ]),
           style: OutlinedButton.styleFrom(
               shape: StadiumBorder(),
-              side: BorderSide(color: Theme.of(context).accentColor),
+              side: BorderSide(color: Theme.of(context).primaryColor),
               padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
               primary: Colors.white),
         ),
@@ -942,7 +940,7 @@ class _PaymentServiceScreenState extends State<PaymentServiceScreen> {
           children: [
             Icon(
               Icons.home,
-              color: Theme.of(context).accentColor,
+              color: Theme.of(context).primaryColor,
             ),
             Expanded(child: Text(widget.address ?? "")),
           ],
@@ -960,7 +958,7 @@ class _PaymentServiceScreenState extends State<PaymentServiceScreen> {
           children: [
             Icon(
               Icons.place,
-              color: Theme.of(context).accentColor,
+              color: Theme.of(context).primaryColor,
             ),
             Expanded(child: Text(widget.destinationAddress ?? "")),
           ],
@@ -978,7 +976,7 @@ class _PaymentServiceScreenState extends State<PaymentServiceScreen> {
         children: [
           Icon(
             Icons.location_city,
-            color: Theme.of(context).accentColor,
+            color: Theme.of(context).primaryColor,
           ),
           Expanded(child: Text(widget.address ?? "")),
         ],
@@ -1068,7 +1066,7 @@ class _PaymentServiceScreenState extends State<PaymentServiceScreen> {
                                 children: [
                                   Icon(
                                     Icons.plumbing_rounded,
-                                    color: Theme.of(context).accentColor,
+                                    color: Theme.of(context).primaryColor,
                                   ),
                                   Expanded(
                                     child: Text(widget.subservice!.hasTask

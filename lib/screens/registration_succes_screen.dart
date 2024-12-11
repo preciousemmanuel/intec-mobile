@@ -101,8 +101,6 @@ class _RegistrationSuccessScreenState extends State<RegistrationSuccessScreen> {
                             } else {
                               //artisans
 
-                              
-
                               Navigator.of(context).pushReplacement(
                                 MaterialPageRoute(
                                     builder: (_) => CompleteProfileScreen(

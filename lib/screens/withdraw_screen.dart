@@ -83,7 +83,8 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
     _formKey.currentState!.save();
     Map<String, dynamic> data = await context
         .read<CustomerWalletProvider>()
-        .withdrawFromWallet(_amount, _bankcode, _accountNumber,Provider.of<ProfileProvider>(context,listen: false).profile.name);
+        .withdrawFromWallet(_amount, _bankcode, _accountNumber,
+            Provider.of<ProfileProvider>(context, listen: false).profile.name);
 
     if (data["status"]) {
       showDialog(

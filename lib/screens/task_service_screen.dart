@@ -66,7 +66,7 @@ class _TaskServiceScreen extends State<TaskServiceScreen> {
                       },
                       child: Text(
                         'Close',
-                        style: TextStyle(color: Theme.of(context).accentColor),
+                        style: TextStyle(color: Theme.of(context).primaryColor),
                       )),
                   TextButton(
                     onPressed: () {

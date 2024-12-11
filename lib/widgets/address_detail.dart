@@ -24,9 +24,11 @@ class AddressDetail extends StatelessWidget {
           children: [
             Icon(
               Icons.home,
-              color: Theme.of(context).accentColor,
+              color: Theme.of(context).primaryColor,
             ),
-            Expanded(child: Text(startAddress,style:TextStyle(color: Color(0xff52575C)))),
+            Expanded(
+                child: Text(startAddress,
+                    style: TextStyle(color: Color(0xff52575C)))),
           ],
         ),
         SizedBox(
@@ -42,16 +44,18 @@ class AddressDetail extends StatelessWidget {
           children: [
             Icon(
               Icons.place,
-              color: Theme.of(context).accentColor,
+              color: Theme.of(context).primaryColor,
             ),
-            Expanded(child: Text(destinationAdress ?? "",style: TextStyle(color: Color(0xff52575C)),)),
+            Expanded(
+                child: Text(
+              destinationAdress ?? "",
+              style: TextStyle(color: Color(0xff52575C)),
+            )),
           ],
         )
       ]);
     }
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Text("Location",
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
       SizedBox(
@@ -62,9 +66,11 @@ class AddressDetail extends StatelessWidget {
         children: [
           Icon(
             Icons.location_city,
-            color: Theme.of(context).accentColor,
+            color: Theme.of(context).primaryColor,
           ),
-          Expanded(child: Text(startAddress,style:TextStyle(color: Color(0xff52575C)))),
+          Expanded(
+              child: Text(startAddress,
+                  style: TextStyle(color: Color(0xff52575C)))),
         ],
       )
     ]);

@@ -18,9 +18,6 @@ class ProductArtisanCard extends StatelessWidget {
     this.type = "customer",
   }) : super(key: key);
 
-  
-
-   
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -36,32 +33,29 @@ class ProductArtisanCard extends StatelessWidget {
             )
           ]),
       child: ListTile(
-          onTap: () {
-            onTap();
-          },
-          leading: Icon(
-            Icons.import_export,
-            color: Theme.of(context).accentColor,
-          ),
-          title: Text(
-            product.name,
-            style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).primaryColor),
-          ),
-          subtitle: Text(
-            product.description,
-            style: TextStyle(fontSize: 10),
-          ),
-          trailing: 
-              Text(
-                currency.symbol+
-                product.cost.toString(),
-                style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),
-              ),
-             
-          ),
+        onTap: () {
+          onTap();
+        },
+        leading: Icon(
+          Icons.import_export,
+          color: Theme.of(context).primaryColor,
+        ),
+        title: Text(
+          product.name,
+          style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).primaryColor),
+        ),
+        subtitle: Text(
+          product.description,
+          style: TextStyle(fontSize: 10),
+        ),
+        trailing: Text(
+          currency.symbol + product.cost.toString(),
+          style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+        ),
+      ),
     );
   }
 }
